@@ -10,6 +10,7 @@
 
     <modules>
         <module>main</module>
+        <module>common</module>
     </modules>
 
     <dependencyManagement>
