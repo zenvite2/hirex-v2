@@ -1,6 +1,6 @@
-package com.ptit.demo.exception;
+package com.ptit.hirex.exception;
 
-import com.ptit.demo.model.ApiResponse;
+import com.ptit.hirex.model.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

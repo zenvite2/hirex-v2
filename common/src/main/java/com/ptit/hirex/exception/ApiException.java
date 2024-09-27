@@ -1,4 +1,4 @@
-package com.ptit.demo.exception;
+package com.ptit.hirex.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

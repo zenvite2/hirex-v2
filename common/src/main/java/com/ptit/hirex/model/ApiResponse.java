@@ -1,4 +1,4 @@
-package com.ptit.demo.model;
+package com.ptit.hirex.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
