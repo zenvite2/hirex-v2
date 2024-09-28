@@ -1,1 +1,9 @@
-spring.application.name=main
+server:
+  port: 8080
+spring:
+  profiles:
+    active: mysql
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
