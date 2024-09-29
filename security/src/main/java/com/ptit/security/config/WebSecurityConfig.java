@@ -21,8 +21,8 @@ public class WebSecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
 
-    @Value("${api.prefix}")
-    private String apiPrefix;
+//    @Value("${api.prefix}")
+    private String apiPrefix = "/api";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

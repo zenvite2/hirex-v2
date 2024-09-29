@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
-    @Value("${api.prefix}")
+//    @Value("${api.prefix}")
     private String apiPrefix;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;

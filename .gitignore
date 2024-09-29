@@ -34,6 +34,7 @@ build/
 ### VS Code ###
 .vscode/
 /mysql_data
+/mongo_data
 .idea
 ### Mac OS ###
 .DS_Store

@@ -2,8 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: mysql
+    active: dev
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.data.mongodb: DEBUG

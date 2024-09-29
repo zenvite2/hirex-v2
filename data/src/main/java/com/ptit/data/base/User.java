@@ -1,8 +1,10 @@
 package com.ptit.data.base;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,53 +14,43 @@ import java.util.Collection;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "`user`")
+@Document(collection = "user") // Collection name in MongoDB
 public class User extends Auditable implements UserDetails {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id; // Use String for MongoDB ID
 
-    @Column(name = "fullname", length = 100)
     private String fullName;
 
-    @Column(name = "address", length = 200)
     private String address;
 
-    @Column(name = "phone_number", length = 10, nullable = false)
-    private String phoneNumber;
-
     @JsonIgnore
-    @Column(name = "password", length = 200, nullable = false)
     private String password;
 
-    @Column(name = "date_of_birth")
+    private String phoneNumber;
+
     private String dateOfBirth;
 
-    @Column(name = "mail")
     private String mail;
 
-    @Column(name = "gender")
     private String gender;
 
-    @Column(name = "avt_url")
-    private String avt_url;
+    private String avtUrl; // Updated to camelCase to follow Java naming conventions
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @DBRef // Reference to the Role document
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_" + getRole().getName().toUpperCase()));
-        // authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        if (role != null) { // Check if role is not null before accessing it
+            authorityList.add(new SimpleGrantedAuthority("ROLE_" + role.getName().toUpperCase()));
+        }
         return authorityList;
     }
 
@@ -69,21 +61,21 @@ public class User extends Auditable implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true; // Return true, or implement your logic
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true; // Return true, or implement your logic
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true; // Return true, or implement your logic
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true; // Return true, or implement your logic
     }
 }

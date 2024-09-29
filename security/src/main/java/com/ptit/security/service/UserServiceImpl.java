@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtUtil.generateToken(existingUser);
         String role = existingUser.getRole().getName();
-        Long id = existingUser.getId();
+        String id = existingUser.getId();
         String name = existingUser.getFullName();
 
 //        if (role.toUpperCase().equals("USER")) {

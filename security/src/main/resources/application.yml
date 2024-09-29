@@ -1,0 +1,6 @@
+jwt:
+  expiration: 5000
+  secret-key: hirex
+
+api:
+  prefix: /api
