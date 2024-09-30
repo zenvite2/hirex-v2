@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: websocket
+server:
+  port: 8888
+
+# application.properties
+logging:
+  level:
+    root: INFO
+    com:
+      ptit:
+        websocket:
+          controller: DEBUG
