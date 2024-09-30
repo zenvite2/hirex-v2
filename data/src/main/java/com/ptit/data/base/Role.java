@@ -1,21 +1,28 @@
 package com.ptit.data.base;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Document(collection = "role")
-@Data
+@Entity
+@Table(name = "role")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
-    public static final String ADMIN = "ADMIN";
-    public static final String USER = "USER";
-    public static final String EMPLOYEE = "EMPLOYEE";
-    public static final String EMPLOYER = "EMPLOYER";
+    public static String ADMIN = "ADMIN";
+    public static String USER = "USER";
+    public static String EMPLOYEE = "EMPLOYEE";
+    public static String EMPLOYER = "EMPLOYER";
+
 }

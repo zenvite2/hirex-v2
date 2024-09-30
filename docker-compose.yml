@@ -1,12 +1,12 @@
 services:
-  mongodb:
-    image: mongo:latest
-    container_name: hirex-mongo-container
+  postgres:
+    image: postgres:latest
+    container_name: hirex-postgres-container
     environment:
-      MONGO_INITDB_ROOT_USERNAME: hirex
-      MONGO_INITDB_ROOT_PASSWORD: 123
-      MONGO_INITDB_DATABASE: hirex
+      POSTGRES_USER: hirex
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: hirex
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - ./mongo_data:/data/db
+      - ./postgres_data:/var/lib/postgresql/data

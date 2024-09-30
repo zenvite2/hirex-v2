@@ -9,6 +9,6 @@ import lombok.*;
 public class SignInRes {
     private String token;
     private String role;
-    private String id;
+    private Long id;
     private String fullname;
 }

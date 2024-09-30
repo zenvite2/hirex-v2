@@ -23,11 +23,11 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
-//    @Value("${jwt.expiration}")
-    private int expiration = 5000;
+    @Value("${jwt.expiration}")
+    private int expiration;
 
-//    @Value("${jwt.secret-key}")
-    private String secretKey = "hirex";
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
     public String generateToken(User user) throws Exception {
         // properties => claims
