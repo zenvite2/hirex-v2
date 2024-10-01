@@ -16,7 +16,7 @@ public class SignInReq {
 
     @NotBlank(message = "Password cannot be blank")
     private String password;
-
-    @Min(value = 1, message = "You must enter role's Id")
-    private Long roleId;
+//
+//    @Min(value = 1, message = "You must enter role's Id")
+//    private Long roleId;
 }

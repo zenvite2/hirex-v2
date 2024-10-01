@@ -34,12 +34,13 @@ public class WebSecurityConfig {
                             .requestMatchers(
                                     "/test",
                                     String.format("%s/auth/sign-up", apiPrefix),
+                                    String.format("%s/auth/register", apiPrefix),
+                                    String.format("%s/auth/login", apiPrefix),
                                     String.format("%s/auth/sign-in", apiPrefix))
                             .permitAll()
 
                             .anyRequest().authenticated();
-                })
-                .csrf(AbstractHttpConfigurer::disable);
+                });
 
         return http.build();
     }

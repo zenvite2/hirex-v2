@@ -22,7 +22,4 @@ public class Role {
 
     public static String ADMIN = "ADMIN";
     public static String USER = "USER";
-    public static String EMPLOYEE = "EMPLOYEE";
-    public static String EMPLOYER = "EMPLOYER";
-
 }

@@ -10,7 +10,6 @@ import com.ptit.data.base.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -18,6 +17,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
@@ -29,6 +29,7 @@ public class JwtUtil {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+
     public String generateToken(User user) throws Exception {
         // properties => claims
         Map<String, Object> claims = new HashMap<>();
@@ -36,6 +37,7 @@ public class JwtUtil {
 //		claims.put("role", user.getRole().getName());
         try {
             String token = Jwts.builder().setClaims(claims)
+                    .setId(String.valueOf(user.getId()))
                     .setSubject(user.getPhoneNumber())
                     .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
                     .signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
@@ -46,13 +48,28 @@ public class JwtUtil {
         }
     }
 
+//    public String getUserIdFromToken(String token) {
+//        try {
+//            Claims claims = Jwts.parserBuilder()
+//                    .setSigningKey(getSignInKey())
+//                    .build()
+//                    .parseClaimsJws(token)
+//                    .getBody();
+//            return claims.getId();
+//        } catch (Exception e) {
+//            log.error("Invalid JWT token", e);
+//            return null;
+//        }
+//    }
+
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(bytes);
+        byte[] keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded();
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

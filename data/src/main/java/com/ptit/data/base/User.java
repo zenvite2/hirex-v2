@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "`user`")
+@Table(name = "users")
 public class User extends Auditable implements UserDetails {
     private static final long serialVersionUID = 1L;
 

@@ -1,16 +1,21 @@
-package com.ptit.security.service;
+package com.ptit.security.service.impl;
 
+import java.text.ParseException;
 import java.util.Optional;
 
 import com.ptit.data.base.User;
 import com.ptit.data.repository.RoleRepo;
 import com.ptit.data.repository.UserRepo;
 import com.ptit.hirex.exception.ApiException;
+import com.ptit.security.dto.request.SignInReq;
 import com.ptit.security.dto.response.SignInRes;
+import com.ptit.security.service.UserService;
 import com.ptit.security.util.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
@@ -62,15 +68,15 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
-    public SignInRes login(String phoneNumber, String password) throws Exception {
-        Optional<User> optionalUser = userRepo.findByPhoneNumber(phoneNumber);
+    public SignInRes login(SignInReq signInReq) throws Exception {
+        Optional<User> optionalUser = userRepo.findByPhoneNumber(signInReq.getPhoneNumber());
         if (optionalUser.isEmpty()) {
             throw new ApiException(404, "User not found");
         }
         User existingUser = optionalUser.get();
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(phoneNumber,
-                password, existingUser.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInReq.getPhoneNumber(),
+                signInReq.getPassword(), existingUser.getAuthorities());
 
         // authenticate with Java Spring security
         authenticationManager.authenticate(authenticationToken);
@@ -93,6 +99,17 @@ public class UserServiceImpl implements UserService {
                         .token(token)
                         .build();
     }
+
+    @Override
+    public User getUserFromContext() {
+        try {
+            return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (Exception e) {
+            log.error("Failed to get user ID from security context: {}", e.getMessage());
+            return null;
+        }
+    }
+
 
 //    @Override
 //    public User findByPhoneNumber(String phoneNumber) {

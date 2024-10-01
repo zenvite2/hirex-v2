@@ -12,8 +12,10 @@ public interface UserService {
 
 //    User updatePassword(String phoneNumber, String oldPassword, String newPassword) throws Exception;
 
-    SignInRes login(String phoneNumber, String password) throws Exception;
+    SignInRes login(SignInReq signInReq) throws Exception;
 
 //    User findByPhoneNumber(String phoneNumber);
+
+    User getUserFromContext();
 
 }

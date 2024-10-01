@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 spring:
   profiles:
     active: mysql
@@ -7,3 +7,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+jwt:
+  secret-key: gQKpL2ZnI2mv7m8eK7R3ZzS5k3N8vhBWvpa4rH3A3SHsENF8F5u87T5B4qU8p9y7
+  expiration: 3600

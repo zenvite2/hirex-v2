@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hirex
-    username: hirex
-    password: 123
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: 123456
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,10 +16,13 @@ spring:
           time_zone: Asia/Ho_Chi_Minh
         format_sql: true
         use_sql_comments: true
-
-jwt:
-  expiration: 5000
-  secret-key: hirex
+  jwt:
+    access:
+      secret: ${JWT_ACCESS_SECRET:9f761f05c000749a94299fe176c2af0577ce47095f7f7923947c79192e6ecf11d1482a4a5e6ce07d91b549aff7489f56a9ef8fbce1d0f03072c86f6b3e1663e0}
+      expire: ${JWT_ACCESS_EXPIRE:86400000}
+    refresh:
+      secret: ${JWT_REFRESH_SECRET:d966b0d3c45944d48bbb8482d911b397a1f9eaf8f2a2d17c93750fef38118e65ddbe23fb173907b623eab0864132d522e2322cc18d7085a3d24f439f96dd73cd}
+      expire: ${JWT_REFRESH_EXPIRE:2592000000}
 
 api:
   prefix: /api
