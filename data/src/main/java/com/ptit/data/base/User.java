@@ -25,65 +25,44 @@ public class User extends Auditable implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "fullname", length = 100)
-    private String fullName;
-
-    @Column(name = "address", length = 200)
-    private String address;
-
-    @Column(name = "phone_number", length = 10, nullable = false)
-    private String phoneNumber;
-
     @JsonIgnore
     @Column(name = "password", length = 200, nullable = false)
     private String password;
 
-    @Column(name = "date_of_birth")
-    private String dateOfBirth;
-
-    @Column(name = "mail")
-    private String mail;
-
-    @Column(name = "gender")
-    private String gender;
-
-    @Column(name = "avt_url")
-    private String avt_url;
+    @Column(name = "email")
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        authorityList.add(new SimpleGrantedAuthority("ROLE_" + getRole().getName().toUpperCase()));
-        // authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        return authorityList;
+    public String getUsername() {
+        return email;
     }
 
     @Override
-    public String getUsername() {
-        return phoneNumber;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }

@@ -1,22 +1,23 @@
 package com.ptit.security.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignInReq {
-    @NotBlank(message = "Phone number is required")
-    private String phoneNumber;
+@Getter
+public class SignUpRequest {
+
+    private String email;
 
     @NotBlank(message = "Password cannot be blank")
     private String password;
 
-    @Min(value = 1, message = "You must enter role's Id")
+    @NotNull(message = "Role ID is required")
+    @JsonProperty("role_id")
     private Long roleId;
 }
