@@ -1,21 +1,19 @@
 package com.ptit.hirex.security.service;
 
-import java.util.Optional;
-
 import com.ptit.data.base.User;
 import com.ptit.data.repository.RoleRepo;
 import com.ptit.data.repository.UserRepo;
 import com.ptit.hirex.exception.ApiException;
 import com.ptit.hirex.security.dto.response.SignInRes;
 import com.ptit.hirex.security.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
-import lombok.RequiredArgsConstructor;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

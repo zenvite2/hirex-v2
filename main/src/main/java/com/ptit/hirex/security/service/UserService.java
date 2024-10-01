@@ -1,8 +1,6 @@
 package com.ptit.hirex.security.service;
 
 
-import com.ptit.hirex.security.dto.UserDto;
-import com.ptit.hirex.security.dto.request.SignInReq;
 import com.ptit.hirex.security.dto.response.SignInRes;
 
 public interface UserService {
