@@ -1,4 +1,4 @@
-package com.ptit.security.config;
+package com.ptit.hirex.security.config;
 
 import com.ptit.data.repository.UserRepo;
 import org.springframework.context.annotation.Bean;

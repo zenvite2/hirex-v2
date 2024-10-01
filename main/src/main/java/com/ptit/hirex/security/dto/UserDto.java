@@ -1,4 +1,4 @@
-package com.ptit.security.dto;
+package com.ptit.hirex.security.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,10 +1,9 @@
-package com.ptit.security.service;
+package com.ptit.hirex.security.service;
 
 
-import com.ptit.data.base.User;
-import com.ptit.security.dto.UserDto;
-import com.ptit.security.dto.request.SignInReq;
-import com.ptit.security.dto.response.SignInRes;
+import com.ptit.hirex.security.dto.UserDto;
+import com.ptit.hirex.security.dto.request.SignInReq;
+import com.ptit.hirex.security.dto.response.SignInRes;
 
 public interface UserService {
 

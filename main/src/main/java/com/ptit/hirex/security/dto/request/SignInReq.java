@@ -1,4 +1,4 @@
-package com.ptit.security.dto.request;
+package com.ptit.hirex.security.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;

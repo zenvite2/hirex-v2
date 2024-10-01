@@ -16,8 +16,6 @@
 
     <modules>
         <module>main</module>
-        <module>common</module>
-        <module>security</module>
         <module>data</module>
         <module>websocket</module>
     </modules>

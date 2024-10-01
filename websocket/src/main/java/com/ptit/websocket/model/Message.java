@@ -1,15 +1,16 @@
 package com.ptit.websocket.model;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @ToString
 public class Message {
-    private String senderName;
-    private String receiverName;
+    private String sender;
+    private String receiver;
     private String message;
-    private String date;
+    private Long sendAt;
     private Status status;
 }

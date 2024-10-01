@@ -1,4 +1,4 @@
-package com.ptit.security.util;
+package com.ptit.hirex.security.util;
 
 import java.security.Key;
 import java.util.Date;

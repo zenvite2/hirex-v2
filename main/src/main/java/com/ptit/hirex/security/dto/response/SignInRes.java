@@ -1,4 +1,4 @@
-package com.ptit.security.dto.response;
+package com.ptit.hirex.security.dto.response;
 
 import lombok.*;
 

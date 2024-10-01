@@ -1,4 +1,4 @@
-package com.ptit.security.service;
+package com.ptit.hirex.security.service;
 
 import java.util.Optional;
 
@@ -6,8 +6,8 @@ import com.ptit.data.base.User;
 import com.ptit.data.repository.RoleRepo;
 import com.ptit.data.repository.UserRepo;
 import com.ptit.hirex.exception.ApiException;
-import com.ptit.security.dto.response.SignInRes;
-import com.ptit.security.util.JwtUtil;
+import com.ptit.hirex.security.dto.response.SignInRes;
+import com.ptit.hirex.security.util.JwtUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
