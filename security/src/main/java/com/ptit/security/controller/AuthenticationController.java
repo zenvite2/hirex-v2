@@ -1,6 +1,7 @@
 package com.ptit.security.controller;
 
 import com.ptit.data.base.User;
+import com.ptit.hirex.model.ResponseDto;
 import com.ptit.security.dto.request.RefreshTokenRequest;
 import com.ptit.security.dto.request.SignInRequest;
 import com.ptit.security.dto.request.SignUpRequest;
@@ -28,27 +29,19 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/access")
-    public ResponseEntity<TokenResponse> login(@RequestBody SignInRequest request) {
-        return new ResponseEntity<>(authenticationService.authenticate(request), OK);
+    public ResponseEntity<ResponseDto<Object>> login(@RequestBody SignInRequest request) {
+        return authenticationService.authenticate(request);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
-        return new ResponseEntity<>(authenticationService.refreshToken(refreshTokenRequest), OK);
+    public ResponseEntity<ResponseDto<Object>> refresh(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return authenticationService.refreshToken(refreshTokenRequest);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> createUser(@Validated @RequestBody SignUpRequest signInRequest) {
+    public ResponseEntity<ResponseDto<Object>> createUser(@Validated @RequestBody SignUpRequest signInRequest){
 
-        System.out.println("SignInRequest: " + signInRequest.toString());
-        RegisterResponse registerResponse = new RegisterResponse();
-        try {
-            User user = authenticationService.createUser(signInRequest);
-            registerResponse.setUser(user);
-            return ResponseEntity.ok(registerResponse);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(registerResponse);
-        }
+        return authenticationService.createUser(signInRequest);
 
     }
 //

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/hirex
-    username: hirex
-    password: 123
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: 123456
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -24,4 +24,15 @@ jwt:
   refreshKey: 9k1jJAWAKQCnCEz1pwcPNegbHoLugf9hgEnn6sz5pFc=
 api:
   prefix: /api
+
+minio:
+  access:
+    key: ${S3_ACCESS_KEY_ID:xcx1Cjonet2geDD3dZvj}
+  secret:
+    key: ${S3_SECRET_ACCESS_KEY:OScoOd8bSbsbUKLgKGhJBzEHPxi8BFggedUqQab7}
+  url:
+    public: ${S3_ENDPOINT:https://localhost:9000}
+    private: ${S3_ENDPOINT_PRIVATE:http://localhost:9000}
+  bucket: ${S3_BUCKET:hirex}
+  region: ${S3_REGION:dc1}
 

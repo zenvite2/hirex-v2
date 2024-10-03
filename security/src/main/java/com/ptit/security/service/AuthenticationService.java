@@ -5,8 +5,12 @@ import com.ptit.data.base.Role;
 import com.ptit.data.base.User;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
+import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.exception.DataNotFoundException;
 import com.ptit.hirex.exception.InvalidDataException;
+import com.ptit.hirex.model.ResponseBuilder;
+import com.ptit.hirex.model.ResponseDto;
+import com.ptit.hirex.service.LanguageService;
 import com.ptit.security.dto.request.RefreshTokenRequest;
 import com.ptit.security.dto.request.SignInRequest;
 import com.ptit.security.dto.request.SignUpRequest;
@@ -16,15 +20,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.token.TokenService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.ptit.security.util.TokenType.REFRESH_TOKEN;
 import static org.springframework.http.HttpHeaders.REFERER;
@@ -42,38 +52,67 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LanguageService languageService;
 
-    public TokenResponse authenticate(SignInRequest signInRequest) {
-        log.info("---------- authenticate ----------");
+    public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
+        try {
+            var user = userService.getByUserEmail(signInRequest.getEmail());
 
-        var user = userService.getByUserEmail(signInRequest.getEmail());
+            if (user == null) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signin.invalid.credentials"),
+                        StatusCodeEnum.AUTH0013
+                );
+            }
 
-//        List<String> roles = userService.findAllRolesByUserId(user.getId());
-//        List<SimpleGrantedAuthority> authorities = roles.stream().map(SimpleGrantedAuthority::new).toList();
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    signInRequest.getEmail(),
+                    signInRequest.getPassword(),
+                    user.getAuthorities()
+            );
 
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword(), authorities));
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getEmail(), signInRequest.getPassword()));
+            try {
+                authenticationManager.authenticate(authenticationToken);
+            } catch (BadCredentialsException e) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signin.invalid.credentials"),
+                        null,
+                        StatusCodeEnum.AUTH0013
+                );
+            }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signInRequest.getEmail(),
-                signInRequest.getPassword(), user.getAuthorities());
+            String accessToken = jwtService.generateToken(user);
+            String refreshToken = jwtService.generateRefreshToken(user);
 
-        // authenticate with Java Spring security
-        authenticationManager.authenticate(authenticationToken);
-        // create new access token
-        String accessToken = jwtService.generateToken(user);
+            try {
+                redisTokenService.save(RedisToken.builder()
+                        .id(user.getUsername())
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build());
+            } catch (Exception e) {
+                log.error("Failed to save token to Redis", e);
+            }
 
-        // create new refresh token
-        String refreshToken = jwtService.generateRefreshToken(user);
+            TokenResponse tokenResponse = TokenResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .userId(user.getId())
+                    .build();
 
-        // save token to db
-//        tokenService.save(Token.builder().username(user.getUsername()).accessToken(accessToken).refreshToken(refreshToken).build());
-        redisTokenService.save(RedisToken.builder().id(user.getUsername()).accessToken(accessToken).refreshToken(refreshToken).build());
-
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .userId(user.getId())
-                .build();
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("auth.signin.success"),
+                    tokenResponse,
+                    StatusCodeEnum.AUTH0012
+            );
+        } catch (Exception e) {
+            log.error("Authentication failed", e);
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.signin.error"),
+                    null,
+                    StatusCodeEnum.AUTH0014
+            );
+        }
     }
 
     /**
@@ -82,61 +121,143 @@ public class AuthenticationService {
      * @param request
      * @return
      */
-    public TokenResponse refreshToken(RefreshTokenRequest request) {
-        log.info("---------- refreshToken ----------");
 
-        final String refreshToken = request.getRefreshToken();
-        if (StringUtils.isBlank(refreshToken)) {
-            throw new InvalidDataException("Token must be not blank");
+    public ResponseEntity<ResponseDto<Object>> refreshToken(RefreshTokenRequest request) {
+        try {
+            final String refreshToken = request.getRefreshToken();
+            if (StringUtils.isBlank(refreshToken)) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.refresh.invalid.token"),
+                        StatusCodeEnum.AUTH0015
+                );
+            }
+
+            final String userName = jwtService.extractUsername(refreshToken, REFRESH_TOKEN);
+            var user = userService.getByUserEmail(userName);
+
+            if (user == null) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.refresh.user.not.found"),
+                        StatusCodeEnum.AUTH0016
+                );
+            }
+
+            if (!jwtService.isValid(refreshToken, REFRESH_TOKEN, user)) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.refresh.token.invalid"),
+                        StatusCodeEnum.AUTH0015
+                );
+            }
+
+            String accessToken = jwtService.generateToken(user);
+
+            try {
+                redisTokenService.save(RedisToken.builder()
+                        .id(user.getUsername())
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build());
+            } catch (Exception e) {
+                log.error("Failed to save token to Redis", e);
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.refresh.token.save.error"),
+                        StatusCodeEnum.AUTH0017
+                );
+            }
+
+            TokenResponse tokenResponse = TokenResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .userId(user.getId())
+                    .build();
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("auth.refresh.success"),
+                    tokenResponse,
+                    StatusCodeEnum.AUTH0012
+            );
+
+        } catch (Exception e) {
+            log.error("Refresh token failed", e);
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.refresh.error"),
+                    StatusCodeEnum.AUTH0018
+            );
         }
-        final String userName = jwtService.extractUsername(refreshToken, REFRESH_TOKEN);
-        var user = userService.getByUserEmail(userName);
-        if (!jwtService.isValid(refreshToken, REFRESH_TOKEN, user)) {
-            throw new InvalidDataException("Not allow access with this token");
-        }
-
-        // create new access token
-        String accessToken = jwtService.generateToken(user);
-
-        // save token to db
-//        tokenService.save(Token.builder().username(user.getUsername()).accessToken(accessToken).refreshToken(refreshToken).build());
-        redisTokenService.save(RedisToken.builder().id(user.getUsername()).accessToken(accessToken).refreshToken(refreshToken).build());
-
-        return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .userId(user.getId())
-                .build();
     }
 
-//    @Override
-    public User createUser(SignUpRequest signUpRequest) throws Exception {
-        String email = signUpRequest.getEmail();
-        // Kiểm tra xem số điện thoại đã tồn tại hay chưa
-        if (userRepository.existsByEmail(email)) {
-            throw new DataIntegrityViolationException("Email already exists");
+    public ResponseEntity<ResponseDto<Object>> createUser(SignUpRequest signUpRequest) {
+        try {
+            String email = signUpRequest.getEmail();
+
+            if (userRepository.existsByEmail(email)) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.email.exists"),
+                        StatusCodeEnum.AUTH0019
+                );
+            }
+//
+//            Role role;
+//            try {
+//                role = roleRepository.findById(signUpRequest.getRoleId())
+//                        .orElseThrow(() -> new DataNotFoundException("Role not found"));
+//            } catch (DataNotFoundException e) {
+//                return ResponseBuilder.badRequestResponse(
+//                        languageService.getMessage("auth.signup.role.not.found"),
+//                        StatusCodeEnum.AUTH0020
+//                );
+//            }
+
+            User newUser = User.builder()
+                    .email(signUpRequest.getEmail())
+                    .userName(signUpRequest.getUserName())
+                    .password(signUpRequest.getPassword())
+                    .build();
+
+//            newUser.setRole(role);
+
+            String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
+            newUser.setPassword(encodedPassword);
+
+            User userSave;
+            try {
+                userSave = userRepository.save(newUser);
+            } catch (DataIntegrityViolationException e) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.save.error"),
+                        StatusCodeEnum.AUTH0021
+                );
+            }
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("auth.signup.success"),
+                    userSave,
+                    StatusCodeEnum.AUTH0022
+            );
+
+        } catch (Exception e) {
+            log.error("User creation failed", e);
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.signup.error"),
+                    StatusCodeEnum.AUTH0023
+            );
         }
-        System.out.println("xxxxxxxx: " + signUpRequest.getRoleId());
-        Role role = roleRepository.findById(signUpRequest.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException("Role not found"));
-//		if (role.getName().toUpperCase().equals(Role.ADMIN)) {
-//			throw new PermissionDenyException("You cannot register an admin account");
-//		}
-        System.out.println("xxxxxxxx111qqq");
+    }
 
-        System.out.println("role: " + role.getName());
+    public String getUserFromContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // convert from userDTO => user
-        User newUser = User.builder().email(signUpRequest.getEmail())
-                .password(signUpRequest.getPassword())
-                .build();
-        System.out.println();
-        newUser.setRole(role);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return null;
+        }
 
-        String password = signUpRequest.getPassword();
-        String encodedPassword = passwordEncoder.encode(password);
-        newUser.setPassword(encodedPassword);
-        return userRepository.save(newUser);
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
+        }
     }
 
     /**
