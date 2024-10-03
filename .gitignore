@@ -35,5 +35,6 @@ build/
 .vscode/
 /mysql_data
 .idea
+/postgres_data
 ### Mac OS ###
 .DS_Store

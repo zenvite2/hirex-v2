@@ -13,6 +13,7 @@ public class Message {
     private String sender;
     private String receiver;
     private String message;
-    private Long sendAt;
+    private String sentTime;
     private Status status;
+    private MessageType type;
 }
