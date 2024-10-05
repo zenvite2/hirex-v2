@@ -37,51 +37,82 @@ public class EmployeeService {
 
     public ResponseEntity<ResponseDto<Object>> createEmployee(EmployeeRequest employeeRequest) {
         try{
-            String email = authenticationService.getUserFromContext();
-            Optional<User> user = userRepository.findByEmail(email);
+            String email = employeeRequest.getEmail();
 
-            user.get().setRole(roleRepo.findById(1L).get());
+            if (userRepository.existsByEmail(email)) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.email.exists"),
+                        StatusCodeEnum.AUTH0019
+                );
+            }
 
-            userRepository.save(user.get());
+            if (!employeeRequest.getPassword().equals(employeeRequest.getRetryPassword())) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.password.mismatch"),
+                        StatusCodeEnum.AUTH0024
+                );
+            }
+
+            User newUser = User.builder()
+                    .email(employeeRequest.getEmail())
+                    .userName(employeeRequest.getFullName())
+                    .password(passwordEncoder.encode(employeeRequest.getPassword()))
+                    .role(roleRepo.findById(1L).get())
+                    .build();
+
+            User userSave = userRepository.save(newUser);
 
             Employee employee = new Employee();
-            employee.setUserId(user.get().getId());
-            employee.setPhoneNumber(employeeRequest.getPhoneNumber());
-            employee.setGender(employee.getGender());
-            employee.setYearsOfExperience(employeeRequest.getYearsOfExperience());
-            employee.setEducationId(employeeRequest.getEducationId());
-
-            if (employeeRequest.getAvatar() != null && !employeeRequest.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employeeRequest.getAvatar(), employee.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");
-                if (avatar == null) {
-                    log.error("Upload file image avatar failed");
-                    return ResponseBuilder.badRequestResponse(
-                            languageService.getMessage("upload.file.avatar.failed"),
-                            StatusCodeEnum.UPLOADFILE0001
-                    );
-                } else {
-                    employee.setAvatar(publicUrl + "/" + avatar);
-                }
-            }
-
-            if (employeeRequest.getResume() != null && !employeeRequest.getResume().isEmpty()) {
-                String resume = fileService.uploadImageFile(employeeRequest.getResume(), employee.getResume(), String.valueOf(user.get().getId()), "RESUME");
-                if (resume == null) {
-                    log.error("Upload file image resume failed");
-                    return ResponseBuilder.badRequestResponse(
-                            languageService.getMessage("upload.file.resume.failed"),
-                            StatusCodeEnum.UPLOADFILE0001
-                    );
-                } else {
-                    employee.setAvatar(publicUrl + "/" + resume);
-                }
-            }
+            employee.setUserId(userSave.getId());
 
             employeeRepository.save(employee);
 
+
+//            String email = authenticationService.getUserFromContext();
+//            Optional<User> user = userRepository.findByEmail(email);
+//
+//            user.get().setRole(roleRepo.findById(1L).get());
+//
+//            userRepository.save(user.get());
+//
+//            Employee employee = new Employee();
+//            employee.setUserId(user.get().getId());
+//            employee.setPhoneNumber(employeeRequest.getPhoneNumber());
+//            employee.setGender(employee.getGender());
+//            employee.setYearsOfExperience(employeeRequest.getYearsOfExperience());
+//            employee.setEducationId(employeeRequest.getEducationId());
+//
+//            if (employeeRequest.getAvatar() != null && !employeeRequest.getAvatar().isEmpty()) {
+//                String avatar = fileService.uploadImageFile(employeeRequest.getAvatar(), employee.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");
+//                if (avatar == null) {
+//                    log.error("Upload file image avatar failed");
+//                    return ResponseBuilder.badRequestResponse(
+//                            languageService.getMessage("upload.file.avatar.failed"),
+//                            StatusCodeEnum.UPLOADFILE0001
+//                    );
+//                } else {
+//                    employee.setAvatar(publicUrl + "/" + avatar);
+//                }
+//            }
+//
+//            if (employeeRequest.getResume() != null && !employeeRequest.getResume().isEmpty()) {
+//                String resume = fileService.uploadImageFile(employeeRequest.getResume(), employee.getResume(), String.valueOf(user.get().getId()), "RESUME");
+//                if (resume == null) {
+//                    log.error("Upload file image resume failed");
+//                    return ResponseBuilder.badRequestResponse(
+//                            languageService.getMessage("upload.file.resume.failed"),
+//                            StatusCodeEnum.UPLOADFILE0001
+//                    );
+//                } else {
+//                    employee.setAvatar(publicUrl + "/" + resume);
+//                }
+//            }
+//
+//            employeeRepository.save(employee);
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("create.employee.success"),
-                    employee,
+                    userSave,
                     StatusCodeEnum.EMPLOYEE1000
             );
         }catch (Exception e){

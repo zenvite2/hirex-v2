@@ -11,11 +11,11 @@ import com.ptit.hirex.dto.request.EmployerRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
-import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,26 +24,43 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class EmployerService {
-    @Value("${minio.url.public}")
-    private String publicUrl;
 
     private final EmployerRepository employerRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepo;
-    private final AuthenticationService authenticationService;
     private final CompanyRepository companyRepository;
     private final LanguageService languageService;
-    private final FileService fileService;
+    private final PasswordEncoder passwordEncoder;
 
 
     public ResponseEntity<ResponseDto<Object>> createEmployer(EmployerRequest employerRequest) {
         try {
-            String email = authenticationService.getUserFromContext();
-            Optional<User> user = userRepository.findByEmail(email);
 
-            user.get().setRole(roleRepo.findById(2L).get());
+            String email = employerRequest.getEmail();
 
-            userRepository.save(user.get());
+            if (userRepository.existsByEmail(email)) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.email.exists"),
+                        StatusCodeEnum.AUTH0019
+                );
+            }
+
+            if (!employerRequest.getPassword().equals(employerRequest.getRetryPassword())) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.signup.password.mismatch"),
+                        StatusCodeEnum.AUTH0024
+                );
+            }
+
+            User newUser = User.builder()
+                    .email(employerRequest.getEmail())
+                    .userName(employerRequest.getFullName())
+                    .password(passwordEncoder.encode(employerRequest.getPassword()))
+                    .role(roleRepo.findById(2L).get())
+                    .gender(employerRequest.getGender())
+                    .build();
+
+            User userSave = userRepository.save(newUser);
 
             Long companyId;
 
@@ -51,8 +68,6 @@ public class EmployerService {
                 Company company = new Company();
                 company.setName(employerRequest.getNameCompany());
                 company.setAddressId(employerRequest.getAddress());
-                company.setWebsite(employerRequest.getWebsite());
-                company.setDescription(employerRequest.getDescription());
                 companyRepository.save(company);
                 companyId = company.getId();
             }else{
@@ -60,28 +75,26 @@ public class EmployerService {
             }
 
             Employer employer = new Employer();
-            employer.setUserId(user.get().getId());
+            employer.setUserId(userSave.getId());
             employer.setCompanyId(companyId);
-            employer.setPhoneNumber(employerRequest.getPhoneNumber());
-
-            if (employerRequest.getAvatar() != null && !employerRequest.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employerRequest.getAvatar(), employer.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");
-                if (avatar == null) {
-                    log.error("Upload file image avatar failed");
-                    return ResponseBuilder.badRequestResponse(
-                            languageService.getMessage("upload.file.avatar.failed"),
-                            StatusCodeEnum.UPLOADFILE0001
-                    );
-                } else {
-                    employer.setAvatar(publicUrl + "/" + avatar);
-                }
-            }
 
             employerRepository.save(employer);
+//            if (employerRequest.getAvatar() != null && !employerRequest.getAvatar().isEmpty()) {
+//                String avatar = fileService.uploadImageFile(employerRequest.getAvatar(), employer.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");
+//                if (avatar == null) {
+//                    log.error("Upload file image avatar failed");
+//                    return ResponseBuilder.badRequestResponse(
+//                            languageService.getMessage("upload.file.avatar.failed"),
+//                            StatusCodeEnum.UPLOADFILE0001
+//                    );
+//                } else {
+//                    employer.setAvatar(publicUrl + "/" + avatar);
+//                }
+//            }
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("create.employer.success"),
-                    employer,
+                    userSave,
                     StatusCodeEnum.EMPLOYER1000
             );
         }catch (Exception e){

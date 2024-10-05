@@ -16,6 +16,7 @@ public enum StatusCodeEnum {
     AUTH0021("Failed to save user"),
     AUTH0022("User created successfully"),
     AUTH0023("Error during user creation"),
+    AUTH0024("MPassword and confirmation password do not match."),
 
     //EMPLOYEE
     EMPLOYEE0000("Create Employee failed"),

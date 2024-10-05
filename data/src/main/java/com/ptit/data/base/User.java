@@ -35,6 +35,9 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "gender")
+    private Integer gender;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

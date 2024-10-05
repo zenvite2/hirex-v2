@@ -28,7 +28,7 @@ public class AppConfig {
     private final UserService userService;
     private final PreFilter preFilter;
 
-    private String[] WHITE_LIST = {"/auth/**", "/employee/**", "/employer/**"};
+    private String[] WHITE_LIST = {"/auth/**", "/employee/**", "/employer/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
 
 
     @Bean
@@ -53,11 +53,17 @@ public class AppConfig {
 
     //Thiết lập API
     @Bean
-    public SecurityFilterChain configure(@NonNull HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(WHITE_LIST).permitAll().anyRequest().authenticated())
+    public SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(WHITE_LIST).permitAll()
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(provider()).addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -75,11 +81,10 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthenticationProvider provider() {
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userService.userDetailsService());
         provider.setPasswordEncoder(getPasswordEncoder());
-
         return provider;
     }
 }

@@ -10,16 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class EmployeeRequest {
     private String fullName;
-    private String phoneNumber;
-    private String gender;
-
-    private Integer addressId;
-
-    private Integer yearsOfExperience;
-
-    private Integer educationId;
-
-    private MultipartFile resume;
-
-    private MultipartFile avatar;
+    private String email;
+    private String password;
+    private String retryPassword;
 }
