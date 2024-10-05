@@ -36,5 +36,7 @@ build/
 /mysql_data
 .idea
 /postgres_data
+websocket/src/main/resources/hirex-ssl.crt
+websocket/src/main/resources/keystore.jks
 ### Mac OS ###
 .DS_Store

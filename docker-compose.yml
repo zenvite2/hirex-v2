@@ -10,3 +10,18 @@ services:
       - "5432:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+  ngrok-ws:
+    image: ngrok/ngrok
+    environment:
+      - NGROK_AUTHTOKEN=2myHImwkyycNWyGU5IwocyryDKP_5J39aS3uGfKmXDYeRXfSP  # Replace with your ngrok auth token
+    command: http 172.17.0.1:8888    # Expose port 8888
+    ports:
+      - "4040:4040"
+
+  ngrok-fe:
+    image: ngrok/ngrok
+    environment:
+      - NGROK_AUTHTOKEN=2myHImwkyycNWyGU5IwocyryDKP_5J39aS3uGfKmXDYeRXfSP  # Replace with your ngrok auth token
+    command: http 172.17.0.1:3000   # Expose port 3000
+    ports:
+      - "4041:4040"
