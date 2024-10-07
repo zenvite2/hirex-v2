@@ -1,6 +1,7 @@
 package com.ptit.websocket.controller;
 
 import com.ptit.websocket.model.Message;
+import com.ptit.websocket.model.Status;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

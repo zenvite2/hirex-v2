@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @Controller
@@ -17,14 +19,15 @@ public class WebRTCController {
 
     @GetMapping("/video-call")
     public String index(
-//            @RequestParam(name = "fromUser") String fromUser,
-//            @RequestParam(name = "toUser") String toUser,
-//            Model model
+            @RequestParam(name = "fromUser") String fromUser,
+            @RequestParam(name = "toUser") String toUser,
+            @RequestParam(name = "isCallee") Integer isCallee,
+            Model model
     ) {
-
-//        model.addAttribute("fromUser", fromUser);
-//        model.addAttribute("toUser", toUser);
-//        log.info("Video call setup: {\nfromUser: {}\ntoUser: {}\n}", fromUser, toUser);
+        model.addAttribute("fromUser", fromUser);
+        model.addAttribute("toUser", toUser);
+        model.addAttribute("isCallee", isCallee);
+        log.info("Video call redirect: \n{\nfromUser: {}\ntoUser: {}\nisCallee: {}\n}", fromUser, toUser, isCallee);
         return "index";
     }
 
@@ -64,6 +67,19 @@ public class WebRTCController {
                 "}"
         );
         simpMessagingTemplate.convertAndSendToUser(jsonObject.getString("toUser"), "/topic/answer", answer);
+    }
+
+    @MessageMapping("/accept")
+    public void acceptRedirect(String accept) {
+        JSONObject jsonObject = new JSONObject(accept);
+        log.info("Accept redirect:\n" +
+                "{\n" +
+                "  \"fromUser\": \"" + jsonObject.get("fromUser") + "\",\n" +
+                "  \"toUser\": \"" + jsonObject.get("toUser") + "\",\n" +
+                "  \"status\": \"" + jsonObject.get("status") + "\"\n" +
+                "}"
+        );
+        simpMessagingTemplate.convertAndSendToUser(jsonObject.getString("toUser"), "/topic/accept", accept);
     }
 
     @MessageMapping("/candidate")
