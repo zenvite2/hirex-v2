@@ -2,9 +2,15 @@ spring:
   application:
     name: websocket
 server:
-  port: 8888
+  port:
+    8888
+  ssl:
+    enabled: true
+    key-store: classpath:hirex.p12
+    key-store-password: 123456
+    key-store-type: PKCS12
+    key-alias: hirex
 
-# application.properties
 logging:
   level:
     root: INFO
@@ -12,3 +18,4 @@ logging:
       ptit:
         websocket:
           controller: DEBUG
+  
