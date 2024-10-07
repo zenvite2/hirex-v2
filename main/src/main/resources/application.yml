@@ -3,6 +3,10 @@ server:
 spring:
   profiles:
     active: mysql
+  data:
+    redis:
+      port: ${REDIS_PORT:6379}
+      host: ${REDIS_HOST:localhost}
 logging:
   level:
     org.hibernate.SQL: DEBUG
