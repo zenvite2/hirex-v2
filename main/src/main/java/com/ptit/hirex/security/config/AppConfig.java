@@ -29,15 +29,13 @@ public class AppConfig {
     private final PreFilter preFilter;
 
     private String[] WHITE_LIST = {"/auth/**", "/employee/**", "/employer/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
-
-
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("**")
-                        .allowedOrigins("http://localhost:8500")
+                        .allowedOriginPatterns("*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
                         .allowedHeaders("*") // Allowed request headers
                         .allowCredentials(false)

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: mysql
+    active: mysql-dev
   data:
     redis:
       port: ${REDIS_PORT:6379}
