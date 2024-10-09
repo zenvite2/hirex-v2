@@ -26,7 +26,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/access")
-    public ResponseEntity<ResponseDto<Object>> login(@RequestBody SignInRequest request) {
+    public ResponseEntity<ResponseDto<Object>> login(@Valid @RequestBody SignInRequest request) {
         return authenticationService.authenticate(request);
     }
 
