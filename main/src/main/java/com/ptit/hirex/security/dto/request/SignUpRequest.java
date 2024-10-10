@@ -12,7 +12,7 @@ public class SignUpRequest {
 
     private String email;
 
-    private String userName;
+    private String username;
 
     @NotBlank(message = "Password cannot be blank")
     private String password;

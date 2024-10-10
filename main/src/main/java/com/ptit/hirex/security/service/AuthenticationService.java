@@ -199,7 +199,7 @@ public class AuthenticationService {
 
             User newUser = User.builder()
                     .email(signUpRequest.getEmail())
-                    .userName(signUpRequest.getUserName())
+                    .userName(signUpRequest.getUsername())
                     .password(signUpRequest.getPassword())
                     .build();
 

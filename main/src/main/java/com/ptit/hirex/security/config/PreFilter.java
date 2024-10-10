@@ -45,10 +45,10 @@ public class PreFilter extends OncePerRequestFilter {
 
         final String token = authorization.substring("Bearer ".length());
 
-        final String userName = jwtService.extractUsername(token, ACCESS_TOKEN);
-
-        if (StringUtils.isNotEmpty(userName) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userName);
+        final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
+        
+        if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
             if (jwtService.isValid(token, ACCESS_TOKEN, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

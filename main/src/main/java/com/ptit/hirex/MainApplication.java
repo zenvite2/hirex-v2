@@ -11,6 +11,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EntityScan(basePackages = "com.ptit.data")
 @EnableRedisRepositories(basePackages = "com.ptit.data.repository")
 @SpringBootApplication
+@ComponentScan(basePackages = {"com.ptit"})
 public class MainApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MainApplication.class, args);
