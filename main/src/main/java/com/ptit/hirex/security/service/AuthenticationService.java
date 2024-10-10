@@ -87,6 +87,7 @@ public class AuthenticationService {
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .userId(user.getId())
+                    .role(user.getRole().getName())
                     .build();
 
             return ResponseBuilder.okResponse(
