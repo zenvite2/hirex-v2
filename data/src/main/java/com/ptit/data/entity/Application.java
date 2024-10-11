@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long applicationId;
+    private Long id;
 
     private Long jobId;
 

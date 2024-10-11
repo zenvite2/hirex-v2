@@ -32,6 +32,7 @@ public class AppConfig {
     private final PreFilter preFilter;
     private final String[] WHITELIST = {"/auth/**", "/employee/**", "/employer/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**"};
+    private static final String[] SECURED_URLs_EMPLOYEE = { "/skill/**", "/education/**", "/experience/**", "/career-goal/**"};
 
     @Bean
     public CorsFilter corsFilter() {
@@ -58,6 +59,7 @@ public class AppConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SYSTEM_WHITELIST).permitAll()
                         .requestMatchers(WHITELIST).permitAll()
+                        .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

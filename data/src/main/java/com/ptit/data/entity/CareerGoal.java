@@ -11,18 +11,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "skills")
-public class Skill {
+@Table(name = "career_goal")
+public class CareerGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long employeeId;
 
-    private String skillName;
+    private Integer salary;
 
-    private String level;
-
-    private String description;
-
+    private String jobType;
 }

@@ -7,18 +7,16 @@ import com.ptit.data.repository.CompanyRepository;
 import com.ptit.data.repository.EmployerRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
+import com.ptit.hirex.dto.EmployeeDTO;
 import com.ptit.hirex.dto.request.EmployerRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -54,10 +52,9 @@ public class EmployerService {
 
             User newUser = User.builder()
                     .email(employerRequest.getEmail())
-                    .userName(employerRequest.getFullName())
+                    .username(employerRequest.getFullName())
                     .password(passwordEncoder.encode(employerRequest.getPassword()))
                     .role(roleRepo.findById(2L).get())
-                    .gender(employerRequest.getGender())
                     .build();
 
             User userSave = userRepository.save(newUser);
@@ -103,5 +100,9 @@ public class EmployerService {
                     StatusCodeEnum.EMPLOYER0000
             );
         }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> updateEmployer(Long id, EmployeeDTO employeeDTO) {
+        return null;
     }
 }

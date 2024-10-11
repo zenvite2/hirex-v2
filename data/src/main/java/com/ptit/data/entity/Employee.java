@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -15,7 +18,6 @@ import java.time.LocalDateTime;
 @Builder
 @Table(name = "employee")
 public class Employee {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,20 +25,22 @@ public class Employee {
     @Column(name = "user_id", unique = true)
     private Long userId;
 
+    private String fullName;
+
+    private String email;
+
     private LocalDateTime dateOfBirth;
 
     private String phoneNumber;
 
-    private Integer addressId;
+    private Integer address;
 
-    private Integer gender;
+    private BigDecimal salary;
+
+    private String gender;
 
     private String resume;
 
     private String avatar;
-
-    private Integer yearsOfExperience;
-
-    private Integer educationId;
 
 }

@@ -1,4 +1,4 @@
-package com.ptit.data.entity;
+package com.ptit.hirex.dto.request;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,19 +8,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "education")
-public class Education {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private Long employeeId;
-
+public class EducationRequest {
     private String level;
 
     private String nameSchool;

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long jobId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "employer_id")

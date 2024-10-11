@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class WebConfiguration {
-    @Bean
-    ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
+//    @Bean
+//    ModelMapper modelMapper() {
+//        return new ModelMapper();
+//    }
 }

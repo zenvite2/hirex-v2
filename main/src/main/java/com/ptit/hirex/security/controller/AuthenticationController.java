@@ -25,7 +25,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/access")
+    @PostMapping("/login")
     public ResponseEntity<ResponseDto<Object>> login(@Valid @RequestBody SignInRequest request) {
         return authenticationService.authenticate(request);
     }
@@ -35,12 +35,10 @@ public class AuthenticationController {
         return authenticationService.refreshToken(refreshTokenRequest);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseDto<Object>> createUser(@Validated @RequestBody SignUpRequest signInRequest){
-
-        return authenticationService.createUser(signInRequest);
-
-    }
+//    @PostMapping("/register")
+//    public ResponseEntity<ResponseDto<Object>> createUser(@Validated @RequestBody SignUpRequest signInRequest){
+//        return authenticationService.createUser(signInRequest);
+//    }
 //
 //    @PostMapping("/logout")
 //    public ResponseEntity<String> logout(HttpServletRequest request) {

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeRequest {
-    private String fullName;
+    private String username;
     private String email;
     private String password;
     private String retryPassword;

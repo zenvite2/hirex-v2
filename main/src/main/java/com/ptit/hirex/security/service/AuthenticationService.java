@@ -2,6 +2,8 @@ package com.ptit.hirex.security.service;
 
 import com.ptit.data.base.RedisToken;
 import com.ptit.data.base.User;
+import com.ptit.data.entity.Employee;
+import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -26,6 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.ptit.hirex.security.util.TokenType.REFRESH_TOKEN;
 
 @Slf4j
@@ -34,18 +38,17 @@ import static com.ptit.hirex.security.util.TokenType.REFRESH_TOKEN;
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
-//    private final TokenService tokenService;
     private final UserService userService;
     private final JwtService jwtService;
     private final RedisTokenService redisTokenService;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final LanguageService languageService;
+    private final EmployeeRepository employeeRepository;
 
     public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
         try {
-            var user = userService.getByUserEmail(signInRequest.getEmail());
+            var user = userService.getByUserName(signInRequest.getUsername());
 
             if (user == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -55,7 +58,7 @@ public class AuthenticationService {
             }
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    signInRequest.getEmail(),
+                    signInRequest.getUsername(),
                     signInRequest.getPassword(),
                     user.getAuthorities()
             );
@@ -178,33 +181,20 @@ public class AuthenticationService {
 
     public ResponseEntity<ResponseDto<Object>> createUser(SignUpRequest signUpRequest) {
         try {
-            String email = signUpRequest.getEmail();
+            String userName = signUpRequest.getUsername();
 
-            if (userRepository.existsByEmail(email)) {
+            if (userRepository.existsByUsername(userName)) {
                 return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("auth.signup.email.exists"),
+                        languageService.getMessage("auth.signup.user.exists"),
                         StatusCodeEnum.AUTH0019
                 );
             }
-//
-//            Role role;
-//            try {
-//                role = roleRepository.findById(signUpRequest.getRoleId())
-//                        .orElseThrow(() -> new DataNotFoundException("Role not found"));
-//            } catch (DataNotFoundException e) {
-//                return ResponseBuilder.badRequestResponse(
-//                        languageService.getMessage("auth.signup.role.not.found"),
-//                        StatusCodeEnum.AUTH0020
-//                );
-//            }
 
             User newUser = User.builder()
                     .email(signUpRequest.getEmail())
-                    .userName(signUpRequest.getUsername())
+                    .username(signUpRequest.getUsername())
                     .password(signUpRequest.getPassword())
                     .build();
-
-//            newUser.setRole(role);
 
             String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
             newUser.setPassword(encodedPassword);
@@ -238,6 +228,7 @@ public class AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
+            log.error("Get user from context failed");
             return null;
         }
 
@@ -247,6 +238,19 @@ public class AuthenticationService {
             return ((UserDetails) principal).getUsername();
         } else {
             return principal.toString();
+        }
+    }
+
+    public Long getEmployeeFromContext() {
+        String username = getUserFromContext();
+
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if (user.isPresent()) {
+            Employee employee = employeeRepository.findByUserId(user.get().getId());
+            return employee.getId();
+        }else{
+            return null;
         }
     }
 

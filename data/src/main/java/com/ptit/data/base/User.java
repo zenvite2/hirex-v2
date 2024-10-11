@@ -6,9 +6,11 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "username")
-    private String userName;
+    private String username;
 
     @JsonIgnore
     @Column(name = "password", length = 200, nullable = false)
@@ -34,9 +36,6 @@ public class User implements UserDetails {
 
     @Column(name = "email", unique = true)
     private String email;
-
-    @Column(name = "gender")
-    private Integer gender;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -58,12 +57,15 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority(getRole().getName().toUpperCase()));
+        // authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return authorityList;
     }
 
     @Override
