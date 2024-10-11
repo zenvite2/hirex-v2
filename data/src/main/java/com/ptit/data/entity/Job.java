@@ -1,5 +1,6 @@
 package com.ptit.data.entity;
 
+import com.ptit.data.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

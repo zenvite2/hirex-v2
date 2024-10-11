@@ -6,8 +6,7 @@ import org.springframework.data.redis.core.RedisHash;
 import java.io.Serializable;
 
 @RedisHash("RedisToken")
-@Setter
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

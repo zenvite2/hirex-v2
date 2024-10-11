@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,7 +90,7 @@ public class AuthenticationService {
             TokenResponse tokenResponse = TokenResponse.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .userId(user.getId())
+                    .username(user.getUsername())
                     .role(user.getRole().getName())
                     .build();
 
@@ -97,6 +98,12 @@ public class AuthenticationService {
                     languageService.getMessage("auth.signin.success"),
                     tokenResponse,
                     StatusCodeEnum.AUTH0012
+            );
+        } catch (UsernameNotFoundException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.signin.invalid.credentials"),
+                    null,
+                    StatusCodeEnum.AUTH0013
             );
         } catch (Exception e) {
             log.error("Authentication failed", e);
@@ -161,7 +168,7 @@ public class AuthenticationService {
             TokenResponse tokenResponse = TokenResponse.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
-                    .userId(user.getId())
+                    .username(user.getUsername())
                     .build();
 
             return ResponseBuilder.okResponse(

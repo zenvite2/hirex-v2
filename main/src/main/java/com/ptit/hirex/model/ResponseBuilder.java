@@ -14,8 +14,7 @@ public class ResponseBuilder {
 
     @Nonnull
     public static <T> ResponseEntity<ResponseDto<T>> okResponse(String message, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(true)
                 .message(message)
                 .statusCode(statusCode.toString())
@@ -24,8 +23,7 @@ public class ResponseBuilder {
     }
 
     public static <T> ResponseEntity<ResponseDto<T>> okResponse(String message, @Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(true)
                 .message(message)
                 .data(body)
@@ -35,8 +33,7 @@ public class ResponseBuilder {
     }
 
     public static <T> ResponseEntity<ResponseDto<T>> internalErrorResponse(@Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(false)
                 .data(body)
                 .statusCode(statusCode.toString())
@@ -45,8 +42,7 @@ public class ResponseBuilder {
     }
 
     public static <T> ResponseEntity<ResponseDto<T>> badRequestResponse(String message, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(false)
                 .message(message)
                 .statusCode(statusCode.toString())
@@ -55,8 +51,7 @@ public class ResponseBuilder {
     }
 
     public static <T> ResponseEntity<ResponseDto<T>> badRequestResponse(String message, @Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(false)
                 .message(message)
                 .data(body)
@@ -67,8 +62,7 @@ public class ResponseBuilder {
 
     @Nonnull
     public static <T> ResponseEntity<ResponseDto<T>> createdResponse(@Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(true)
                 .data(body)
                 .statusCode(statusCode.toString())
@@ -88,8 +82,7 @@ public class ResponseBuilder {
 
     @Nonnull
     public static <T> ResponseEntity<ResponseDto<T>> okResponse(@Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(true)
                 .data(body)
                 .statusCode(statusCode.toString())
@@ -98,9 +91,8 @@ public class ResponseBuilder {
     }
 
     @Nonnull
-    public static <T> ResponseEntity<ResponseDto<T>> BadRequestResponse(@Nonnull T body, StatusCodeEnum statusCode) {
-        final ResponseDto<T> dto = ResponseDto.<T>
-                        builder()
+    public static <T> ResponseEntity<ResponseDto<T>> badRequestResponse(@Nonnull T body, StatusCodeEnum statusCode) {
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
                 .success(false)
                 .data(body)
                 .statusCode(statusCode.toString())
