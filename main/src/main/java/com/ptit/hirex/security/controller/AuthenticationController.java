@@ -34,10 +34,10 @@ public class AuthenticationController {
         return authenticationService.refreshToken(refreshTokenRequest);
     }
 
-//    @PostMapping("/register")
-//    public ResponseEntity<ResponseDto<Object>> createUser(@Validated @RequestBody SignUpRequest signInRequest){
-//        return authenticationService.createUser(signInRequest);
-//    }
+    @PostMapping("/register")
+    public ResponseEntity<ResponseDto<Object>> createUser(@Valid @RequestBody SignUpRequest signUpRequest){
+        return authenticationService.createUser(signUpRequest);
+    }
 //
 //    @PostMapping("/logout")
 //    public ResponseEntity<String> logout(HttpServletRequest request) {

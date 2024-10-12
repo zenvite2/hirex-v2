@@ -14,6 +14,6 @@ public class EmployerRequest {
     private String retryPassword;
     private String nameCompany;
     private Integer gender;
-    private Long address;
+    private String address;
     private String phoneNumber;
 }

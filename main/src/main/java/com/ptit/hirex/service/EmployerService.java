@@ -1,6 +1,6 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.base.User;
+import com.ptit.data.entity.User;
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
 import com.ptit.data.repository.CompanyRepository;
@@ -61,14 +61,14 @@ public class EmployerService {
 
             Long companyId;
 
-            if(!companyRepository.existsByName(employerRequest.getNameCompany())){
+            if(!companyRepository.existsByCompanyName(employerRequest.getNameCompany())){
                 Company company = new Company();
                 company.setCompanyName(employerRequest.getNameCompany());
                 company.setAddress(employerRequest.getAddress());
                 companyRepository.save(company);
                 companyId = company.getId();
             }else{
-                companyId = companyRepository.findByName(employerRequest.getNameCompany()).getId();
+                companyId = companyRepository.findByCompanyName(employerRequest.getNameCompany()).getId();
             }
 
             Employer employer = new Employer();

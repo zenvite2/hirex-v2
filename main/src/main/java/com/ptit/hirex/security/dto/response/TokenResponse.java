@@ -13,4 +13,6 @@ public class TokenResponse {
     private String username;
 
     private String role;
+
+    private Long userId;
 }
