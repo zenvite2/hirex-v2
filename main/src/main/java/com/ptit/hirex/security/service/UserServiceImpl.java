@@ -1,6 +1,6 @@
 package com.ptit.hirex.security.service;
 
-import com.ptit.data.base.User;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;

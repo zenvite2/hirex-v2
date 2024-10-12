@@ -1,10 +1,9 @@
 package com.ptit.hirex.security.service;
 
 import com.ptit.data.base.RedisToken;
-import com.ptit.data.base.User;
+import com.ptit.data.entity.User;
 import com.ptit.data.entity.Employee;
 import com.ptit.data.repository.EmployeeRepository;
-import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;

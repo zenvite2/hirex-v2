@@ -14,11 +14,11 @@ public class ExperienceRequestToExperience extends PropertyMap<ExperienceRequest
 
     @Override
     protected void configure() {
-        map().setCompanyName(source.getCompanyName());
-        map().setPosition(source.getPosition());
-        map().setExperienceNumber(source.getExperienceNumber());
-        map().setStartDate(source.getStartDate());
-        map().setEndDate(source.getEndDate());
-        map().setDescription(source.getDescription());
+//        map().setCompanyName(source.getCompanyName());
+//        map().setPositionId(source.getPosition());
+//        map().setExperienceNumber(source.getExperienceNumber());
+//        map().setStartDate(source.getStartDate());
+//        map().setEndDate(source.getEndDate());
+//        map().setDescription(source.getDescription());
     }
 }

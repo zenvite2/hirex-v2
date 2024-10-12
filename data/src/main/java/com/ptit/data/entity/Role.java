@@ -1,4 +1,4 @@
-package com.ptit.data.base;
+package com.ptit.data.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.ptit.hirex.security.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ptit.data.base.User;
+import com.ptit.data.entity.User;
 import lombok.*;
 
 @Getter

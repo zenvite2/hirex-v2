@@ -1,4 +1,4 @@
-package com.ptit.data.base;
+package com.ptit.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

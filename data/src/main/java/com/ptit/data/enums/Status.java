@@ -1,4 +1,4 @@
-package com.ptit.websocket.model;
+package com.ptit.data.enums;
 
 public enum Status {
     JOIN,

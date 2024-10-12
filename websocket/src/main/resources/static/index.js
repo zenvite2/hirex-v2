@@ -117,7 +117,7 @@ function connectToWebSocket() {
 
         stompClient.subscribe(`/user/${fromUser}/topic/accept`, message => {
             const status = JSON.parse(message.body).status;
-            if(status === 'ACCEPT') {
+            if(status === 'VIDEO_CALL_REQUEST_ACCEPT') {
                 console.log("====ACCEPT READY SIGNAL====")
                 initiateCall();
             } else {

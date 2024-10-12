@@ -1,5 +1,7 @@
-package com.ptit.websocket.model;
+package com.ptit.websocket.dto;
 
+import com.ptit.data.enums.MessageType;
+import com.ptit.data.enums.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Data
 @ToString
-public class Message {
+public class MessageDto {
     private String sender;
     private String receiver;
     private String message;
