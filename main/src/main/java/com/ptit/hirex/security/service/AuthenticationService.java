@@ -4,6 +4,7 @@ import com.ptit.data.base.RedisToken;
 import com.ptit.data.entity.User;
 import com.ptit.data.entity.Employee;
 import com.ptit.data.repository.EmployeeRepository;
+import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
@@ -45,6 +46,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final LanguageService languageService;
     private final EmployeeRepository employeeRepository;
+    private final RoleRepository roleRepository;
 
     public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
         try {
@@ -91,6 +93,7 @@ public class AuthenticationService {
                     .refreshToken(refreshToken)
                     .username(user.getUsername())
                     .role(user.getRole().getName())
+                    .userId(user.getId())
                     .build();
 
             return ResponseBuilder.okResponse(
@@ -200,6 +203,7 @@ public class AuthenticationService {
                     .email(signUpRequest.getEmail())
                     .username(signUpRequest.getUsername())
                     .password(signUpRequest.getPassword())
+                    .role(roleRepository.findById(signUpRequest.getRoleId()).get())
                     .build();
 
             String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());

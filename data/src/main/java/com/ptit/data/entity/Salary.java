@@ -20,8 +20,8 @@ public class Salary {
     private String name;
 
     @Column(columnDefinition = "BIGINT", nullable = false)
-    private Integer minSalary;
+    private Long minSalary;
 
     @Column(columnDefinition = "BIGINT")
-    private Integer maxSalary;
+    private Long maxSalary;
 }

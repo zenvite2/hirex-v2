@@ -5,14 +5,12 @@ import org.springframework.boot.actuate.autoconfigure.security.servlet.Managemen
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-//@EnableJpaAuditing
-//@EntityScan(basePackages = {"com.ptit.data"})
-//@EnableJpaRepositories(basePackages = {"com.ptit.data"})
-@ComponentScan(basePackages = {"com.ptit.data"})
+@EnableJpaAuditing
+@EntityScan(basePackages = {"com.ptit.data.entity"})
+@EnableJpaRepositories(basePackages = {"com.ptit.data.repository"})
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class})
 public class WebsocketApplication {
 
