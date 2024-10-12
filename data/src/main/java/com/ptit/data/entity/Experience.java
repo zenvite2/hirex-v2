@@ -23,7 +23,7 @@ public class Experience {
 
     private String companyName;
 
-    private String position;
+    private Long positionId;
 
     private LocalDate startDate;
 
@@ -31,5 +31,5 @@ public class Experience {
 
     private String description;
 
-    private Integer experienceNumber;
+    private Long yearExperienceId;
 }

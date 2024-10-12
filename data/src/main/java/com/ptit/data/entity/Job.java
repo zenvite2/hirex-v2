@@ -1,5 +1,6 @@
 package com.ptit.data.entity;
 
+import com.ptit.data.base.Auditable;
 import com.ptit.data.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,22 +16,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Table(name = "jobs")
-public class Job {
+public class Job extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "employer_id")
-    private Employer employer;
-
+    private Long employerId;
     private String title;
     private String description;
     private String requirements;
     private String location;
     private String salaryRange;
     private String jobType;
-    private LocalDateTime postedDate;
+
+    // han nop ho so
     private LocalDateTime deadline;
 
     @Enumerated(EnumType.STRING)

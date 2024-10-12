@@ -22,16 +22,11 @@ public class Application {
 
     private Long jobId;
 
-    @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
-
-    private LocalDateTime applicationDate;
+    private Long employeeId;
 
     @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
 
-    @Column(columnDefinition = "TEXT")
     private String coverLetter;
 
     // Getters and setters

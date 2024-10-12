@@ -15,15 +15,13 @@ import lombok.NoArgsConstructor;
 public class Salary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "INT")
     private int id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(100)")
     private String name;
 
-    @Column(name = "min_salary", columnDefinition = "BIGINT", nullable = false)
+    @Column(columnDefinition = "BIGINT", nullable = false)
     private Integer minSalary;
 
-    @Column(name = "max_salary", columnDefinition = "BIGINT")
+    @Column(columnDefinition = "BIGINT")
     private Integer maxSalary;
 }

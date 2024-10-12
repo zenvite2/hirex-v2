@@ -24,9 +24,6 @@ public class Employer {
     @Column(name = "company_id")
     private Long companyId;
 
-    @Column(name = "position", length = 100)
-    private String position;
-
     private String phoneNumber;
 
     private String address;

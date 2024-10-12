@@ -1,4 +1,4 @@
-package com.ptit.hirex.config.minio;
+package com.ptit.hirex.config;
 
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;

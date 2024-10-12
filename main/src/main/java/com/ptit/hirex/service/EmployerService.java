@@ -63,8 +63,8 @@ public class EmployerService {
 
             if(!companyRepository.existsByName(employerRequest.getNameCompany())){
                 Company company = new Company();
-                company.setName(employerRequest.getNameCompany());
-                company.setAddressId(employerRequest.getAddress());
+                company.setCompanyName(employerRequest.getNameCompany());
+                company.setAddress(employerRequest.getAddress());
                 companyRepository.save(company);
                 companyId = company.getId();
             }else{

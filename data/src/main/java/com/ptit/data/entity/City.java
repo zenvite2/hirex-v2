@@ -11,12 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "address")
-public class Address {
+@Table(name = "city")
+public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "provine", nullable = false, length = 255)
-    private String provine;
+    private String cityName;
 }

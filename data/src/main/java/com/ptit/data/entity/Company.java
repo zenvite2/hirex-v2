@@ -17,18 +17,15 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 255)
-    private String name;
+    private String companyName;
 
-    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "website", length = 255)
     private String website;
 
-    @Column(name = "logo_url", length = 255)
     private String logoUrl;
 
-    @Column(name = "address_id")
-    private Long addressId;
+    private String address;
+
+    private Long cityId;
 }
