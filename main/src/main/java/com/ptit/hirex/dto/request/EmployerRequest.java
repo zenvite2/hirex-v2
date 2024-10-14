@@ -8,12 +8,14 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployerRequest {
-    private String fullName;
+    private String username;
     private String email;
     private String password;
     private String retryPassword;
-    private String nameCompany;
-    private Integer gender;
-    private String address;
+    private String firstName;
+    private String gender;
     private String phoneNumber;
+    private String nameCompany;
+    private Long city;
+    private Long district;
 }

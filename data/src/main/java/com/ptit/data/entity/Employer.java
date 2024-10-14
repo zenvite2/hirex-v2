@@ -24,6 +24,12 @@ public class Employer {
     @Column(name = "company_id")
     private Long companyId;
 
+    private String fullName;
+
+    private String email;
+
+    private String gender;
+
     private String phoneNumber;
 
     private String address;
