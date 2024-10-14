@@ -75,7 +75,25 @@ public enum StatusCodeEnum {
     CAREER1002("CAREER1002"), //Get career goal success
     CAREER0002("CAREER0002"), //Get career goal failed
     CAREER1003("CAREER1003"), //Delete career goal success
-    CAREER0003("CAREER0003"); //Delete career goal failed
+    CAREER0003("CAREER0003"), //Delete career goal failed
+
+    //CATEGORY
+    CITY1000("CITY1000"), //Autofill city success
+    CITY0000("CITY0000"), //Autofill city failed
+    DISTRICT1000("DISTRICT1000"), //Autofill district success
+    DISTRICT0000("DISTRICT0000"), //Autofill district failed
+    JOBTYPE1000("JOBTYPE1000"), //Autofill job type success
+    JOBTYPE0000("JOBTYPE0000"), //Autofill job type failed
+    TECH1000("TECH1000"), //Autofill tech success
+    TECH0000("TECH0000"), //Autofill tech failed
+    YEAREXPERIENCE1000("YEAREXPERIENCE1000"), //Autofill tech success
+    YEAREXPERIENCE0000("YEAREXPERIENCE0000"), //Autofill tech failed
+    POSITION1000("POSITION1000"), //Autofill position success
+    POSITION0000("POSITION0000"), //Autofill position failed
+    CONTRACTTYPE1000("CONTRACTTYPE1000"), //Autofill contract type success
+    CONTRACTTYPE0000("CONTRACTTYPE0000"), //Autofill contract type failed
+    SALARY1000("SALARY1000"), //Autofill salary success
+    SALARY0000("SALARY0000"); //Autofill salary failed
 
     public final String value;
 

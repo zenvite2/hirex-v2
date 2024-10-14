@@ -20,13 +20,25 @@ public class Job extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long employerId;
+    private Long employer;
     private String title;
     private String description;
     private String requirements;
     private String location;
-    private String salaryRange;
-    private String jobType;
+
+    private Long yearExperience;
+
+    private Long salary;
+
+    private Long city;
+
+    private Long district;
+
+    private Long position;
+
+    private Long jobType;
+
+    private Long contractType;
 
     // han nop ho so
     private LocalDateTime deadline;

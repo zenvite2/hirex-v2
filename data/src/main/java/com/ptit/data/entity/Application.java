@@ -28,6 +28,4 @@ public class Application {
     private ApplicationStatus status;
 
     private String coverLetter;
-
-    // Getters and setters
 }
