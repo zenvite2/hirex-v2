@@ -27,9 +27,10 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
-    private final String[] WHITELIST = {"/auth/**", "/employee/**", "/employer/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**"};
+    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**"};
-    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**"};
+    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**"};
+    private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};
 
     @Bean
     public CorsFilter corsFilter() {
@@ -57,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(SYSTEM_WHITELIST).permitAll()
                         .requestMatchers(WHITELIST).permitAll()
                         .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
+                        .requestMatchers(SECURED_URLs_EMPLOYER).hasAuthority("EMPLOYER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

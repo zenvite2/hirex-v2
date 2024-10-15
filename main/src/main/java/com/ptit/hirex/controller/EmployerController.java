@@ -2,6 +2,7 @@ package com.ptit.hirex.controller;
 
 import com.ptit.hirex.dto.EmployeeDTO;
 import com.ptit.hirex.dto.request.EmployerRequest;
+import com.ptit.hirex.dto.request.EmployerUpdateRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.EmployerService;
 import jakarta.validation.Valid;
@@ -22,8 +23,13 @@ public class EmployerController {
         return employerService.createEmployer(employer);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDto<Object>> updateEmployer(@PathVariable Long id, @Valid @ModelAttribute EmployeeDTO employeeDTO) {
-        return employerService.updateEmployer(id, employeeDTO);
+    @GetMapping
+    public ResponseEntity<ResponseDto<Object>> getEmployee() {
+        return employerService.getEmployer();
+    }
+
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<Object>> updateEmployer(@Valid @ModelAttribute EmployerUpdateRequest employerUpdateRequest) {
+        return employerService.updateEmployer(employerUpdateRequest);
     }
 }

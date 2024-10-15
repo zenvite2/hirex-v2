@@ -1,5 +1,6 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.entity.Experience;
 import com.ptit.hirex.dto.request.ExperienceRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ExperienceService;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,9 +29,14 @@ public class ExperienceController {
         return experienceService.updateExperience(id, experienceRequest);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto<Object>> getExperience(@PathVariable Long id) {
-        return experienceService.getExperience(id);
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto<List<Experience>>> getExperience() {
+        return experienceService.getExperience();
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ResponseDto<Experience>> getExperience(@PathVariable Long id) {
+        return experienceService.getExperienceById(id);
     }
 
     @DeleteMapping("/{id}")

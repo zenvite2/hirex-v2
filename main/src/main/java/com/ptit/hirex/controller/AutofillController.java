@@ -59,4 +59,9 @@ public class AutofillController {
         return autofillSerivce.autofillContractType();
     }
 
+    @GetMapping("/company")
+    public ResponseEntity<ResponseDto<List<Company>>> autofillCompany() {
+        return autofillSerivce.autofillCompany();
+    }
+
 }

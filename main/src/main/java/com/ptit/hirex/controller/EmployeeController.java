@@ -22,13 +22,13 @@ public class EmployeeController {
         return employeeService.createEmployee(employee);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto<Object>> getEmployee(@PathVariable Long id) {
-        return employeeService.getEmployee(id);
+    @GetMapping
+    public ResponseEntity<ResponseDto<Object>> getEmployee() {
+        return employeeService.getEmployee();
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDto<Object>> updateEmployee(@PathVariable Long id, @Valid @ModelAttribute EmployeeDTO employeeDTO) {
-        return employeeService.updateEmployee(id, employeeDTO);
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<Object>> updateEmployee(@Valid @ModelAttribute EmployeeDTO employeeDTO) {
+        return employeeService.updateEmployee(employeeDTO);
     }
 }

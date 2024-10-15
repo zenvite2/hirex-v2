@@ -28,7 +28,11 @@ public enum StatusCodeEnum {
     //EMPLOYER
     EMPLOYER0000("Create Employer failed"),
     EMPLOYER1000("Create Employer success"),
-
+    EMPLOYER1001("Get Employer success"),
+    EMPLOYER0001("Get Employer failed"),
+    EMPLOYER4000("Not found Employer"),
+    EMPLOYER1002("Update Employer success"),
+    EMPLOYER0002("Update Employer failed"),
 
     //UPLOADFILE
     UPLOADFILE0000("UPLOADFILE0000"), // Upload file pdf failed
@@ -90,6 +94,8 @@ public enum StatusCodeEnum {
     POSITION0000("POSITION0000"), //Autofill position failed
     CONTRACTTYPE1000("CONTRACTTYPE1000"), //Autofill contract type success
     CONTRACTTYPE0000("CONTRACTTYPE0000"), //Autofill contract type failed
+    COMPANY1000("COMPANY1000"), //Autofill company success
+    COMPANY0000("COMPANY0000"), //Autofill company failed
     SALARY1000("SALARY1000"), //Autofill salary success
     SALARY0000("SALARY0000"); //Autofill salary failed
 

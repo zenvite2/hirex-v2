@@ -1,5 +1,6 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.entity.Education;
 import com.ptit.hirex.dto.request.EducationRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.EducationService;
@@ -7,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +31,11 @@ public class EducationController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<Object>> getEducation(@PathVariable Long id) {
         return educationService.getEducation(id);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto<List<Education>>> getAllEducation() {
+        return educationService.getAllEducation();
     }
 
     @DeleteMapping("/{id}")

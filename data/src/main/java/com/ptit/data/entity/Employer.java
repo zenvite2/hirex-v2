@@ -22,7 +22,7 @@ public class Employer {
     private Long userId;
 
     @Column(name = "company_id")
-    private Long companyId;
+    private Long company;
 
     private String fullName;
 

@@ -82,9 +82,22 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> getEmployee(Long id) {
+    public ResponseEntity<ResponseDto<Object>> getEmployee() {
+        String userName = authenticationService.getUserFromContext();
+
+        System.out.println("username: " + userName);
+
+        Optional<User> user = userRepository.findByUsername(userName);
+
+        if(user.isEmpty()){
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.signup.user.not.found"),
+                    StatusCodeEnum.AUTH0016
+            );
+        }
+
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(null);
+            Employee employee = employeeRepository.findByUserId(user.get().getId());
 
             if (employee == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -106,7 +119,7 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> updateEmployee(Long id, EmployeeDTO employeeDTO) {
+    public ResponseEntity<ResponseDto<Object>> updateEmployee(EmployeeDTO employeeDTO) {
 
         String userName = authenticationService.getUserFromContext();
 
@@ -119,10 +132,8 @@ public class EmployeeService {
             );
         }
 
-        userRepository.save(user.get());
-
         try {
-            Employee employee = employeeRepository.findById(id).orElseThrow(null);
+            Employee employee = employeeRepository.findByUserId(user.get().getId());
 
             if (employee == null) {
                 return ResponseBuilder.badRequestResponse(

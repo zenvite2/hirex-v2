@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -74,6 +76,33 @@ public class EducationService {
     public ResponseEntity<ResponseDto<Object>> getEducation(Long id) {
         try {
             Education education = educationRepository.findById(id).orElse(null);
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.education.success"),
+                    education,
+                    StatusCodeEnum.EDUCATION1002
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.education.failed"),
+                    StatusCodeEnum.EDUCATION0002
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<List<Education>>> getAllEducation() {
+
+        Long employeeId = authenticationService.getEmployeeFromContext();
+
+        if(employeeId == null){
+            log.error("EmployeeId is null");
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.AUTH0016
+            );
+        }
+
+        try {
+            List<Education> education = educationRepository.findAllByEmployeeId(employeeId);
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.education.success"),
                     education,

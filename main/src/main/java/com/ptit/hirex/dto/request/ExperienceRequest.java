@@ -12,7 +12,7 @@ import java.time.LocalDate;
 public class ExperienceRequest {
     private String companyName;
 
-    private String position;
+    private Long position;
 
     private LocalDate startDate;
 
@@ -20,5 +20,5 @@ public class ExperienceRequest {
 
     private String description;
 
-    private Integer experienceNumber;
+    private Long yearExperience;
 }

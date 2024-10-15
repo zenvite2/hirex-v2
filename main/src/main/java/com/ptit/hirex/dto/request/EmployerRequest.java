@@ -15,6 +15,7 @@ public class EmployerRequest {
     private String firstName;
     private String gender;
     private String phoneNumber;
+    private Long companyId;
     private String nameCompany;
     private Long city;
     private Long district;
