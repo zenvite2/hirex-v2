@@ -71,9 +71,20 @@ public class CareerGoalService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> getCareerGoal(Long id) {
+    public ResponseEntity<ResponseDto<Object>> getCareerGoal() {
+
+        Long employeeId = authenticationService.getEmployeeFromContext();
+
+        if(employeeId == null){
+            log.error("EmployeeId is null");
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.AUTH0016
+            );
+        }
+
         try {
-            CareerGoal careerGoal = careerGoalRepository.findById(id).orElse(null);
+            CareerGoal careerGoal = careerGoalRepository.findByEmployeeId(employeeId);
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.career.success"),
                     careerGoal,

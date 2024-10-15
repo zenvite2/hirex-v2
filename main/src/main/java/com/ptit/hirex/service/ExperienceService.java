@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -73,9 +75,38 @@ public class ExperienceService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> getExperience(Long id) {
+    public ResponseEntity<ResponseDto<List<Experience>>> getExperience() {
+
+        Long employeeId = authenticationService.getEmployeeFromContext();
+
+        if(employeeId == null){
+            log.error("EmployeeId is null");
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.AUTH0016
+            );
+        }
+
         try {
-            Experience experience = experienceRepository.findById(id).orElse(null);
+            List<Experience> experience = experienceRepository.findAllByEmployeeId(employeeId);
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.experience.success"),
+                    experience,
+                    StatusCodeEnum.EXPERIENCE1002
+            );
+        }catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.experience.failed"),
+                    StatusCodeEnum.EXPERIENCE1002
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Experience>> getExperienceById(Long id) {
+
+        try {
+            Experience experience = experienceRepository.findById(id).orElseThrow();
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.experience.success"),
                     experience,

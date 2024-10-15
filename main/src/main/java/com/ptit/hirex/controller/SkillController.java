@@ -1,5 +1,6 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.entity.Skill;
 import com.ptit.hirex.dto.request.SkillRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.SkillService;
@@ -7,6 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +31,11 @@ public class SkillController {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto<Object>> getSkill(@PathVariable Long id) {
         return skillService.getSkill(id);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto<List<Skill>>> getSkill() {
+        return skillService.getAllSkill();
     }
 
     @DeleteMapping("/{id}")

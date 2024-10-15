@@ -25,9 +25,9 @@ public class CareerGoalController {
         return careerGoalService.updateCareerGoal(id, careerGoalRequest);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto<Object>> getCareerGoal(@PathVariable Long id) {
-        return careerGoalService.getCareerGoal(id);
+    @GetMapping()
+    public ResponseEntity<ResponseDto<Object>> getCareerGoal() {
+        return careerGoalService.getCareerGoal();
     }
 
     @DeleteMapping("/{id}")
