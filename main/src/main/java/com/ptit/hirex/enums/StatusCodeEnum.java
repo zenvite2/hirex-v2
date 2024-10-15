@@ -5,10 +5,8 @@ public enum StatusCodeEnum {
     AUTH0012("Sign-in successful"),
     AUTH0013("Invalid credentials"),
     AUTH0014("Authentication failed"),
-    AUTH0015("Invalid refresh token"),
     AUTH0016("User not found"),
     AUTH0017("Failed to save token"),
-    AUTH0018("Error during token refresh"),
 
     // SIGNUP
     AUTH0019("User name already exists"),

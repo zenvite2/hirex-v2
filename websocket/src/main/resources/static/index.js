@@ -12,7 +12,7 @@ const iceServers = {iceServers: [{urls: "stun:stun.l.google.com:19302"}]};
 
 async function initLocalPeer() {
     localPeer = new RTCPeerConnection(iceServers);
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
     localStream = stream;
     elements.localVideo.srcObject = stream;
     console.log("Local stream setup complete");
@@ -117,7 +117,7 @@ function connectToWebSocket() {
 
         stompClient.subscribe(`/user/${fromUser}/topic/accept`, message => {
             const status = JSON.parse(message.body).status;
-            if(status === 'VIDEO_CALL_REQUEST_ACCEPT') {
+            if (status === 'VIDEO_CALL_REQUEST_ACCEPT') {
                 console.log("====ACCEPT READY SIGNAL====")
                 initiateCall();
             } else {
@@ -126,7 +126,7 @@ function connectToWebSocket() {
             }
         });
 
-        if(isCallee == '1') {
+        if (isCallee == '1') {
             const acceptPayload = {
                 fromUser: fromUser,
                 toUser: toUser,

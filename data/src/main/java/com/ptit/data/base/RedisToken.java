@@ -1,9 +1,16 @@
 package com.ptit.data.base;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.List;
 
 @RedisHash("RedisToken")
 @Data
@@ -11,8 +18,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RedisToken implements Serializable {
-    private String id;
-    private String accessToken;
-    private String refreshToken;
-    private String resetToken;
+    private Long userId;
+    private String username;
+    private List<String> roles;
+    private String loginTime;
+    private String expireTime;
 }

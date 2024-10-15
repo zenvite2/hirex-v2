@@ -18,5 +18,6 @@ public @interface IsValidImage {
     long maxSize();
 
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

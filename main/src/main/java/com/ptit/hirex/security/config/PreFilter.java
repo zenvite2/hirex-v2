@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.ptit.hirex.security.util.TokenType.ACCESS_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -45,11 +44,11 @@ public class PreFilter extends OncePerRequestFilter {
 
         final String token = authorization.substring("Bearer ".length());
 
-        final String username = jwtService.extractUsername(token, ACCESS_TOKEN);
-        
+        final String username = jwtService.extractUsername(token);
+
         if (StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
-            if (jwtService.isValid(token, ACCESS_TOKEN, userDetails)) {
+            if (jwtService.isTokenValid(token, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

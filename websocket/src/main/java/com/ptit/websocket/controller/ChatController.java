@@ -38,7 +38,7 @@ public class ChatController {
     @MessageMapping("/private-message")
     public void processPrivateMessage(@Payload MessageDto messageDto) {
         log.info("Private message from {} to {}: {}", messageDto.getSender(), messageDto.getReceiver(), messageDto.getMessage());
-        if(messageDto.getStatus() != Status.JOIN) {
+        if (messageDto.getStatus() != Status.JOIN) {
             chatService.saveMessage(messageDto);
         }
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(messageDto.getReceiver()), "/private", messageDto);

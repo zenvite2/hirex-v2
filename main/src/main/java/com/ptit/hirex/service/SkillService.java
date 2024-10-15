@@ -1,9 +1,7 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.Experience;
 import com.ptit.data.entity.Skill;
 import com.ptit.data.repository.SkillRepository;
-import com.ptit.hirex.dto.request.ExperienceRequest;
 import com.ptit.hirex.dto.request.SkillRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
@@ -27,7 +25,7 @@ public class SkillService {
     public ResponseEntity<ResponseDto<Object>> createSkill(SkillRequest skillRequest) {
         Long employeeId = authenticationService.getEmployeeFromContext();
 
-        if(employeeId == null){
+        if (employeeId == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),

@@ -1,8 +1,8 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.User;
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.CompanyRepository;
 import com.ptit.data.repository.EmployerRepository;
 import com.ptit.data.repository.RoleRepository;
@@ -52,7 +52,7 @@ public class EmployerService {
 
             User newUser = User.builder()
                     .email(employerRequest.getEmail())
-                    .username(employerRequest.getFullName())
+                    .username(employerRequest.getUsername())
                     .password(passwordEncoder.encode(employerRequest.getPassword()))
                     .role(roleRepo.findById(2L).get())
                     .build();
@@ -61,13 +61,13 @@ public class EmployerService {
 
             Long companyId;
 
-            if(!companyRepository.existsByCompanyName(employerRequest.getNameCompany())){
+            if (!companyRepository.existsByCompanyName(employerRequest.getNameCompany())) {
                 Company company = new Company();
                 company.setCompanyName(employerRequest.getNameCompany());
-                company.setAddress(employerRequest.getAddress());
+//                company.setAddress(employerRequest.());
                 companyRepository.save(company);
                 companyId = company.getId();
-            }else{
+            } else {
                 companyId = companyRepository.findByCompanyName(employerRequest.getNameCompany()).getId();
             }
 
@@ -94,7 +94,7 @@ public class EmployerService {
                     userSave,
                     StatusCodeEnum.EMPLOYER1000
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("create.employer.failed"),
                     StatusCodeEnum.EMPLOYER0000

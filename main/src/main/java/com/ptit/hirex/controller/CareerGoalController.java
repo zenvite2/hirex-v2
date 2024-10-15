@@ -16,7 +16,7 @@ public class CareerGoalController {
     private final CareerGoalService careerGoalService;
 
     @PostMapping()
-    public ResponseEntity<ResponseDto<Object>> createCareerGoal( @Valid @RequestBody CareerGoalRequest careerGoalRequest) {
+    public ResponseEntity<ResponseDto<Object>> createCareerGoal(@Valid @RequestBody CareerGoalRequest careerGoalRequest) {
         return careerGoalService.createCareerGoal(careerGoalRequest);
     }
 

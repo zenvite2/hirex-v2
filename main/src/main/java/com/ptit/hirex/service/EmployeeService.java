@@ -1,7 +1,7 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.User;
 import com.ptit.data.entity.Employee;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
@@ -38,7 +38,7 @@ public class EmployeeService {
     private final ModelMapper modelMapper;
 
     public ResponseEntity<ResponseDto<Object>> createEmployee(EmployeeRequest employeeRequest) {
-        try{
+        try {
             String username = employeeRequest.getUsername();
 
             if (userRepository.existsByUsername(username)) {
@@ -74,7 +74,7 @@ public class EmployeeService {
                     userSave,
                     StatusCodeEnum.EMPLOYEE1000
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("create.employee.failed"),
                     StatusCodeEnum.EMPLOYEE0000
@@ -112,7 +112,7 @@ public class EmployeeService {
 
         Optional<User> user = userRepository.findByUsername(userName);
 
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
@@ -131,7 +131,7 @@ public class EmployeeService {
                 );
             }
 
-            modelMapper.map(employeeDTO,employee);
+            modelMapper.map(employeeDTO, employee);
 
             if (employeeDTO.getAvatar() != null && !employeeDTO.getAvatar().isEmpty()) {
                 String avatar = fileService.uploadImageFile(employeeDTO.getAvatar(), employee.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");

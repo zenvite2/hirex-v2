@@ -35,7 +35,7 @@ public class AutofillSerivce {
         try {
             List<City> cityList;
 
-            if(Util.isNullOrEmpty(name)) {
+            if (Util.isNullOrEmpty(name)) {
                 cityList = cityRepository.findAll();
             } else {
                 cityList = cityRepository.findByNameContainingIgnoreCase(name);

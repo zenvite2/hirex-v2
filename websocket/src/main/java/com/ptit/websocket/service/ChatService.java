@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface ChatService {
     void saveMessage(MessageDto messageDto);
+
     List<UserConversationsDto> getUserConversations(Long currentUserId);
 }

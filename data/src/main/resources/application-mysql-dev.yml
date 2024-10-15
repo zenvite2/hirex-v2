@@ -23,10 +23,9 @@ spring:
         use_sql_comments: true
 
 jwt:
-  expiryHour: 1
+  expiry-time-secs: 3600
   expiryDay: 14
   accessKey: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
-  refreshKey: 9k1jJAWAKQCnCEz1pwcPNegbHoLugf9hgEnn6sz5pFc=
 api:
   prefix: /api
 

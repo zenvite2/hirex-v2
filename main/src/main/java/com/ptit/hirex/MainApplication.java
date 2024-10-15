@@ -9,14 +9,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = {"com.ptit.data"} )
+@EnableJpaRepositories(basePackages = {"com.ptit.data"})
 @EntityScan(basePackages = "com.ptit.data")
 @EnableRedisRepositories(basePackages = "com.ptit.data.repository")
 @ComponentScan(basePackages = {"com.ptit"})
 @SpringBootApplication
 public class MainApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(MainApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MainApplication.class, args);
+    }
 }
 

@@ -1,20 +1,17 @@
 package com.ptit.hirex.security.service;
 
-import com.ptit.data.base.RedisToken;
-import com.ptit.data.entity.User;
 import com.ptit.data.entity.Employee;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
-import com.ptit.hirex.security.dto.request.RefreshTokenRequest;
 import com.ptit.hirex.security.dto.request.SignInRequest;
 import com.ptit.hirex.security.dto.request.SignUpRequest;
 import com.ptit.hirex.security.dto.response.TokenResponse;
 import com.ptit.hirex.service.LanguageService;
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -31,17 +28,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.ptit.hirex.security.util.TokenType.REFRESH_TOKEN;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
-    private final RedisTokenService redisTokenService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final LanguageService languageService;
@@ -50,7 +43,7 @@ public class AuthenticationService {
 
     public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
         try {
-            var user = userService.getByUserName(signInRequest.getUsername());
+            User user = userService.getByUserName(signInRequest.getUsername());
 
             if (user == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -76,21 +69,9 @@ public class AuthenticationService {
             }
 
             String accessToken = jwtService.generateToken(user);
-            String refreshToken = jwtService.generateRefreshToken(user);
-
-            try {
-                redisTokenService.save(RedisToken.builder()
-                        .id(user.getUsername())
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build());
-            } catch (Exception e) {
-                log.error("Failed to save token to Redis", e);
-            }
 
             TokenResponse tokenResponse = TokenResponse.builder()
                     .accessToken(accessToken)
-                    .refreshToken(refreshToken)
                     .username(user.getUsername())
                     .role(user.getRole().getName())
                     .userId(user.getId())
@@ -113,77 +94,6 @@ public class AuthenticationService {
                     languageService.getMessage("auth.signin.error"),
                     null,
                     StatusCodeEnum.AUTH0014
-            );
-        }
-    }
-
-    /**
-     * Refresh token
-     *
-     * @param request
-     * @return
-     */
-
-    public ResponseEntity<ResponseDto<Object>> refreshToken(RefreshTokenRequest request) {
-        try {
-            final String refreshToken = request.getRefreshToken();
-            if (StringUtils.isBlank(refreshToken)) {
-                return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("auth.refresh.invalid.token"),
-                        StatusCodeEnum.AUTH0015
-                );
-            }
-
-            final String userName = jwtService.extractUsername(refreshToken, REFRESH_TOKEN);
-            var user = userService.getByUserEmail(userName);
-
-            if (user == null) {
-                return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("auth.refresh.user.not.found"),
-                        StatusCodeEnum.AUTH0016
-                );
-            }
-
-            if (!jwtService.isValid(refreshToken, REFRESH_TOKEN, user)) {
-                return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("auth.refresh.token.invalid"),
-                        StatusCodeEnum.AUTH0015
-                );
-            }
-
-            String accessToken = jwtService.generateToken(user);
-
-            try {
-                redisTokenService.save(RedisToken.builder()
-                        .id(user.getUsername())
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build());
-            } catch (Exception e) {
-                log.error("Failed to save token to Redis", e);
-                return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("auth.refresh.token.save.error"),
-                        StatusCodeEnum.AUTH0017
-                );
-            }
-
-            TokenResponse tokenResponse = TokenResponse.builder()
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .username(user.getUsername())
-                    .build();
-
-            return ResponseBuilder.okResponse(
-                    languageService.getMessage("auth.refresh.success"),
-                    tokenResponse,
-                    StatusCodeEnum.AUTH0012
-            );
-
-        } catch (Exception e) {
-            log.error("Refresh token failed", e);
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("auth.refresh.error"),
-                    StatusCodeEnum.AUTH0018
             );
         }
     }
@@ -259,7 +169,7 @@ public class AuthenticationService {
         if (user.isPresent()) {
             Employee employee = employeeRepository.findByUserId(user.get().getId());
             return employee.getId();
-        }else{
+        } else {
             return null;
         }
     }

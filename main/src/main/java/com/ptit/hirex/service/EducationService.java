@@ -26,7 +26,7 @@ public class EducationService {
     public ResponseEntity<ResponseDto<Object>> createEducation(EducationRequest educationRequest) {
         Long employeeId = authenticationService.getEmployeeFromContext();
 
-        if(employeeId == null){
+        if (employeeId == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),

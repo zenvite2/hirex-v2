@@ -7,9 +7,7 @@ import com.ptit.data.repository.UserRepository;
 import com.ptit.websocket.dto.MessageDto;
 import com.ptit.websocket.dto.UserConversationsDto;
 import com.ptit.websocket.service.ChatService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;

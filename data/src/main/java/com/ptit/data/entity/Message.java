@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "message")
 public class Message extends Auditable {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String message;
     private Long senderId;
