@@ -31,9 +31,9 @@ api:
 
 minio:
   access:
-    key: ${S3_ACCESS_KEY_ID:minioadmin}
+    key: ${S3_ACCESS_KEY_ID:t508e8DLhHyRpA8WhK5K}
   secret:
-    key: ${S3_SECRET_ACCESS_KEY:minioadmin}
+    key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
   url:
     public: ${S3_ENDPOINT:https://localhost:9000}
     private: ${S3_ENDPOINT_PRIVATE:http://localhost:9000}

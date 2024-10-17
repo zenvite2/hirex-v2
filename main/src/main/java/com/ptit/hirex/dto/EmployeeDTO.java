@@ -16,8 +16,8 @@ public class EmployeeDTO {
     private String fullName;
     private String phoneNumber;
     private String gender;
-    private LocalDateTime dateOfBirth;
-    private Integer address;
+    private String dateOfBirth;
+    private String address;
     @IsValidImage(maxSize = 10 * 1024 * 1024)
     private MultipartFile avatar;
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
@@ -27,11 +28,11 @@ public class Employee {
 
     private String email;
 
-    private LocalDateTime dateOfBirth;
+    private String dateOfBirth;
 
     private String phoneNumber;
 
-    private Integer address;
+    private String address;
 
     private BigDecimal salary;
 
