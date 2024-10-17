@@ -35,8 +35,7 @@ minio:
   secret:
     key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
   url:
-    public: ${S3_ENDPOINT:https://localhost:9000}
-    private: ${S3_ENDPOINT_PRIVATE:http://localhost:9000}
+    public: ${S3_ENDPOINT:http://36.50.134.219:9000}
+    private: ${S3_ENDPOINT_PRIVATE:http://36.50.134.219:9000}
   bucket: ${S3_BUCKET:hirex}
-  region: ${S3_REGION:dc1}
 

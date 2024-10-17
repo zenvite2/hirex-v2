@@ -38,8 +38,6 @@ public class Employee {
 
     private String gender;
 
-    private String resume;
-
     private String avatar;
 
 }

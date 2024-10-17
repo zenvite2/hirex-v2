@@ -21,5 +21,5 @@ public class CareerGoal {
 
     private Integer salary;
 
-    private String jobType;
+    private Long jobType;
 }
