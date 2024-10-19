@@ -5,7 +5,7 @@ pipeline {
         APP_NAME = 'main'
         JAR_NAME = 'main-1.0.jar'
         MAIN_DIR = '/root/hirex/main'
-        TARGET_DIR = '/main/target' // relative to the build directory
+        TARGET_DIR = 'hirex-v2/main/target' // relative to the build directory
     }
 
     stages {
