@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -54,15 +55,25 @@ public class SkillService {
     }
 
     public ResponseEntity<ResponseDto<Object>> updateSkill(Long id, SkillRequest skillRequest) {
-
         try {
-            Skill skill = modelMapper.map(skillRequest, Skill.class);
+            Skill skill = skillRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.skill")));
+
+            if (skillRequest != null) {
+                modelMapper.map(skillRequest, skill);
+            }
 
             skillRepository.save(skill);
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.skill.success"),
                     skill,
                     StatusCodeEnum.SKILL1001
+            );
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.skill"),
+                    StatusCodeEnum.SKILL4000
             );
         } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
@@ -71,6 +82,7 @@ public class SkillService {
             );
         }
     }
+
 
     public ResponseEntity<ResponseDto<Object>> getSkill(Long id) {
 

@@ -85,8 +85,6 @@ public class EmployeeService {
     public ResponseEntity<ResponseDto<Object>> getEmployee() {
         String userName = authenticationService.getUserFromContext();
 
-        System.out.println("username: " + userName);
-
         Optional<User> user = userRepository.findByUsername(userName);
 
         if(user.isEmpty()){

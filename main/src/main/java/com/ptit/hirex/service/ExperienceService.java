@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -56,24 +57,34 @@ public class ExperienceService {
     }
 
     public ResponseEntity<ResponseDto<Object>> updateExperience(Long id, ExperienceRequest experienceRequest) {
-
         try {
-            Experience experience = modelMapper.map(experienceRequest, Experience.class);
+            Experience experience = experienceRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.experience")));
+
+            if (experienceRequest != null) {
+                modelMapper.map(experienceRequest, experience);
+            }
 
             experienceRepository.save(experience);
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.experience.success"),
                     experience,
                     StatusCodeEnum.EXPERIENCE1001
             );
-        } catch (
-                RuntimeException e) {
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.experience"),
+                    StatusCodeEnum.EXPERIENCE4000
+            );
+        } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("update.experience.failed"),
                     StatusCodeEnum.EXPERIENCE0001
             );
         }
     }
+
 
     public ResponseEntity<ResponseDto<List<Experience>>> getExperience() {
 

@@ -48,6 +48,7 @@ public enum StatusCodeEnum {
     EXPERIENCE0002("EXPERIENCE0002"), //Get experience failed
     EXPERIENCE1003("EXPERIENCE1003"), //Delete experience success
     EXPERIENCE0003("EXPERIENCE0003"), //Delete experience failed
+    EXPERIENCE4000("EXPERIENCE4000"), //Not found experience
 
     //EDUCATION
     EDUCATION1000("EDUCATION1000"), //Create education success
@@ -58,6 +59,7 @@ public enum StatusCodeEnum {
     EDUCATION0002("EDUCATION0002"), //Get education failed
     EDUCATION1003("EDUCATION1003"), //Delete education success
     EDUCATION0003("EDUCATION0003"), //Delete education failed
+    EDUCATION4000("EDUCATION4000"), //Not found education
 
     //SKILL
     SKILL1000("SKILL1000"), //Create skill success
@@ -68,6 +70,7 @@ public enum StatusCodeEnum {
     SKILL0002("SKILL0002"), //Get skill failed
     SKILL1003("SKILL1003"), //Delete skill success
     SKILL0003("SKILL0003"), //Delete skill failed
+    SKILL4000("SKILL4000"), //Not found skill
 
     //CAREER
     CAREER1000("CAREER1000"), //Create career goal success
@@ -78,6 +81,17 @@ public enum StatusCodeEnum {
     CAREER0002("CAREER0002"), //Get career goal failed
     CAREER1003("CAREER1003"), //Delete career goal success
     CAREER0003("CAREER0003"), //Delete career goal failed
+
+    //JOB
+    JOB0000("Create job failed"),
+    JOB1000("Create job success"),
+    JOB1001("Get job success"),
+    JOB0001("Get job failed"),
+    JOB4000("Not found job"),
+    JOB1002("Update job success"),
+    JOB0002("Update job failed"),
+    JOB1003("Delete job success"),
+    JOB0003("Delete job failed"),
 
     //CATEGORY
     CITY1000("CITY1000"), //Autofill city success
