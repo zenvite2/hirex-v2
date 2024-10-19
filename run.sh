@@ -1,0 +1,1 @@
+nohup java -Djava.net.preferIPv4Stack=true -jar main-1.0.jar > main.log 2>&1 & echo $! > process.pid

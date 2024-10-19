@@ -1,45 +1,51 @@
 pipeline {
-    agent any
+    agent any // ok
 
     environment {
-        MVN_HOME = tool 'Maven'
-        JDK_HOME = tool 'JDK21'
+        APP_NAME = 'main'
+        JAR_NAME = 'main-1.0.jar'
+        MAIN_DIR = '/root/hirex/main'
+        TARGET_DIR = '/main/target' // relative to the build directory
     }
 
     stages {
-        stage('Checkout') {
+        stage('Preparing') {
             steps {
-                git branch: 'main', url: 'https://github.com/Cutiepie4/hirex-v2.git'
+                script {
+                    def javaVersion = sh(script: 'java -version', returnStdout: true).trim()
+                    echo "Java Version: ${javaVersion}"
+                }
+
+                script {
+                    def mavenVersion = sh(script: 'mvn -v', returnStdout: true).trim()
+                    echo "Maven Version: ${mavenVersion}"
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh "${MVN_HOME}/bin/mvn clean install"
+                echo "Building the ${APP_NAME} application..."
+                sh 'mvn clean package -DskipTests'
             }
         }
 
-        stage('Test') {
+        stage('Deploy') {
             steps {
-                sh "${MVN_HOME}/bin/mvn test"
-            }
-        }
-
-        stage('Deploy Spring Boot Module') {
-            steps {
-                dir('main') {
-                    sh "${MVN_HOME}/bin/mvn spring-boot:run"
-                }
+                echo "Deploying the ${APP_NAME} application..."
+                sh "bash ./stop.sh"
+                sh "cp ${TARGET_DIR}/${JAR_NAME} ${MAIN_DIR}/"
+                sh "bash ./run.sh"
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline succeeded!'
+            echo "${APP_NAME} has been successfully deployed!"
         }
         failure {
-            echo 'Pipeline failed!'
+            echo "There was an error deploying ${APP_NAME}."
         }
     }
 }
