@@ -34,6 +34,7 @@ pipeline {
             steps {
                 echo "Deploying the ${APP_NAME} application..."
                 sh "bash ./stop.sh"
+                sh "ls"
                 sh "cp ${TARGET_DIR}/${JAR_NAME} ${MAIN_DIR}/"
                 sh "bash ./run.sh"
             }
