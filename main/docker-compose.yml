@@ -1,0 +1,5 @@
+services:
+  main-service:
+    image: main:latest
+    ports:
+      - "8080:8080"

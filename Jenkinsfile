@@ -1,52 +1,38 @@
 pipeline {
-    agent any // ok
+    agent any // Use any available agent
 
     environment {
-        APP_NAME = 'main'
-        JAR_NAME = 'main-1.0.jar'
-        MAIN_DIR = '/root/hirex/main'
-        TARGET_DIR = '/main/target' // relative to the build directory
+        IMAGE_NAME = 'main'
+        IMAGE_TAG = 'latest'
     }
 
     stages {
-        stage('Preparing') {
-            steps {
-                script {
-                    def javaVersion = sh(script: 'java -version', returnStdout: true).trim()
-                    echo "Java Version: ${javaVersion}"
-                }
-
-                script {
-                    def mavenVersion = sh(script: 'mvn -v', returnStdout: true).trim()
-                    echo "Maven Version: ${mavenVersion}"
-                }
-            }
-        }
-
         stage('Build') {
             steps {
-                echo "Building the ${APP_NAME} application..."
-                sh 'mvn clean package -DskipTests'
+                echo "Building the Docker image ${IMAGE_NAME}:${IMAGE_TAG}..."
+
+                dir('./main') {
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Deployment') {
             steps {
-                echo "Deploying the ${APP_NAME} application..."
-                sh "${MAIN_DIR}/stop.sh"
-                sh "ls"
-                sh "cp main/target/main-1.0.jar ${MAIN_DIR}/"
-                sh "cat ${MAIN_DIR}/run.sh"
+                echo "Updating Docker Compose to use the latest image..."
+                dir('./main') {
+                  sh "docker compose -f docker-compose.yml up -d --build"
+                }
             }
         }
     }
 
     post {
         success {
-            sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh &"
+            echo "Deployment successful!"
         }
         failure {
-            echo "Build failed!"
+            echo "Deployment failed."
         }
     }
 }
