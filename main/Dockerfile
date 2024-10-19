@@ -6,7 +6,7 @@ COPY ../ .
 RUN ls
 
 RUN apt-get update -y && \
-    apt-get upgrade -y && \
+    apt-get upgrade -y
 
 RUN mvn clean package -DskipTests
 
