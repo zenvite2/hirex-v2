@@ -12,6 +12,7 @@
     <version>1.0</version>
     <name>main</name>
     <description>main</description>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -22,6 +23,7 @@
             <groupId>com.ptit</groupId>
             <artifactId>data</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
