@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = 'main'
         IMAGE_TAG = 'latest'
+        DOCKERFILE_PATH = 'main/Dockerfile'
     }
 
     stages {
@@ -11,8 +12,8 @@ pipeline {
             steps {
                 echo "Building the Docker image ${IMAGE_NAME}:${IMAGE_TAG}..."
 
-                dir('./main') {
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                dir('.') {
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} -f ${DOCKERFILE_PATH} ."
                 }
             }
         }
@@ -21,7 +22,8 @@ pipeline {
             steps {
                 echo "Updating Docker Compose to use the latest image..."
                 dir('./main') {
-                  sh "docker compose -f docker-compose.yml up -d --build"
+                    // Use the new version of Docker Compose without the dash (-)
+                    sh "docker compose -f docker-compose.yml up -d --build"
                 }
             }
         }
