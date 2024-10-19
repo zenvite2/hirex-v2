@@ -43,11 +43,7 @@ pipeline {
 
     post {
         success {
-            echo "Build was successful!"
-
-            steps {
-                sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh &"
-            }
+            sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh &"
         }
         failure {
             echo "Build failed!"
