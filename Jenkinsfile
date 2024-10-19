@@ -26,7 +26,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building the ${APP_NAME} application..."
-                sh 'mvn clean package -DskipTests'
+//                 sh 'mvn clean package -DskipTests'
             }
         }
 
@@ -36,7 +36,7 @@ pipeline {
                 sh "${MAIN_DIR}/stop.sh"
                 sh "ls"
                 sh "cp main/target/main-1.0.jar ${MAIN_DIR}/"
-                sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh"
+                sh "JENKINS_NODE_COOKIE=dontKillMe ${MAIN_DIR}/run.sh"
             }
         }
     }
