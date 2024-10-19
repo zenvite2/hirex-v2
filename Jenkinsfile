@@ -35,7 +35,7 @@ pipeline {
                 echo "Deploying the ${APP_NAME} application..."
                 sh "bash ./stop.sh"
                 sh "ls"
-                sh "cp ${TARGET_DIR}/${JAR_NAME} ${MAIN_DIR}/"
+                sh "cp main/target/main-1.0.jar ."
                 sh "bash ./run.sh"
             }
         }
