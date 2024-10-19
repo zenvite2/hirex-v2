@@ -37,17 +37,23 @@ pipeline {
                 sh "ls"
                 sh "cp main/target/main-1.0.jar ${MAIN_DIR}/"
                 sh "cat ${MAIN_DIR}/run.sh"
-                sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh &"
             }
         }
     }
 
     post {
-        success {
-            echo "${APP_NAME} has been successfully deployed!"
+            success {
+                echo "Build was successful!"
+            }
+            failure {
+                echo "Build failed!"
+            }
+            always {
+                postBuildScripts {
+                    steps {
+                        sh "export JENKINS_NODE_COOKIE=dontKillMe && ${MAIN_DIR}/run.sh &"
+                    }
+                }
+            }
         }
-        failure {
-            echo "There was an error deploying ${APP_NAME}."
-        }
-    }
 }
