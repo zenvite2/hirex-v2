@@ -3,7 +3,7 @@ package com.ptit.hirex.controller;
 import com.ptit.data.entity.*;
 import com.ptit.hirex.dto.response.DistrictResponse;
 import com.ptit.hirex.model.ResponseDto;
-import com.ptit.hirex.service.AutofillSerivce;
+import com.ptit.hirex.service.AutofillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,51 +17,51 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/auto-fill")
 public class AutofillController {
-    private final AutofillSerivce autofillSerivce;
+    private final AutofillService autofillService;
 
     @GetMapping("/city")
     public ResponseEntity<ResponseDto<List<City>>> autofillCity(@RequestParam(required = false) String name) {
-        return autofillSerivce.autofillCity(name);
+        return autofillService.autofillCity(name);
     }
 
     @GetMapping("/district")
     public ResponseEntity<ResponseDto<List<DistrictResponse>>> autofillDistrict(@RequestParam(required = false) String name, @RequestParam(required = false) Long cityIds) {
-        return autofillSerivce.autofillDistrict(name, cityIds);
+        return autofillService.autofillDistrict(name, cityIds);
     }
 
     @GetMapping("/salary")
     public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
-        return autofillSerivce.autofillSalary();
+        return autofillService.autofillSalary();
     }
 
     @GetMapping("/job-type")
     public ResponseEntity<ResponseDto<List<JobType>>> autofillJobType() {
-        return autofillSerivce.autofillJobType();
+        return autofillService.autofillJobType();
     }
 
     @GetMapping("/tech")
     public ResponseEntity<ResponseDto<List<Tech>>> autofillTech() {
-        return autofillSerivce.autofillTech();
+        return autofillService.autofillTech();
     }
 
     @GetMapping("/year-experience")
     public ResponseEntity<ResponseDto<List<YearExperience>>> autofillYearExperience() {
-        return autofillSerivce.autofillYearExperience();
+        return autofillService.autofillYearExperience();
     }
 
     @GetMapping("/position")
     public ResponseEntity<ResponseDto<List<Position>>> autofillPosition() {
-        return autofillSerivce.autofillPosition();
+        return autofillService.autofillPosition();
     }
 
     @GetMapping("/contract-type")
     public ResponseEntity<ResponseDto<List<ContractType>>> autofillContractType() {
-        return autofillSerivce.autofillContractType();
+        return autofillService.autofillContractType();
     }
 
     @GetMapping("/company")
     public ResponseEntity<ResponseDto<List<Company>>> autofillCompany() {
-        return autofillSerivce.autofillCompany();
+        return autofillService.autofillCompany();
     }
 
 }

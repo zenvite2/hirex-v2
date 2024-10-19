@@ -7,6 +7,19 @@ spring:
     redis:
       port: ${REDIS_PORT:6379}
       host: ${REDIS_HOST:36.50.134.219}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: s2kius2t@gmail.com
+    password: mnylpqwpyuztxypm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    from: hirex.cskh@gmail.com
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

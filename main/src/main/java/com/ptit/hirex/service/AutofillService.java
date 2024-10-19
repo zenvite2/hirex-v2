@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AutofillSerivce {
+public class AutofillService {
 
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
