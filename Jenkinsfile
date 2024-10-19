@@ -33,10 +33,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo "Deploying the ${APP_NAME} application..."
-                sh "bash ${MAIN_DIR}/stop.sh"
+                sh "${MAIN_DIR}/stop.sh"
                 sh "ls"
                 sh "cp main/target/main-1.0.jar ${MAIN_DIR}/"
-                sh "bash ${MAIN_DIR}/run.sh"
+                sh "${MAIN_DIR}/run.sh"
             }
         }
     }
