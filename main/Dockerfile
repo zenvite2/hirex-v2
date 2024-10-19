@@ -3,6 +3,11 @@ WORKDIR /app
 
 COPY ../ .
 
+RUN ls
+
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jdk-alpine
