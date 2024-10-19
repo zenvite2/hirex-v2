@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -55,15 +56,25 @@ public class EducationService {
     }
 
     public ResponseEntity<ResponseDto<Object>> updateEducation(Long id, EducationRequest educationRequest) {
-
         try {
-            Education education = modelMapper.map(educationRequest, Education.class);
+            Education education = educationRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.education")));
+
+            if (educationRequest != null) {
+                modelMapper.map(educationRequest, education);
+            }
 
             educationRepository.save(education);
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.education.success"),
                     education,
                     StatusCodeEnum.EDUCATION1001
+            );
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.education"),
+                    StatusCodeEnum.EDUCATION4000
             );
         } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
@@ -72,6 +83,7 @@ public class EducationService {
             );
         }
     }
+
 
     public ResponseEntity<ResponseDto<Object>> getEducation(Long id) {
         try {

@@ -1,12 +1,12 @@
 package com.ptit.hirex.config.mapper;
 
-import com.ptit.data.entity.Experience;
-import com.ptit.hirex.dto.request.ExperienceRequest;
+import com.ptit.data.entity.Education;
+import com.ptit.hirex.dto.request.EducationRequest;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ExperienceRequestToExperience extends PropertyMap<ExperienceRequest, Experience> {
+public class EducationRequestToEducation extends PropertyMap<EducationRequest, Education> {
 
     @Override
     protected void configure() {

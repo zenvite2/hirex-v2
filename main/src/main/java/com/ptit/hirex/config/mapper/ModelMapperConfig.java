@@ -15,6 +15,10 @@ public class ModelMapperConfig {
 
         modelMapper.addMappings(new EmployeeDTOToEmployee());
         modelMapper.addMappings(new ExperienceRequestToExperience());
+        modelMapper.addMappings(new JobRequestToJob());
+        modelMapper.addMappings(new CareerGoalRequestToCareerGoal());
+        modelMapper.addMappings(new EducationRequestToEducation());
+        modelMapper.addMappings(new SkillRequestToSkill());
 
         return modelMapper;
     }

@@ -14,6 +14,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -55,13 +58,24 @@ public class CareerGoalService {
 
     public ResponseEntity<ResponseDto<Object>> updateCareerGoal(Long id, CareerGoalRequest careerGoalRequest) {
         try {
-            CareerGoal careerGoal = modelMapper.map(careerGoalRequest, CareerGoal.class);
+            CareerGoal careerGoal = careerGoalRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("Career goal not found"));
+
+            if (careerGoalRequest != null) {
+                modelMapper.map(careerGoalRequest, careerGoal);
+            }
 
             careerGoalRepository.save(careerGoal);
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.career.success"),
                     careerGoal,
                     StatusCodeEnum.CAREER1000
+            );
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("career.not.found"),
+                    StatusCodeEnum.CAREER0001
             );
         } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
