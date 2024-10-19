@@ -12,4 +12,5 @@ COPY --from=build /app/main/target/*.jar app.jar
 
 EXPOSE 8080
 
+# Define the default command to run when the container starts
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

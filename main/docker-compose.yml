@@ -1,5 +1,5 @@
 services:
   main-service:
-    image: main:latest
+    image: hirex-v2:latest
     ports:
       - "8080:8080"
