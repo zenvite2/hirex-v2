@@ -3,10 +3,9 @@ WORKDIR /app
 
 COPY ../ .
 
-RUN ls
+RUN mvn dependency:go-offline
 
-RUN apt-get update -y && \
-    apt-get upgrade -y
+RUN ls
 
 RUN mvn clean package -DskipTests
 
