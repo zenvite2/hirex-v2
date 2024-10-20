@@ -21,7 +21,7 @@ pipeline {
         stage('Deployment') {
             steps {
                 echo "Updating Docker Compose to use the latest image..."
-                dir('.') {
+                dir('./main') {
                     sh "docker compose up -d"
                 }
             }
