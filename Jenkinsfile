@@ -21,9 +21,9 @@ pipeline {
         stage('Deployment') {
             steps {
                 echo "Updating Docker Compose to use the latest image..."
-                dir('./main') {
+                dir('.') {
                     // Use the new version of Docker Compose without the dash (-)
-                    sh "docker compose -f docker-compose.yml up -d --build"
+                    sh "docker compose -f ./main/docker-compose.yml up -d --build"
                 }
             }
         }
