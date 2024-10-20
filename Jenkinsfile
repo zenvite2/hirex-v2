@@ -1,5 +1,5 @@
 pipeline {
-    agent any // Use any available agent
+    agent any
 
     environment {
         IMAGE_NAME = 'main'
@@ -22,8 +22,7 @@ pipeline {
             steps {
                 echo "Updating Docker Compose to use the latest image..."
                 dir('.') {
-                    // Use the new version of Docker Compose without the dash (-)
-                    sh "docker compose -f ./main/docker-compose.yml up -d --build"
+                    sh "docker compose up -d"
                 }
             }
         }
