@@ -1,7 +1,7 @@
 services:
   main-service:
     build:
-      context: ./main
+      context: .
       dockerfile: Dockerfile
     image: hirex-v2:latest
     ports:
