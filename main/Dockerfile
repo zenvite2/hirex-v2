@@ -6,6 +6,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY main/pom.xml ./main/
 COPY data/pom.xml ./data/
+COPY websocket/pom.xml ./websocket/
 
 # Download the dependencies and cache them
 RUN mvn dependency:go-offline
