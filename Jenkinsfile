@@ -2,18 +2,14 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'main'
         IMAGE_TAG = 'latest'
     }
 
     stages {
-        stage('Build') {
+        stage('Build and deploy') {
             steps {
-                echo "Building the Docker image ${IMAGE_NAME}:${IMAGE_TAG}..."
-
-                dir('.') {
-                    sh "docker compose -f ./main/docker-compose.yml up -d --build"
-                }
+                echo "Building Docker images for main and websocket services..."
+                sh "docker compose down && docker compose -f ./docker-compose.yml up --build -d"
             }
         }
     }
