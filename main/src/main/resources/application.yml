@@ -1,5 +1,3 @@
-server:
-  port: 8080
 spring:
   profiles:
     active: mysql-dev
@@ -18,9 +16,29 @@ spring:
           auth: true
           starttls:
             enable: true
-    from: hirex.cskh@gmail.com
+    from: hirex.ptit@gmail.com
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 30MB
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+jwt:
+  expiry-time-secs: 3600
+  access-key: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
+api:
+  prefix: /api
+
+minio:
+  access:
+    key: ${S3_ACCESS_KEY_ID:t508e8DLhHyRpA8WhK5K}
+  secret:
+    key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
+  url:
+    public: ${S3_ENDPOINT:http://36.50.134.219:9000}
+    private: ${S3_ENDPOINT_PRIVATE:http://36.50.134.219:9000}
+  bucket: ${S3_BUCKET:hirex}

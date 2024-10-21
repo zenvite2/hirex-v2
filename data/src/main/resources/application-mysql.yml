@@ -1,9 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/hirex
+    url: jdbc:postgresql://36.50.134.219:5433/hirex
     username: hirex
     password: 123
     driver-class-name: org.postgresql.Driver
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 10
+      idleTimeout: 120000
+      connectionTimeout: 300000
+      leakDetectionThreshold: 300000
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,20 +20,3 @@ spring:
           time_zone: Asia/Ho_Chi_Minh
         format_sql: true
         use_sql_comments: true
-
-jwt:
-  expiry-time-secs: 1
-  access-key: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
-api:
-  prefix: /api
-
-minio:
-  access:
-    key: ${S3_ACCESS_KEY_ID:7WXNPusZiPR7sQ5s99wq}
-  secret:
-    key: ${S3_SECRET_ACCESS_KEY:mzBA7cgxYudUQMPW5EDu9xmkToV5EAjRvHpDjy6e}
-  url:
-    public: ${S3_ENDPOINT:http://localhost:9000}
-    private: ${S3_ENDPOINT_PRIVATE:http://localhost:9000}
-  bucket: ${S3_BUCKET:hirex}
-
