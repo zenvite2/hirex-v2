@@ -6,7 +6,6 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ExperienceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +23,8 @@ public class ExperienceController {
         return experienceService.createExperience(experienceRequest);
     }
 
-    @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDto<Object>> updateExperience(@PathVariable Long id, @Valid @ModelAttribute ExperienceRequest experienceRequest) {
+    @PatchMapping( "/{id}")
+    public ResponseEntity<ResponseDto<Object>> updateExperience(@PathVariable Long id, @Valid @RequestBody ExperienceRequest experienceRequest) {
         return experienceService.updateExperience(id, experienceRequest);
     }
 
