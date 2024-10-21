@@ -11,5 +11,6 @@ public class JobRequestToJob extends PropertyMap<JobRequest, Job> {
     @Override
     protected void configure() {
         skip(destination.getId());
+        skip(destination.getEmployer());
     }
 }

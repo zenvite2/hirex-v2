@@ -1,0 +1,8 @@
+services:
+  main-service:
+    build:
+      context: .. 
+      dockerfile: ./main/Dockerfile 
+    image: hirex-v2:latest
+    ports:
+      - "8080:8080"

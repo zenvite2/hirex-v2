@@ -32,22 +32,30 @@ public class JobService {
     private final ModelMapper modelMapper;
     private final EmployerRepository employerRepository;
 
-    public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest){
+    public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
         String userName = authenticationService.getUserFromContext();
 
-        Optional<User> user = userRepository.findByUsername(userName);
+        Optional<User> optionalUser = userRepository.findByUsername(userName);
 
-        if(user.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
-        Employer employer = employerRepository.findByUserId(user.get().getId());
+        User user = optionalUser.get();
 
-        try{
+        Employer employer = employerRepository.findByUserId(user.getId());
+        if (employer == null) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("employer.not.found"),
+                    StatusCodeEnum.EMPLOYER4000
+            );
+        }
+
+        try {
             Job job = modelMapper.map(jobRequest, Job.class);
             job.setEmployer(employer.getId());
 
@@ -58,7 +66,7 @@ public class JobService {
                     job,
                     StatusCodeEnum.JOB1000
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("create.job.failed"),
                     StatusCodeEnum.JOB0000
@@ -96,26 +104,22 @@ public class JobService {
     }
 
 
-    public ResponseEntity<ResponseDto<Object>> getJob(Long id){
-
-        try{
-            Optional<Job> job1 = jobRepository.findById(id);
-
-            if(job1.isEmpty()){
-                return ResponseBuilder.badRequestResponse(
-                        languageService.getMessage("not.found.job"),
-                        StatusCodeEnum.JOB4000
-                );
-            }
-
-            Job job = job1.get();
+    public ResponseEntity<ResponseDto<Object>> getJob(Long id) {
+        try {
+            Job job = jobRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.job.success"),
                     job,
                     StatusCodeEnum.JOB1001
             );
-        }catch (Exception e){
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.job"),
+                    StatusCodeEnum.JOB4000
+            );
+        } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.job.failed"),
                     StatusCodeEnum.JOB0001
@@ -123,9 +127,10 @@ public class JobService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> deleteJob(Long id){
-
-        try{
+    public ResponseEntity<ResponseDto<Object>> deleteJob(Long id) {
+        try {
+            Job job = jobRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
             jobRepository.deleteById(id);
 
@@ -133,7 +138,12 @@ public class JobService {
                     languageService.getMessage("delete.job.success"),
                     StatusCodeEnum.JOB1003
             );
-        }catch (Exception e){
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.job"),
+                    StatusCodeEnum.JOB4000
+            );
+        } catch (RuntimeException e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("delete.job.failed"),
                     StatusCodeEnum.JOB0003

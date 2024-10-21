@@ -93,6 +93,10 @@ public enum StatusCodeEnum {
     JOB1003("Delete job success"),
     JOB0003("Delete job failed"),
 
+    //APPLICATION
+    APPLICATION1000("Create application success"),
+    APPLICATION0001("Create application failed"),
+
     //CATEGORY
     CITY1000("CITY1000"), //Autofill city success
     CITY0000("CITY0000"), //Autofill city failed
