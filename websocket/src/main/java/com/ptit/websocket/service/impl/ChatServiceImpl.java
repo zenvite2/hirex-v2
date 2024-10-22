@@ -31,7 +31,7 @@ public class ChatServiceImpl implements ChatService {
         message.setSentTime(messageDto.getSentTime());
         message.setSenderId(Long.valueOf(messageDto.getSender()));
         message.setReceiverId(Long.valueOf(messageDto.getReceiver()));
-
+        message.setFileUrl(messageDto.getFileUrl());
         messageRepository.save(message);
     }
 
@@ -54,7 +54,8 @@ public class ChatServiceImpl implements ChatService {
                                     message.getMessage(),
                                     message.getSentTime(),
                                     message.getStatus(),
-                                    message.getType()
+                                    message.getType(),
+                                    message.getFileUrl()
                             ))
                             .collect(Collectors.toList());
 

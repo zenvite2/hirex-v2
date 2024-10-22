@@ -31,4 +31,6 @@ public class Message extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private MessageType type;
+
+    private String fileUrl;
 }

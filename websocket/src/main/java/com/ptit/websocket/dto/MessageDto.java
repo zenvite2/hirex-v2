@@ -21,4 +21,5 @@ public class MessageDto {
     private LocalDateTime sentTime;
     private Status status;
     private MessageType type;
+    private String fileUrl;
 }
