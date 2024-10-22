@@ -97,6 +97,13 @@ public enum StatusCodeEnum {
     APPLICATION1000("Create application success"),
     APPLICATION0001("Create application failed"),
 
+    //COMPANY
+    COMPANY1001("Get company success"),
+    COMPANY0001("Get company failed"),
+    COMPANY1002("Get company success"),
+    COMPANY0003("Get company failed"),
+    COMPANY0002("Not found company"),
+
     //CATEGORY
     CITY1000("CITY1000"), //Autofill city success
     CITY0000("CITY0000"), //Autofill city failed

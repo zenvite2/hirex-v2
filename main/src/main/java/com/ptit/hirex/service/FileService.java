@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -33,14 +34,14 @@ public class FileService {
     @Value("${minio.bucket}")
     private String bucketName;
 
-    private String getFilePathKey(String originalFilename, String companyId, String typeUpload) {
+    private String getFilePathKey(String originalFilename, String typeUpload) {
         // Generate new filename
         Date current = new Date();
 
         String newFileName = String.valueOf(current.getTime());
         String modifiedFilename = modifyFilename(originalFilename, newFileName);
 
-        return Util.generateFileDirectory(typeUpload, companyId, modifiedFilename);
+        return Util.generateFileDirectory(typeUpload, modifiedFilename);
     }
 
     private String modifyFilename(String originalFilename, String newFilename) {
@@ -49,9 +50,9 @@ public class FileService {
         return newFilename + fileExtension;
     }
 
-    public String uploadImageFile(MultipartFile file, String oldFileName, String companyId, String typeUpload) {
+    public String uploadImageFile(MultipartFile file, String oldFileName, String typeUpload) {
         try {
-            String filePathKey = getFilePathKey(file.getOriginalFilename(), companyId, typeUpload);
+            String filePathKey = getFilePathKey(file.getOriginalFilename(), typeUpload);
             byte[] fileBytes = resizeImage(file.getBytes(), typeUpload);
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
@@ -77,18 +78,16 @@ public class FileService {
         }
     }
 
-    public String uploadAchievementsAttached(MultipartFile file, String companyId, String typeUpload) {
+    public String uploadFile(MultipartFile file, String typeUpload) {
         try {
-            String filePathKey = getFilePathKey(file.getOriginalFilename(), companyId, typeUpload);
-            byte[] fileBytes = resizeImage(file.getBytes(), typeUpload);
-
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileBytes);
+            InputStream inputStream = file.getInputStream();
+            String filePathKey = getFilePathKey(file.getOriginalFilename(), typeUpload);
 
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
                             .object(filePathKey)
-                            .stream(byteArrayInputStream, fileBytes.length, -1)
+                            .stream(inputStream, file.getSize(), -1)
                             .build());
 
             return Util.generateFileDirectory(bucketName, filePathKey);

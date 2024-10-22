@@ -143,7 +143,7 @@ public class EmployeeService {
             modelMapper.map(employeeDTO, employee);
 
             if (employeeDTO.getAvatar() != null && !employeeDTO.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employeeDTO.getAvatar(), employee.getAvatar(), String.valueOf(user.get().getId()), "AVATAR");
+                String avatar = fileService.uploadImageFile(employeeDTO.getAvatar(), employee.getAvatar(), "AVATAR");
                 if (avatar == null) {
                     log.error("Upload file image avatar failed");
                     return ResponseBuilder.badRequestResponse(
