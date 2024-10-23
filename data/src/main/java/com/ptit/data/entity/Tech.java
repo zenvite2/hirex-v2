@@ -17,5 +17,5 @@ public class Tech {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String techName;
+    private String name;
 }

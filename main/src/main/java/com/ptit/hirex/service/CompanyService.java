@@ -109,7 +109,7 @@ public class CompanyService {
 
         try {
             modelMapper.map(companyRequest, company);
-
+            company.setEmployerId(employer.getId());
             if (companyRequest.getLogo() != null && !companyRequest.getLogo().isEmpty()) {
                 String logo = fileService.uploadImageFile(companyRequest.getLogo(), company.getLogo(), "LOGO");
                 if (logo == null) {
