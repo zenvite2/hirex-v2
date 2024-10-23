@@ -12,7 +12,9 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CompanyService {
+
+    private final FileService fileService;
+    @Value("${minio.url.public}")
+    private String publicUrl;
 
     private final CompanyRepository companyRepository;
     private final LanguageService languageService;
@@ -102,6 +109,20 @@ public class CompanyService {
 
         try {
             modelMapper.map(companyRequest, company);
+
+            if (companyRequest.getLogo() != null && !companyRequest.getLogo().isEmpty()) {
+                String logo = fileService.uploadImageFile(companyRequest.getLogo(), company.getLogo(), "LOGO");
+                if (logo == null) {
+                    log.error("Upload file image avatar failed");
+                    return ResponseBuilder.badRequestResponse(
+                            languageService.getMessage("upload.file.avatar.failed"),
+                            StatusCodeEnum.UPLOADFILE0001
+                    );
+                } else {
+                    company.setLogo(publicUrl + "/" + logo);
+                }
+            }
+
             companyRepository.save(company);
 
             return ResponseBuilder.okResponse(

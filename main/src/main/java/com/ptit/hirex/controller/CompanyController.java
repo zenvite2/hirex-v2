@@ -5,6 +5,7 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class CompanyController {
         return companyService.getCompany();
     }
 
-    @PatchMapping()
-    public ResponseEntity<ResponseDto<Object>> updateCompany(@RequestBody @Valid CompanyRequest companyRequest) {
+    @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<Object>> updateCompany(@ModelAttribute @Valid CompanyRequest companyRequest) {
         return companyService.updateCompany(companyRequest);
     }
 }

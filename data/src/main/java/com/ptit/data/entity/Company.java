@@ -23,7 +23,7 @@ public class Company {
 
     private String website;
 
-    private String logoUrl;
+    private String logo;
 
     private String address;
 

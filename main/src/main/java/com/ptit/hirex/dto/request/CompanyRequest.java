@@ -1,9 +1,11 @@
 package com.ptit.hirex.dto.request;
 
+import com.ptit.hirex.annotation.IsValidImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +18,8 @@ public class CompanyRequest {
 
     private String website;
 
-    private String logoUrl;
+    @IsValidImage(maxSize = 10 * 1024 * 1024)
+    private MultipartFile logo;
 
     private String address;
 
