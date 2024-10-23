@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
-    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**"};
+    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**"};
     private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};

@@ -112,9 +112,42 @@ public class JobService {
             Job job = jobRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
+            // Lấy thông tin district
+            String districtName = districtRepository.findById(job.getDistrict())
+                    .map(District::getName)
+                    .orElse("");
+
+            // Lấy thông tin city
+            String cityName = cityRepository.findById(job.getCity())
+                    .map(City::getName)
+                    .orElse("");
+
+            // Lấy thông tin employer và company
+            Employer employer = employerRepository.findById(job.getEmployer())
+                    .orElse(null);
+
+            Company company = null;
+            if (employer != null) {
+                company = companyRepository.findById(employer.getId())
+                        .orElse(null);
+            }
+
+            JobWithCompanyResponse jobResponse = JobWithCompanyResponse.builder()
+                    .id(job.getId())
+                    .title(job.getTitle())
+                    .location(job.getLocation())
+                    .district(districtName)
+                    .city(cityName)
+                    .deadline(job.getDeadline())
+                    .createdAt(job.getCreatedAt())
+                    .companyName(company != null ? company.getCompanyName() : null)
+                    .companyLogo(company != null ? company.getLogo() : null)
+                    .companyDescription(company != null ? company.getDescription() : null)
+                    .build();
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.job.success"),
-                    job,
+                    jobResponse,
                     StatusCodeEnum.JOB1001
             );
         } catch (NoSuchElementException e) {
