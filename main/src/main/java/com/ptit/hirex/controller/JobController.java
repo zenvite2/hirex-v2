@@ -28,4 +28,14 @@ public class JobController {
     public ResponseEntity<ResponseDto<Object>> getJob(@PathVariable Long id) {
         return jobService.getJob(id);
     }
+
+    @GetMapping()
+    public ResponseEntity<ResponseDto<Object>> getListJob() {
+        return jobService.getAllJob();
+    }
+
+    @GetMapping("/with-company")
+    public ResponseEntity<ResponseDto<Object>> getJobsWithCompany() {
+        return jobService.getAllJobsWithCompany();
+    }
 }

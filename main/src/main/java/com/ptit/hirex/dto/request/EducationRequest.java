@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class EducationRequest {
     private String level;
 
-    private String nameSchool;
+    private String universityName;
 
     private String expertise;
 

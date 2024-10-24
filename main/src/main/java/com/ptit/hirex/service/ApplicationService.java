@@ -4,6 +4,7 @@ import com.ptit.data.entity.*;
 import com.ptit.data.enums.ApplicationStatus;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.request.ApplicationRequest;
+import com.ptit.hirex.dto.response.ApplicationResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -12,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,5 +80,38 @@ public class ApplicationService {
             );
         }
     }
+
+
+    public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
+        List<Application> applications = applicationRepository.findAll();
+
+        List<ApplicationResponse> applicationResponses = applications.stream()
+                .map(application -> {
+                    Job job = jobRepository.findById(application.getJobId())
+                            .orElseThrow(() -> new RuntimeException("Job not found"));
+                    Employee employee = employeeRepository.findById(application.getEmployeeId())
+                            .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+                    return ApplicationResponse.builder()
+                            .id(application.getId())
+                            .jobId(job.getId())
+                            .jobTitle(job.getTitle())
+                            .address(job.getLocation())
+                            .employeeId(employee.getId())
+                            .fullName(employee.getFullName())
+                            .coverLetter(application.getCoverLetter())
+                            .status(application.getStatus())
+                            .createdAt(application.getCreatedAt())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return ResponseBuilder.badRequestResponse(
+               "get list success",
+                applicationResponses,
+                StatusCodeEnum.APPLICATION1000
+        );
+    }
+
 }
 
