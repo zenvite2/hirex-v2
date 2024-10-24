@@ -9,7 +9,7 @@ pipeline {
         stage('Build and deploy') {
             steps {
                 echo "Building Docker images for main and websocket services..."
-                sh "docker compose down && docker compose -f ./docker-compose.yml up --build -d"
+                sh "docker compose down && docker compose -f ./docker-compose.yml up --build -d --remove-orphans"
             }
         }
     }
