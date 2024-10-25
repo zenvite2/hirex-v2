@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NotificationPattern {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -18,6 +19,8 @@ public class NotificationPattern {
 
     @Column(nullable = false)
     private String content;
+
+    private Boolean isHtml = false;
 
     private Boolean hasParams = false;
 }

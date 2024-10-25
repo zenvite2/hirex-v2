@@ -1,6 +1,5 @@
 package com.ptit.hirex.controller;
 
-import com.ptit.hirex.dto.EmployeeDTO;
 import com.ptit.hirex.dto.request.EmployerRequest;
 import com.ptit.hirex.dto.request.EmployerUpdateRequest;
 import com.ptit.hirex.model.ResponseDto;

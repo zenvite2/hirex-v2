@@ -1,6 +1,6 @@
 package com.ptit.hirex.service.impl;
 
-import com.ptit.hirex.service.EmailService;
+import com.ptit.hirex.service.MailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class EmailServiceImpl implements EmailService {
+public class MailServiceImpl implements MailService {
 
     private final JavaMailSender mailSender;
     private final String sender;
 
-    public EmailServiceImpl(JavaMailSender mailSender, @Value("${spring.mail.from}") String sender) {
+    public MailServiceImpl(JavaMailSender mailSender, @Value("${spring.mail.from}") String sender) {
         this.mailSender = mailSender;
         this.sender = sender;
     }

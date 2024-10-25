@@ -90,7 +90,7 @@ public class ExperienceService {
 
         Long employeeId = authenticationService.getEmployeeFromContext();
 
-        if(employeeId == null){
+        if (employeeId == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -105,7 +105,7 @@ public class ExperienceService {
                     experience,
                     StatusCodeEnum.EXPERIENCE1002
             );
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.experience.failed"),
                     StatusCodeEnum.EXPERIENCE1002

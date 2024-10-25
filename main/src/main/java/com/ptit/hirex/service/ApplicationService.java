@@ -1,8 +1,14 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.*;
+import com.ptit.data.entity.Application;
+import com.ptit.data.entity.Employee;
+import com.ptit.data.entity.Job;
+import com.ptit.data.entity.User;
 import com.ptit.data.enums.ApplicationStatus;
-import com.ptit.data.repository.*;
+import com.ptit.data.repository.ApplicationRepository;
+import com.ptit.data.repository.EmployeeRepository;
+import com.ptit.data.repository.JobRepository;
+import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.ApplicationRequest;
 import com.ptit.hirex.dto.response.ApplicationResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -107,7 +113,7 @@ public class ApplicationService {
                 .collect(Collectors.toList());
 
         return ResponseBuilder.badRequestResponse(
-               "get list success",
+                "get list success",
                 applicationResponses,
                 StatusCodeEnum.APPLICATION1000
         );

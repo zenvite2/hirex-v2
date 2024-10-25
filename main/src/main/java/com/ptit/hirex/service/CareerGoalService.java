@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -89,7 +88,7 @@ public class CareerGoalService {
 
         Long employeeId = authenticationService.getEmployeeFromContext();
 
-        if(employeeId == null){
+        if (employeeId == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),

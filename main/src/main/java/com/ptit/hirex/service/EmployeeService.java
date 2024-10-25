@@ -87,7 +87,7 @@ public class EmployeeService {
 
         Optional<User> user = userRepository.findByUsername(userName);
 
-        if(user.isEmpty()){
+        if (user.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016

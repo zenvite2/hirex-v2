@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ExperienceRepository extends JpaRepository<Experience, Long> {
     List<Experience> findAllByEmployeeId(Long employeeId);
+
     Optional<Experience> findById(Long id);
 }

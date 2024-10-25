@@ -1,8 +1,8 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.User;
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.CompanyRepository;
 import com.ptit.data.repository.EmployerRepository;
 import com.ptit.data.repository.RoleRepository;
