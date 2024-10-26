@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class ApplicationRequest {
     private Long jobId;
     private String coverLetter;
-
+    private MultipartFile cvPdf;
 }

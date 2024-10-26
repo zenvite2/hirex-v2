@@ -26,11 +26,9 @@ pipeline {
                     sh '''
                         echo "$DOCKER_PW" | docker login -u "$DOCKER_USER" --password-stdin
 
-                        # Tag and push main service image
                         docker tag main:latest $DOCKER_REPO/main:latest
                         docker push $DOCKER_REPO/main:latest
 
-                        # Tag and push websocket service image
                         docker tag websocket:latest $DOCKER_REPO/websocket:latest
                         docker push $DOCKER_REPO/websocket:latest
                     '''
@@ -44,9 +42,9 @@ pipeline {
                     echo "Deploying Docker containers to prod server...."
                     sh '''
                         sshpass -p "$HIREX_VPS_PW" ssh -o StrictHostKeyChecking=no "$HIREX_VPS_USER@$HIREX_VPS" bash << 'EOF'
-                            docker compose down
-                            docker compose -f /root/hirex/deploy/docker-compose.yml pull
-                            docker compose -f /root/hirex/deploy/docker-compose.yml up -d --remove-orphans
+                            docker compose -f /root/hirex/deploy/docker-compose.yml down && \
+                            docker compose -f /root/hirex/deploy/docker-compose.yml pull && \
+                            docker compose -f /root/hirex/deploy/docker-compose.yml up -d
                         << EOF
                     '''
                 }

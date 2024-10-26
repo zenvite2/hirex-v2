@@ -27,4 +27,6 @@ public class Application extends Auditable {
     private ApplicationStatus status;
 
     private String coverLetter;
+
+    private String cvPdf;
 }

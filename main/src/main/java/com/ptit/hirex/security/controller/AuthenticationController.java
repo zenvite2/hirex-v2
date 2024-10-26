@@ -1,6 +1,8 @@
 package com.ptit.hirex.security.controller;
 
+import com.ptit.hirex.dto.request.ForgotPasswordRequest;
 import com.ptit.hirex.model.ResponseDto;
+import com.ptit.hirex.security.dto.request.ChangePasswordRequest;
 import com.ptit.hirex.security.dto.request.SignInRequest;
 import com.ptit.hirex.security.dto.request.SignUpRequest;
 import com.ptit.hirex.security.service.AuthenticationService;
@@ -30,6 +32,16 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDto<Object>> createUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         return authenticationService.createUser(signUpRequest);
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseDto<Object>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return authenticationService.processForgotPassword(request);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseDto<Object>> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        return authenticationService.changePassword(request);
     }
 
 //    @PostMapping("/logout")
