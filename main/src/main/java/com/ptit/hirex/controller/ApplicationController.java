@@ -7,6 +7,7 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,8 @@ import java.util.List;
 public class ApplicationController {
     private final ApplicationService applicationService;
 
-    @PostMapping()
-    public ResponseEntity<ResponseDto<Object>> createApplication(@Valid @RequestBody ApplicationRequest applicationRequest) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDto<Object>> createApplication(@Valid @ModelAttribute ApplicationRequest applicationRequest) {
         return applicationService.createApplication(applicationRequest);
     }
 

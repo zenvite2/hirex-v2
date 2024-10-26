@@ -16,6 +16,8 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationService {
+
+    @Value("${minio.url.public}")
+    private String publicUrl;
 
     private final ApplicationRepository applicationRepository;
     private final JobRepository jobRepository;
@@ -34,6 +40,7 @@ public class ApplicationService {
     private final LanguageService languageService;
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     public ResponseEntity<ResponseDto<Object>> createApplication(ApplicationRequest applicationRequest) {
         try {
@@ -72,6 +79,19 @@ public class ApplicationService {
                     .coverLetter(applicationRequest.getCoverLetter())
                     .status(ApplicationStatus.PENDING)
                     .build();
+
+            if (applicationRequest.getCvPdf() != null && !applicationRequest.getCvPdf().isEmpty()) {
+                String cv = fileService.uploadFile(applicationRequest.getCvPdf(), "CV");
+                if (cv == null) {
+                    log.error("Upload file image avatar failed");
+                    return ResponseBuilder.badRequestResponse(
+                            languageService.getMessage("upload.file.avatar.failed"),
+                            StatusCodeEnum.UPLOADFILE0001
+                    );
+                } else {
+                    application.setCvPdf(publicUrl + "/" + cv);
+                }
+            }
 
             applicationRepository.save(application);
 
