@@ -57,4 +57,46 @@ public class MailServiceImpl implements MailService {
             return false;
         }
     }
+
+    @Override
+    public void sendPasswordResetEmail(String to, String newPassword) throws Exception {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(sender);
+            helper.setTo(to);
+            helper.setSubject("Reset Password Request");
+
+            String emailContent = buildPasswordResetEmailTemplate(newPassword);
+            helper.setText(emailContent, true);
+
+            mailSender.send(message);
+            log.info("Password reset email sent successfully to: {}", to);
+
+        } catch (Exception e) {
+            log.error("Failed to send password reset email to: {}", to, e);
+            throw new Exception("Failed to send password reset email", e);
+        }
+    }
+
+    private String buildPasswordResetEmailTemplate(String newPassword) {
+        return """
+            <html>
+                <body style='margin: 0; padding: 20px; font-family: Arial, sans-serif;'>
+                    <div style='background-color: #f5f5f5; padding: 20px; border-radius: 5px;'>
+                        <h2 style='color: #333;'>Password Reset</h2>
+                        <p>Your password has been reset successfully. Here is your new password:</p>
+                        <div style='background-color: #fff; padding: 10px; border-radius: 3px; margin: 10px 0;'>
+                            <strong>%s</strong>
+                        </div>
+                        <p>Please change this password after logging in for security purposes.</p>
+                        <p>If you didn't request this password reset, please contact our support team immediately.</p>
+                        <br>
+                        <p>Best regards,<br>Your Application Team</p>
+                    </div>
+                </body>
+            </html>
+            """.formatted(newPassword);
+    }
 }

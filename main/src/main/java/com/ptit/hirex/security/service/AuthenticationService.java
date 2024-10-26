@@ -5,13 +5,16 @@ import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
+import com.ptit.hirex.dto.request.ForgotPasswordRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
+import com.ptit.hirex.security.dto.request.ChangePasswordRequest;
 import com.ptit.hirex.security.dto.request.SignInRequest;
 import com.ptit.hirex.security.dto.request.SignUpRequest;
 import com.ptit.hirex.security.dto.response.TokenResponse;
 import com.ptit.hirex.service.LanguageService;
+import com.ptit.hirex.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -40,6 +44,7 @@ public class AuthenticationService {
     private final LanguageService languageService;
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
+    private final MailService emailService;
 
     public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
         try {
@@ -140,6 +145,94 @@ public class AuthenticationService {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.error"),
                     StatusCodeEnum.AUTH0023
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> changePassword(ChangePasswordRequest request) {
+        try {
+            String username = getUserFromContext();
+            if (username == null) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.unauthorized"),
+                        StatusCodeEnum.AUTH0024
+                );
+            }
+
+            Optional<User> userOptional = userRepository.findByUsername(username);
+            if (userOptional.isEmpty()) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.user.not.found"),
+                        StatusCodeEnum.AUTH0025
+                );
+            }
+            User user = userOptional.get();
+
+            if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.password.old.incorrect"),
+                        StatusCodeEnum.AUTH0026
+                );
+            }
+
+            if (passwordEncoder.matches(request.getNewPassword(), user.getPassword())) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("auth.password.same.as.old"),
+                        StatusCodeEnum.AUTH0027
+                );
+            }
+
+            String encodedNewPassword = passwordEncoder.encode(request.getNewPassword());
+            user.setPassword(encodedNewPassword);
+
+            userRepository.save(user);
+
+            // 7. Có thể thêm logic gửi email thông báo đổi mật khẩu thành công
+//            sendPasswordChangeNotification(user);
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("auth.password.changed.success"),
+                    StatusCodeEnum.APPLICATION1000
+            );
+
+        } catch (Exception e) {
+            log.error("Change password failed", e);
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("auth.password.change.error"),
+                    StatusCodeEnum.AUTH0028
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> processForgotPassword(ForgotPasswordRequest request) {
+        try {
+            Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+            if (userOptional.isEmpty()) {
+                return ResponseBuilder.badRequestResponse(
+                        "email.not.found",
+                        StatusCodeEnum.EMAIL0000
+                );
+            }
+
+            User user = userOptional.get();
+
+            String newPassword = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+
+            emailService.sendPasswordResetEmail(user.getEmail(), newPassword);
+
+            return ResponseBuilder.okResponse(
+                    "auth.reset.password.success",
+                    StatusCodeEnum.AUTH0029
+            );
+
+        } catch (Exception e) {
+            log.error("Password reset process failed", e);
+            return ResponseBuilder.badRequestResponse(
+                    "auth.reset.password.failed",
+                    StatusCodeEnum.AUTH0030
             );
         }
     }

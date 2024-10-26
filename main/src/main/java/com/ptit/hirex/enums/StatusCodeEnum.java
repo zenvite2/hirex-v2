@@ -7,6 +7,15 @@ public enum StatusCodeEnum {
     AUTH0014("Authentication failed"),
     AUTH0016("User not found"),
     AUTH0017("Failed to save token"),
+    AUTH0025("User not found"),
+    AUTH0026("Auth password old incorrect"),
+    AUTH0027("Auth password same as old"),
+    AUTH0028("Auth password change error"),
+    AUTH0029("Auth reset password success"),
+    AUTH0030("Auth reset password failed"),
+
+    //EMAIL
+    EMAIL0000("Email not found"),
 
     // SIGNUP
     AUTH0019("User name already exists"),
@@ -14,7 +23,8 @@ public enum StatusCodeEnum {
     AUTH0021("Failed to save user"),
     AUTH0022("User created successfully"),
     AUTH0023("Error during user creation"),
-    AUTH0024("MPassword and confirmation password do not match."),
+    AUTH0024("Password and confirmation password do not match."),
+
 
     //EMPLOYEE
     EMPLOYEE0000("Create Employee failed"),
