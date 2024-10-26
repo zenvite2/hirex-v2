@@ -17,6 +17,7 @@ public class CareerGoalController {
 
     @PostMapping()
     public ResponseEntity<ResponseDto<Object>> createCareerGoal(@Valid @RequestBody CareerGoalRequest careerGoalRequest) {
+        System.out.println("xxxxxxx: "+careerGoalRequest);
         return careerGoalService.createCareerGoal(careerGoalRequest);
     }
 
