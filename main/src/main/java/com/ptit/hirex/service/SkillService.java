@@ -1,8 +1,11 @@
 package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Skill;
+import com.ptit.data.entity.Tech;
 import com.ptit.data.repository.SkillRepository;
+import com.ptit.data.repository.TechRepository;
 import com.ptit.hirex.dto.request.SkillRequest;
+import com.ptit.hirex.dto.response.SkillResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -24,7 +28,7 @@ public class SkillService {
     private final ModelMapper modelMapper;
     private final LanguageService languageService;
     private final AuthenticationService authenticationService;
-
+    private final TechRepository techRepository;
     public ResponseEntity<ResponseDto<Object>> createSkill(SkillRequest skillRequest) {
         Long employeeId = authenticationService.getEmployeeFromContext();
 
@@ -102,8 +106,7 @@ public class SkillService {
         }
     }
 
-    public ResponseEntity<ResponseDto<List<Skill>>> getAllSkill() {
-
+    public ResponseEntity<ResponseDto<List<SkillResponse>>> getAllSkill() {
         Long employeeId = authenticationService.getEmployeeFromContext();
 
         if (employeeId == null) {
@@ -115,21 +118,42 @@ public class SkillService {
         }
 
         try {
-            List<Skill> skill = skillRepository.findAllByEmployeeId(employeeId);
+            List<Skill> skills = skillRepository.findAllByEmployeeId(employeeId);
+            List<SkillResponse> skillResponses = skills.stream()
+                    .map(skill -> {
+                        // Lấy technology name từ repository
+                        String techName = null;
+                        if (skill.getTechId() != null) {
+                            Tech tech = techRepository.findById(skill.getTechId())
+                                    .orElse(null);
+                            if (tech != null) {
+                                techName = tech.getName();
+                            }
+                        }
+
+                        return SkillResponse.builder()
+                                .skillName(null)
+                                .techId(skill.getTechId())
+                                .techName(techName)
+                                .level(skill.getLevel())
+                                .description(skill.getDescription())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.skill.success"),
-                    skill,
+                    skillResponses,
                     StatusCodeEnum.SKILL1002
             );
         } catch (RuntimeException e) {
+            log.error("Error getting skills for employee {}: {}", employeeId, e.getMessage());
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.skill.failed"),
                     StatusCodeEnum.SKILL0002
             );
         }
     }
-
     public ResponseEntity<ResponseDto<Object>> deleteSkill(Long id) {
 
         try {

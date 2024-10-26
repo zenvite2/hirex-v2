@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -138,4 +139,20 @@ public class CompanyService {
         }
     }
 
+    public ResponseEntity<ResponseDto<Object>> getAllCompanies() {
+        try {
+            List<Company> companies = companyRepository.findAll();
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.company.success"),
+                    companies,
+                    StatusCodeEnum.COMPANY1001
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.company.failed"),
+                    StatusCodeEnum.COMPANY0001
+            );
+        }
+    }
 }

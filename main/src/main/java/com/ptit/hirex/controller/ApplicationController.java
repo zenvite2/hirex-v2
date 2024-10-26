@@ -1,5 +1,6 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.enums.ApplicationStatus;
 import com.ptit.hirex.dto.request.ApplicationRequest;
 import com.ptit.hirex.dto.response.ApplicationResponse;
 import com.ptit.hirex.model.ResponseDto;
@@ -25,5 +26,12 @@ public class ApplicationController {
     @GetMapping()
     public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
         return applicationService.getAllApplications();
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(
+            @PathVariable("id") Long id,
+            @RequestParam ApplicationStatus status) {
+        return applicationService.updateStatus(id, status);
     }
 }
