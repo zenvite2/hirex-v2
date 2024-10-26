@@ -2,6 +2,7 @@ package com.ptit.hirex.controller;
 
 import com.ptit.data.entity.Skill;
 import com.ptit.hirex.dto.request.SkillRequest;
+import com.ptit.hirex.dto.response.SkillResponse;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.SkillService;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class SkillController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto<List<Skill>>> getSkill() {
+    public ResponseEntity<ResponseDto<List<SkillResponse>>> getSkill() {
         return skillService.getAllSkill();
     }
 

@@ -24,4 +24,9 @@ public class CompanyController {
     public ResponseEntity<ResponseDto<Object>> updateCompany(@ModelAttribute @Valid CompanyRequest companyRequest) {
         return companyService.updateCompany(companyRequest);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto<Object>> getAllCompanies() {
+        return companyService.getAllCompanies();
+    }
 }

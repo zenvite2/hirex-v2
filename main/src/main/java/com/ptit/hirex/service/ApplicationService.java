@@ -16,6 +16,7 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -115,6 +116,39 @@ public class ApplicationService {
         return ResponseBuilder.badRequestResponse(
                 "get list success",
                 applicationResponses,
+                StatusCodeEnum.APPLICATION1000
+        );
+    }
+
+    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) {
+        // Cập nhật status
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ExpressionException("Application not found with id: " + id));
+        application.setStatus(status);
+        applicationRepository.save(application);
+
+        // Lấy thông tin job và employee
+        Job job = jobRepository.findById(application.getJobId())
+                .orElseThrow(() -> new RuntimeException("Job not found"));
+        Employee employee = employeeRepository.findById(application.getEmployeeId())
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        // Map sang response
+        ApplicationResponse applicationResponse = ApplicationResponse.builder()
+                .id(application.getId())
+                .jobId(job.getId())
+                .jobTitle(job.getTitle())
+                .address(job.getLocation())
+                .employeeId(employee.getId())
+                .fullName(employee.getFullName())
+                .coverLetter(application.getCoverLetter())
+                .status(application.getStatus())
+                .createdAt(application.getCreatedAt())
+                .build();
+
+        return ResponseBuilder.badRequestResponse(
+                "Update status successfully",
+                applicationResponse,
                 StatusCodeEnum.APPLICATION1000
         );
     }
