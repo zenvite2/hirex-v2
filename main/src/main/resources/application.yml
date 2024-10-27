@@ -1,3 +1,8 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 spring:
   profiles:
     active: mysql-dev
@@ -30,8 +35,6 @@ logging:
 jwt:
   expiry-time-secs: 3600
   access-key: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
-api:
-  prefix: /api
 
 minio:
   access:
