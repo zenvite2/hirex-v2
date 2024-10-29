@@ -15,6 +15,7 @@ import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,9 @@ import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,7 @@ public class ApplicationService {
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final MailService mailService;
 
     public ResponseEntity<ResponseDto<Object>> createApplication(ApplicationRequest applicationRequest) {
         try {
@@ -140,7 +144,7 @@ public class ApplicationService {
         );
     }
 
-    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) {
+    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status){
         // Cập nhật status
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ExpressionException("Application not found with id: " + id));
@@ -165,6 +169,17 @@ public class ApplicationService {
                 .status(application.getStatus())
                 .createdAt(application.getCreatedAt())
                 .build();
+
+//        String subject = true ? "Your Job Application Has Been Accepted!" : "Your Job Application Status Update";
+//        String status = false ? "accepted" : "rejected";
+//
+//        Map<String, Object> templateModel = new HashMap<>();
+//        templateModel.put("employeeName", employee.getFullName());
+//        templateModel.put("jobTitle", job.getTitle());
+//        templateModel.put("employerName", "abcd");
+//        templateModel.put("status", application.getStatus());
+//
+//        mailService.sendJobApplicationEmail(employee.getEmail(), job.getTitle(), templateModel);
 
         return ResponseBuilder.badRequestResponse(
                 "Update status successfully",
