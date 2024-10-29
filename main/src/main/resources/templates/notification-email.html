@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Application Update</title>
+</head>
+<body>
+<h2>Job Application Update</h2>
+<p>Dear <span th:text="${employeeName}">Employee Name</span>,</p>
+
+<p>We are writing to inform you that your application for the position of
+    <strong th:text="${jobTitle}">Job Title</strong> has been
+    <strong th:text="${status}">accepted/rejected</strong> by <span th:text="${employerName}">Employer Name</span>.
+</p>
+
+<p th:if="${status == 'accepted'}">
+    Congratulations! The employer has accepted your application. You may expect further communication soon to discuss next steps.
+</p>
+<p th:if="${status == 'rejected'}">
+    We regret to inform you that the employer has decided to proceed with other candidates. Thank you for applying, and we encourage you to continue exploring other opportunities with us.
+</p>
+
+<p>Best regards,<br>Job Application Team</p>
+</body>
+</html>
