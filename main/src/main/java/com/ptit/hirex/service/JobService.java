@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.EmployerDTO;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
@@ -15,7 +16,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -149,6 +149,7 @@ public class JobService {
                     .companyName(company != null ? company.getCompanyName() : null)
                     .companyLogo(company != null ? company.getLogo() : null)
                     .companyDescription(company != null ? company.getDescription() : null)
+                    .employer(modelMapper.map(employer, EmployerDTO.class))
                     .build();
 
             return ResponseBuilder.okResponse(

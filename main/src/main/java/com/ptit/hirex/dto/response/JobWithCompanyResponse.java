@@ -1,5 +1,6 @@
 package com.ptit.hirex.dto.response;
 
+import com.ptit.hirex.dto.EmployerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,5 @@ public class JobWithCompanyResponse {
     private String companyName;
     private String companyLogo;
     private String companyDescription;
+    private EmployerDTO employer;
 }
