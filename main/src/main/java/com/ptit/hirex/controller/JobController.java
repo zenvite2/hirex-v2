@@ -29,6 +29,11 @@ public class JobController {
         return jobService.getJob(id);
     }
 
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<ResponseDto<Object>> getJobWith(@PathVariable Long id) {
+        return jobService.getJobWith(id);
+    }
+
     @GetMapping()
     public ResponseEntity<ResponseDto<Object>> getListJob() {
         return jobService.getAllJob();
@@ -38,4 +43,11 @@ public class JobController {
     public ResponseEntity<ResponseDto<Object>> getJobsWithCompany() {
         return jobService.getAllJobsWithCompany();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto<Object>> deleteJob(@PathVariable Long id) {
+        jobService.deleteJob(id);
+        return jobService.deleteJob(id);
+    }
+
 }
