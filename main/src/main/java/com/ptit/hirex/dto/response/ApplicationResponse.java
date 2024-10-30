@@ -18,6 +18,7 @@ public class ApplicationResponse {
     private String jobTitle;  // từ bảng Job
     private String address;   // từ bảng Job
     private Long employeeId;
+    private String cvPdf;
     private String fullName;  // từ bảng Employee
     private String coverLetter;
     private ApplicationStatus status;
