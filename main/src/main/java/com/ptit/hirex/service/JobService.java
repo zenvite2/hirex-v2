@@ -134,7 +134,7 @@ public class JobService {
 
             Company company = null;
             if (employer != null) {
-                company = companyRepository.findById(employer.getId())
+                company = companyRepository.findById(employer.getCompany())
                         .orElse(null);
             }
 
@@ -305,7 +305,7 @@ public class JobService {
 
                         Company company = null;
                         if (employer != null) {
-                            company = companyRepository.findById(employer.getId())
+                            company = companyRepository.findById(employer.getCompany())
                                     .orElse(null);
                         }
 

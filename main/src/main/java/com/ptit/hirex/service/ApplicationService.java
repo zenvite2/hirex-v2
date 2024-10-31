@@ -112,6 +112,7 @@ public class ApplicationService {
     public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
         List<Application> applications = applicationRepository.findAll();
 
+        if(applications.isEmpty()){
         List<ApplicationResponse> applicationResponses = applications.stream()
                 .map(application -> {
                     Job job = jobRepository.findById(application.getJobId())
@@ -137,6 +138,11 @@ public class ApplicationService {
         return ResponseBuilder.badRequestResponse(
                 "get list success",
                 applicationResponses,
+                StatusCodeEnum.APPLICATION1000
+        );
+        }
+        return ResponseBuilder.badRequestResponse(
+                "get list success",
                 StatusCodeEnum.APPLICATION1000
         );
     }
