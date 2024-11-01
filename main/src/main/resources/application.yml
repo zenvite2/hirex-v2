@@ -1,7 +1,5 @@
 server:
   port: 8080
-  servlet:
-    context-path: /api
 
 spring:
   profiles:
@@ -42,6 +40,6 @@ minio:
   secret:
     key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
   url:
-    public: ${S3_ENDPOINT:http://36.50.134.219:9000}
-    private: ${S3_ENDPOINT_PRIVATE:http://36.50.134.219:9000}
+    public: ${S3_ENDPOINT:https://s3.deploy-hirexptit.io.vn}
+    private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
   bucket: ${S3_BUCKET:hirex}
