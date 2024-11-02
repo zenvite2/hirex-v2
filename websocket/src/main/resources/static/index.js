@@ -6,7 +6,7 @@ const elements = {
 
 let localStream, localPeer, stompClient;
 
-const url = 'https://192.168.1.123:8888'
+const url = 'https://ws.deploy-hirexptit.io.vn'
 
 const iceServers = {iceServers: [{urls: "stun:stun.l.google.com:19302"}]};
 
@@ -15,11 +15,12 @@ async function initLocalPeer() {
     const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: true});
     localStream = stream;
     elements.localVideo.srcObject = stream;
-    console.log("Local stream setup complete");
+    console.log("Local stream setup complete!!!");
     connectToWebSocket();
 }
 
 function connectToWebSocket() {
+    console.log("Connecting to websocket:", url);
     const socket = new SockJS(url + '/ws');
     stompClient = Stomp.over(socket);
 
@@ -117,7 +118,7 @@ function connectToWebSocket() {
 
         stompClient.subscribe(`/user/${fromUser}/topic/accept`, message => {
             const status = JSON.parse(message.body).status;
-            if (status === 'VIDEO_CALL_REQUEST_ACCEPT') {
+            if (status === 'VIDEO_CALL_RESPONSE_ACCEPT') {
                 console.log("====ACCEPT READY SIGNAL====")
                 initiateCall();
             } else {
@@ -130,7 +131,7 @@ function connectToWebSocket() {
             const acceptPayload = {
                 fromUser: fromUser,
                 toUser: toUser,
-                status: 'ACCEPT',
+                status: 'VIDEO_CALL_RESPONSE_ACCEPT',
             };
             stompClient.send("/app/accept", {}, JSON.stringify(acceptPayload));
             console.log('SENDING READY SIGNAL..........');
