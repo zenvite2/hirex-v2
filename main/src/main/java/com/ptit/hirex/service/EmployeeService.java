@@ -5,7 +5,7 @@ import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
-import com.ptit.hirex.dto.EmployeeDTO;
+import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
@@ -117,7 +117,7 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> updateEmployee(EmployeeDTO employeeDTO) {
+    public ResponseEntity<ResponseDto<Object>> updateEmployee(EmployeeDto employeeDto) {
 
         String userName = authenticationService.getUserFromContext();
 
@@ -140,10 +140,10 @@ public class EmployeeService {
                 );
             }
 
-            modelMapper.map(employeeDTO, employee);
+            modelMapper.map(employeeDto, employee);
 
-            if (employeeDTO.getAvatar() != null && !employeeDTO.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employeeDTO.getAvatar(), employee.getAvatar(), "AVATAR");
+            if (employeeDto.getAvatar() != null && !employeeDto.getAvatar().isEmpty()) {
+                String avatar = fileService.uploadImageFile(employeeDto.getAvatar(), employee.getAvatar(), "AVATAR");
                 if (avatar == null) {
                     log.error("Upload file image avatar failed");
                     return ResponseBuilder.badRequestResponse(

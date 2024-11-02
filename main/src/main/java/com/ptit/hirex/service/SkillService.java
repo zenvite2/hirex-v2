@@ -29,6 +29,7 @@ public class SkillService {
     private final LanguageService languageService;
     private final AuthenticationService authenticationService;
     private final TechRepository techRepository;
+
     public ResponseEntity<ResponseDto<Object>> createSkill(SkillRequest skillRequest) {
         Long employeeId = authenticationService.getEmployeeFromContext();
 
@@ -154,6 +155,7 @@ public class SkillService {
             );
         }
     }
+
     public ResponseEntity<ResponseDto<Object>> deleteSkill(Long id) {
 
         try {

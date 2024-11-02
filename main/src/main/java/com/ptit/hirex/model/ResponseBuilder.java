@@ -99,4 +99,14 @@ public class ResponseBuilder {
                 .build();
         return ResponseEntity.ok(dto);
     }
+
+    @Nonnull
+    public static <T> ResponseEntity<ResponseDto<T>> noContentResponse(String message, StatusCodeEnum statusCode) {
+        final ResponseDto<T> dto = ResponseDto.<T>builder()
+                .success(false)
+                .message(message)
+                .statusCode(statusCode.toString())
+                .build();
+        return ResponseEntity.ok(dto);
+    }
 }

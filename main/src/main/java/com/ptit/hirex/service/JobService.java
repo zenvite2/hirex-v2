@@ -2,7 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
-import com.ptit.hirex.dto.EmployerDTO;
+import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
@@ -149,7 +149,7 @@ public class JobService {
                     .companyName(company != null ? company.getCompanyName() : null)
                     .companyLogo(company != null ? company.getLogo() : null)
                     .companyDescription(company != null ? company.getDescription() : null)
-                    .employer(modelMapper.map(employer, EmployerDTO.class))
+                    .employer(modelMapper.map(employer, UserInfoDto.class))
                     .build();
 
             return ResponseBuilder.okResponse(
