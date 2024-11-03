@@ -10,9 +10,7 @@ public class EmployeeDTOToEmployee extends PropertyMap<EmployeeDto, Employee> {
 
     @Override
     protected void configure() {
-        map().setFullName(source.getFullName());
         map().setDateOfBirth(source.getDateOfBirth());
-        map().setPhoneNumber(source.getPhoneNumber());
         map().setAddress(source.getAddress());
         map().setEmail(source.getEmail());
         map().setGender(source.getGender());
