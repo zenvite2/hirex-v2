@@ -9,6 +9,7 @@ import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.EmployerRequest;
 import com.ptit.hirex.dto.request.EmployerUpdateRequest;
+import com.ptit.hirex.dto.response.EmployerResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -64,6 +65,8 @@ public class EmployerService {
                     .username(employerRequest.getUsername())
                     .password(passwordEncoder.encode(employerRequest.getPassword()))
                     .role(roleRepo.findById(2L).get())
+                    .phoneNumber(employerRequest.getPhoneNumber())
+                    .fullName(employerRequest.getFullName())
                     .build();
 
             User userSave = userRepository.save(newUser);
@@ -89,14 +92,21 @@ public class EmployerService {
             employer.setUserId(userSave.getId());
             employer.setCompany(companyId);
             employer.setEmail(employerRequest.getEmail());
-            employer.setPhoneNumber(employerRequest.getPhoneNumber());
             employer.setGender(employerRequest.getGender());
 
             employerRepository.save(employer);
 
+            Company company = companyRepository.findById(companyId).get();
+
+            EmployerResponse employerResponse = modelMapper.map(employer, EmployerResponse.class);
+            employerResponse.setCompany(company);
+            employerResponse.setAvatar(userSave.getAvatar());
+            employerResponse.setFullName(userSave.getFullName());
+            employerResponse.setPhoneNumber(userSave.getPhoneNumber());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("create.employer.success"),
-                    userSave,
+                    employerResponse,
                     StatusCodeEnum.EMPLOYER1000
             );
         } catch (Exception e) {
@@ -110,17 +120,19 @@ public class EmployerService {
     public ResponseEntity<ResponseDto<Object>> getEmployer() {
         String userName = authenticationService.getUserFromContext();
 
-        Optional<User> user = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userRepository.findByUsername(userName);
 
-        if (user.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
+        User user = userOptional.get();
+
         try {
-            Employer employer = employerRepository.findByUserId(user.get().getId());
+            Employer employer = employerRepository.findByUserId(user.getId());
 
             if (employer == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -129,9 +141,17 @@ public class EmployerService {
                 );
             }
 
+            Company company = companyRepository.findById(employer.getCompany()).get();
+
+            EmployerResponse employerResponse = modelMapper.map(employer, EmployerResponse.class);
+            employerResponse.setCompany(company);
+            employerResponse.setAvatar(user.getAvatar());
+            employerResponse.setFullName(user.getFullName());
+            employerResponse.setPhoneNumber(user.getPhoneNumber());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.employer.success"),
-                    employer,
+                    employerResponse,
                     StatusCodeEnum.EMPLOYEE1001
             );
         } catch (Exception e) {
@@ -146,16 +166,18 @@ public class EmployerService {
 
         String userName = authenticationService.getUserFromContext();
 
-        Optional<User> user = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userRepository.findByUsername(userName);
 
-        if (user.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
-        Employer employer = employerRepository.findByUserId(user.get().getId());
+        User user = userOptional.get();
+
+        Employer employer = employerRepository.findByUserId(user.getId());
 
         if (employer == null) {
             return ResponseBuilder.badRequestResponse(
@@ -168,7 +190,7 @@ public class EmployerService {
             modelMapper.map(employer, employerUpdateRequest);
 
             if (employerUpdateRequest.getAvatar() != null && !employerUpdateRequest.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employerUpdateRequest.getAvatar(), employer.getAvatar(), "AVATAR");
+                String avatar = fileService.uploadImageFile(employerUpdateRequest.getAvatar(), user.getAvatar(), "AVATAR");
                 if (avatar == null) {
                     log.error("Upload file image avatar failed");
                     return ResponseBuilder.badRequestResponse(
@@ -176,17 +198,27 @@ public class EmployerService {
                             StatusCodeEnum.UPLOADFILE0001
                     );
                 } else {
-                    employer.setAvatar(publicUrl + "/" + avatar);
+                    user.setAvatar(publicUrl + "/" + avatar);
                 }
-            } else {
-                employer.setAvatar(employer.getAvatar());
             }
+            user.setFullName(employerUpdateRequest.getFullName());
+            user.setPhoneNumber(employerUpdateRequest.getPhoneNumber());
+
+            userRepository.save(user);
 
             employerRepository.save(employer);
 
+            Company company = companyRepository.findById(employer.getCompany()).get();
+
+            EmployerResponse employerResponse = modelMapper.map(employer, EmployerResponse.class);
+            employerResponse.setCompany(company);
+            employerResponse.setAvatar(user.getAvatar());
+            employerResponse.setFullName(user.getFullName());
+            employerResponse.setPhoneNumber(user.getPhoneNumber());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.employer.success"),
-                    employer,
+                    employerResponse,
                     StatusCodeEnum.EMPLOYER1002
             );
 

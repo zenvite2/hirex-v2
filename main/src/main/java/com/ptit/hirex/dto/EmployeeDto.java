@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeDTO {
+public class EmployeeDto {
     private String email;
     private String fullName;
     private String phoneNumber;

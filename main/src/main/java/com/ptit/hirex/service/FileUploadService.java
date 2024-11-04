@@ -4,11 +4,14 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RequiredArgsConstructor
 @Service
@@ -44,14 +47,23 @@ public class FileUploadService {
         String fileType = file.getContentType();
         String folder;
         assert fileType != null;
+
         if (fileType.startsWith("image/")) {
-            folder = "images";  // Save to images folder
+            folder = "images";
         } else if (fileType.equals("application/pdf")) {
-            folder = "pdfs";     // Save to pdfs folder
+            folder = "pdfs";
         } else {
             throw new Exception("Unsupported file type: " + fileType);
         }
 
-        return folder + "/" + System.currentTimeMillis() + file.getOriginalFilename();
+        String originalFileName = "default-url";
+        if(StringUtils.isNotBlank(file.getOriginalFilename())) {
+            String sanitizedFileName = file.getOriginalFilename()
+                    .replaceAll("[^a-zA-Z0-9.\\-]", "_");
+
+            originalFileName = URLEncoder.encode(sanitizedFileName, StandardCharsets.UTF_8);
+        }
+
+        return folder + "/" + System.currentTimeMillis() + "_" + originalFileName;
     }
 }

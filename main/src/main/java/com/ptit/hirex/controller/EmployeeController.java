@@ -1,6 +1,6 @@
 package com.ptit.hirex.controller;
 
-import com.ptit.hirex.dto.EmployeeDTO;
+import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.EmployeeService;
@@ -28,7 +28,7 @@ public class EmployeeController {
     }
 
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDto<Object>> updateEmployee(@Valid @ModelAttribute EmployeeDTO employeeDTO) {
+    public ResponseEntity<ResponseDto<Object>> updateEmployee(@Valid @ModelAttribute EmployeeDto employeeDTO) {
         return employeeService.updateEmployee(employeeDTO);
     }
 }

@@ -1,4 +1,4 @@
-package com.ptit.websocket.dto;
+package com.ptit.hirex.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -5,8 +5,9 @@ import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
-import com.ptit.hirex.dto.EmployeeDTO;
+import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
+import com.ptit.hirex.dto.response.EmployeeResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -69,9 +70,14 @@ public class EmployeeService {
 
             employeeRepository.save(employee);
 
+            EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+            employeeResponse.setFullName(userSave.getFullName());
+            employeeResponse.setAvatar(userSave.getAvatar());
+            employeeResponse.setPhoneNumber(userSave.getPhoneNumber());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("create.employee.success"),
-                    userSave,
+                    employeeResponse,
                     StatusCodeEnum.EMPLOYEE1000
             );
         } catch (Exception e) {
@@ -85,17 +91,19 @@ public class EmployeeService {
     public ResponseEntity<ResponseDto<Object>> getEmployee() {
         String userName = authenticationService.getUserFromContext();
 
-        Optional<User> user = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userRepository.findByUsername(userName);
 
-        if (user.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
+        User user = userOptional.get();
+
         try {
-            Employee employee = employeeRepository.findByUserId(user.get().getId());
+            Employee employee = employeeRepository.findByUserId(user.getId());
 
             if (employee == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -104,9 +112,14 @@ public class EmployeeService {
                 );
             }
 
+            EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+            employeeResponse.setFullName(user.getFullName());
+            employeeResponse.setAvatar(user.getAvatar());
+            employeeResponse.setPhoneNumber(user.getPhoneNumber());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.employee.success"),
-                    employee,
+                    employeeResponse,
                     StatusCodeEnum.EMPLOYEE1001
             );
         } catch (Exception e) {
@@ -117,21 +130,23 @@ public class EmployeeService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> updateEmployee(EmployeeDTO employeeDTO) {
+    public ResponseEntity<ResponseDto<Object>> updateEmployee(EmployeeDto employeeDto) {
 
         String userName = authenticationService.getUserFromContext();
 
-        Optional<User> user = userRepository.findByUsername(userName);
+        Optional<User> userOptional = userRepository.findByUsername(userName);
 
-        if (user.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("auth.signup.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
+        User user = userOptional.get();
+
         try {
-            Employee employee = employeeRepository.findByUserId(user.get().getId());
+            Employee employee = employeeRepository.findByUserId(user.getId());
 
             if (employee == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -140,10 +155,10 @@ public class EmployeeService {
                 );
             }
 
-            modelMapper.map(employeeDTO, employee);
+            modelMapper.map(employeeDto, employee);
 
-            if (employeeDTO.getAvatar() != null && !employeeDTO.getAvatar().isEmpty()) {
-                String avatar = fileService.uploadImageFile(employeeDTO.getAvatar(), employee.getAvatar(), "AVATAR");
+            if (employeeDto.getAvatar() != null && !employeeDto.getAvatar().isEmpty()) {
+                String avatar = fileService.uploadImageFile(employeeDto.getAvatar(), user.getAvatar(), "AVATAR");
                 if (avatar == null) {
                     log.error("Upload file image avatar failed");
                     return ResponseBuilder.badRequestResponse(
@@ -151,14 +166,23 @@ public class EmployeeService {
                             StatusCodeEnum.UPLOADFILE0001
                     );
                 } else {
-                    employee.setAvatar(publicUrl + "/" + avatar);
+                    user.setAvatar(publicUrl + "/" + avatar);
                 }
             }
+            user.setFullName(employeeDto.getFullName());
+            user.setPhoneNumber(employeeDto.getPhoneNumber());
+            userRepository.save(user);
 
-            Employee updatedEmployee = employeeRepository.save(employee);
+            employeeRepository.save(employee);
+
+            EmployeeResponse employeeResponse = modelMapper.map(employee, EmployeeResponse.class);
+            employeeResponse.setFullName(user.getFullName());
+            employeeResponse.setPhoneNumber(user.getPhoneNumber());
+            employeeResponse.setAvatar(user.getAvatar());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.employee.success"),
-                    updatedEmployee,
+                    employeeResponse,
                     StatusCodeEnum.EMPLOYEE1002
             );
         } catch (RuntimeException e) {
