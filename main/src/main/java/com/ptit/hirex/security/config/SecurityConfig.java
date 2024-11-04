@@ -3,6 +3,7 @@ package com.ptit.hirex.security.config;
 import com.ptit.hirex.security.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
+//        config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
@@ -48,6 +50,9 @@ public class SecurityConfig {
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    TokenInvalidAuthenEntryPoint tokenInvalidAuthenEntryPoint;
 
     //Thiết lập API
     @Bean
@@ -64,8 +69,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
+//                .httpBasic(basic -> basic.authenticationEntryPoint(tokenInvalidAuthenEntryPoint))
                 .addFilterBefore(preFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 

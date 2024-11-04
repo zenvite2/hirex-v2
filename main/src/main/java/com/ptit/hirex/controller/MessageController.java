@@ -24,7 +24,6 @@ public class MessageController {
     @ResponseBody
     @GetMapping("/conversations")
     public ResponseEntity<ResponseDto<List<UserConversationsDto>>> getUserConversations(@AuthenticationPrincipal User user) {
-        System.out.println(user.toString());
         List<UserConversationsDto> conversations = messageService.getUserConversations(user.getId());
         return ResponseBuilder.okResponse("Query success", conversations, StatusCodeEnum.MESSAGE1000);
     }
