@@ -19,7 +19,9 @@ public class CareerGoal {
 
     private Long employeeId;
 
-    private Integer salary;
+    private String position;
+
+    private Long salary;
 
     private Long jobType;
 }

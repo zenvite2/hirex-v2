@@ -1,4 +1,4 @@
-package com.ptit.websocket.dto;
+package com.ptit.hirex.dto;
 
 import com.ptit.data.enums.MessageType;
 import com.ptit.data.enums.Status;

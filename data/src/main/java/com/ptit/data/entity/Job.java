@@ -28,6 +28,8 @@ public class Job extends Auditable {
 
     private Long salary;
 
+    private Long tech;
+
     private Long city;
 
     private Long district;

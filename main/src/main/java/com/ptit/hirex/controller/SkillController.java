@@ -1,6 +1,5 @@
 package com.ptit.hirex.controller;
 
-import com.ptit.data.entity.Skill;
 import com.ptit.hirex.dto.request.SkillRequest;
 import com.ptit.hirex.dto.response.SkillResponse;
 import com.ptit.hirex.model.ResponseDto;

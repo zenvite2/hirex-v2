@@ -132,7 +132,23 @@ public enum StatusCodeEnum {
     COMPANY1000("COMPANY1000"), //Autofill company success
     COMPANY0000("COMPANY0000"), //Autofill company failed
     SALARY1000("SALARY1000"), //Autofill salary success
-    SALARY0000("SALARY0000"); //Autofill salary failed
+    SALARY0000("SALARY0000"), //Autofill salary failed
+    // USER-INFO
+    USERINFO1000("USERINFO1000"),
+    USERINFO0000("USERINFO0000"),
+    // MESSAGE
+    MESSAGE1000("MESSAGE1000"),
+    MESSAGE0000("MESSAGE0000"),
+
+    // COMMENT
+    COMMENT1000("Comment created successfully"),
+    COMMENT1001("Comments retrieved successfully"),
+    COMMENT0000("Failed to get comment"),
+    COMMENT0001("Failed to get comments"),
+
+    // REPLY
+    REPLY1000("Reply created successfully"),
+    REPLY0000("Failed to create reply");
 
     public final String value;
 

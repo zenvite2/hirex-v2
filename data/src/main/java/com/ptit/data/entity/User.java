@@ -38,7 +38,7 @@ public class User extends Auditable implements UserDetails {
     @JoinColumn(name = "role_id")
     private Role role;
 
-    private String avtUrl;
+    private String avatar;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -47,4 +47,8 @@ public class User extends Auditable implements UserDetails {
         // authorityList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         return authorityList;
     }
+
+    private String fullName;
+
+    private String phoneNumber;
 }

@@ -105,21 +105,21 @@ public class MailServiceImpl implements MailService {
 
     private String buildPasswordResetEmailTemplate(String newPassword) {
         return """
-            <html>
-                <body style='margin: 0; padding: 20px; font-family: Arial, sans-serif;'>
-                    <div style='background-color: #f5f5f5; padding: 20px; border-radius: 5px;'>
-                        <h2 style='color: #333;'>Password Reset</h2>
-                        <p>Your password has been reset successfully. Here is your new password:</p>
-                        <div style='background-color: #fff; padding: 10px; border-radius: 3px; margin: 10px 0;'>
-                            <strong>%s</strong>
+                <html>
+                    <body style='margin: 0; padding: 20px; font-family: Arial, sans-serif;'>
+                        <div style='background-color: #f5f5f5; padding: 20px; border-radius: 5px;'>
+                            <h2 style='color: #333;'>Password Reset</h2>
+                            <p>Your password has been reset successfully. Here is your new password:</p>
+                            <div style='background-color: #fff; padding: 10px; border-radius: 3px; margin: 10px 0;'>
+                                <strong>%s</strong>
+                            </div>
+                            <p>Please change this password after logging in for security purposes.</p>
+                            <p>If you didn't request this password reset, please contact our support team immediately.</p>
+                            <br>
+                            <p>Best regards,<br>Your Application Team</p>
                         </div>
-                        <p>Please change this password after logging in for security purposes.</p>
-                        <p>If you didn't request this password reset, please contact our support team immediately.</p>
-                        <br>
-                        <p>Best regards,<br>Your Application Team</p>
-                    </div>
-                </body>
-            </html>
-            """.formatted(newPassword);
+                    </body>
+                </html>
+                """.formatted(newPassword);
     }
 }

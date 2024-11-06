@@ -15,8 +15,16 @@ public class JobResponse {
     private Long id;
     private String title;
     private String location;
-    private String district;
-    private String city;
+    private Long district;
+    private Long city;
     private String deadline;
+    private String description;
+    private String requirements;
+    private Long yearExperience;
+    private Long salary;
+    private Long tech;
+    private Long position;
+    private Long jobType;
+    private Long contractType;
     private LocalDateTime createdAt;
 }

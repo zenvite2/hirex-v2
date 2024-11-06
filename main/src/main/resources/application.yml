@@ -1,3 +1,6 @@
+server:
+  port: 8080
+
 spring:
   profiles:
     active: mysql-dev
@@ -26,12 +29,11 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: DEBUG
 
 jwt:
   expiry-time-secs: 3600
   access-key: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
-api:
-  prefix: /api
 
 minio:
   access:
@@ -39,6 +41,6 @@ minio:
   secret:
     key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
   url:
-    public: ${S3_ENDPOINT:http://36.50.134.219:9000}
-    private: ${S3_ENDPOINT_PRIVATE:http://36.50.134.219:9000}
+    public: ${S3_ENDPOINT:https://s3.deploy-hirexptit.io.vn}
+    private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
   bucket: ${S3_BUCKET:hirex}

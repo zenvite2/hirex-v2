@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
@@ -33,6 +34,11 @@ public class JobService {
     private final EmployerRepository employerRepository;
     private final DistrictRepository districtRepository;
     private final CityRepository cityRepository;
+    private final YearExperienceRepository experienceRepository;
+    private final SalaryRepository salaryRepository;
+    private final PositionRepository positionRepository;
+    private final JobTypeRepository jobTypeRepository;
+    private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
@@ -143,6 +149,58 @@ public class JobService {
                     .companyName(company != null ? company.getCompanyName() : null)
                     .companyLogo(company != null ? company.getLogo() : null)
                     .companyDescription(company != null ? company.getDescription() : null)
+                    .employer(modelMapper.map(employer, UserInfoDto.class))
+                    .build();
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.job.success"),
+                    jobResponse,
+                    StatusCodeEnum.JOB1001
+            );
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.job"),
+                    StatusCodeEnum.JOB4000
+            );
+        } catch (RuntimeException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.job.failed"),
+                    StatusCodeEnum.JOB0001
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> getJobWith(Long id) {
+        try {
+            Job job = jobRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
+
+            // Lấy thông tin employer và company
+            Employer employer = employerRepository.findById(job.getEmployer())
+                    .orElse(null);
+
+            Company company = null;
+            if (employer != null) {
+                company = companyRepository.findById(employer.getId())
+                        .orElse(null);
+            }
+
+            JobResponse jobResponse = JobResponse.builder()
+                    .id(job.getId())
+                    .title(job.getTitle())
+                    .location(job.getLocation())
+                    .district(job.getDistrict())
+                    .city(job.getCity())
+                    .deadline(job.getDeadline())
+                    .description(job.getDescription())
+                    .requirements(job.getRequirements())
+                    .yearExperience(job.getYearExperience())
+                    .salary(job.getSalary())
+                    .position(job.getPosition())
+                    .tech(job.getTech())
+                    .jobType(job.getJobType())
+                    .contractType(job.getContractType())
+                    .createdAt(job.getCreatedAt())
                     .build();
 
             return ResponseBuilder.okResponse(
@@ -201,8 +259,8 @@ public class JobService {
                                 .id(job.getId())
                                 .title(job.getTitle())
                                 .location(job.getLocation())
-                                .district(districtName)
-                                .city(cityName)
+//                                .district(districtName)
+//                                .city(cityName)
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .build();
