@@ -10,7 +10,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserConversationsDto {
-    private Long id;
+    /**
+     * User id chatting with
+     */
+    private Long userId;
     private String name;
     private String avtUrl;
     private List<MessageDto> last10Messages;
