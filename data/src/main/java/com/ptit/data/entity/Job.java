@@ -50,4 +50,8 @@ public class Job extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private JobStatus status;
+
+    @Column(name = "job_details")
+    @Convert(converter = HashMapConverter.class)
+    private Map<String, Object> jobDetails;
 }

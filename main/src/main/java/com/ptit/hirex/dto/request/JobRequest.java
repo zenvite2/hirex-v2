@@ -25,4 +25,5 @@ public class JobRequest {
     private Long jobType;
     private Long contractType;
     private String deadline;
+    private Map<String, Object> jobDetails;
 }

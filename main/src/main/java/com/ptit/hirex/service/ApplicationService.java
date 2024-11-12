@@ -168,7 +168,6 @@ public class ApplicationService {
                 .address(job.getLocation())
                 .employeeId(employee.getId())
                 .cvPdf(application.getCvPdf())
-                .fullName(employee.getFullName())
                 .cvPdf(application.getCvPdf())
                 .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
                 .coverLetter(application.getCoverLetter())

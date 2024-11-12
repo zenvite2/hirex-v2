@@ -110,14 +110,7 @@ public class AutofillService {
 
     public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
         try {
-//            List<Salary> salaries = salaryRepository.findAll();
-
-            List<Salary> salaries = new ArrayList<>();
-
-            // Create and add Salary objects
-            salaries.add(new Salary(1, "1000 - 2000", 1000L, 2000L));
-            salaries.add(new Salary(2, "2000 - 3000", 2000L, 3000L));
-            salaries.add(new Salary(3, "3000 - 4000", 3000L, 4000L));
+            List<Salary> salaries = salaryRepository.findAll();
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("autofill.salary.success"),
