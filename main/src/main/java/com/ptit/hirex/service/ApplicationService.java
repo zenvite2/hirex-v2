@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApplicationService {
 
+    private final NotificationService notificationService;
     @Value("${minio.url.public}")
     private String publicUrl;
 
@@ -71,6 +72,9 @@ public class ApplicationService {
                         StatusCodeEnum.JOB4000
                 );
             }
+
+            //tao thong bao
+            notificationService.createNotification(user.getId(), applicationRequest.getJobId(), "APPLY");
 
             Application application = Application.builder()
                     .jobId(applicationRequest.getJobId())
@@ -147,6 +151,9 @@ public class ApplicationService {
         application.setStatus(status);
         applicationRepository.save(application);
 
+        //tao thong bao
+        notificationService.createNotification(application.getEmployeeId(), application.getJobId(), String.valueOf(application.getStatus()));
+
         Employee employee = employeeRepository.findByUserId(application.getEmployeeId());
         if (employee == null) {
             return ResponseBuilder.badRequestResponse(
@@ -188,9 +195,9 @@ public class ApplicationService {
                 .build();
 
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("employeeName", employee.getFullName());
+        templateModel.put("employeeName", userRepository.findById(employee.getUserId()).get().getFullName());
         templateModel.put("jobTitle", job.getTitle());
-        templateModel.put("employerName", employer.get().getFullName());
+        templateModel.put("employerName", userRepository.findById(employer.get().getUserId()).get().getFullName());
         templateModel.put("status", application.getStatus());
 
         mailService.sendJobApplicationEmail(employee.getEmail(), job.getTitle(), templateModel);

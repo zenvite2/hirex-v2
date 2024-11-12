@@ -8,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -25,17 +22,10 @@ public class Reply extends Auditable {
 
     private Long userId;
 
+    private String username;
+
     @ManyToOne
     @JoinColumn(name = "comment_id")
     @JsonIgnore
     private Comment parentComment;
-
-    @ManyToOne
-    @JoinColumn(name = "parent_reply_id")
-    @JsonIgnore
-    private Reply parentReply;
-
-    @OneToMany(mappedBy = "parentReply", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Reply> childReplies = new ArrayList<>();
 }

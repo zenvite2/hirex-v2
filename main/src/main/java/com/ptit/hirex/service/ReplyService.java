@@ -29,31 +29,25 @@ public class ReplyService {
     private final LanguageService languageService;
 
     public ResponseEntity<ResponseDto<Object>> createReply(ReplyRequest replyRequest) {
-        String userName = authenticationService.getUserFromContext();
-
-        Optional<User> userOptional = userRepository.findByUsername(userName);
-
-        if (userOptional.isEmpty()) {
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("auth.signup.user.not.found"),
-                    StatusCodeEnum.AUTH0016
-            );
-        }
+//        String userName = authenticationService.getUserFromContext();
+//
+//        Optional<User> userOptional = userRepository.findByUsername(userName);
+//
+//        if (userOptional.isEmpty()) {
+//            return ResponseBuilder.badRequestResponse(
+//                    languageService.getMessage("auth.signup.user.not.found"),
+//                    StatusCodeEnum.AUTH0016
+//            );
+//        }
 
         try {
             Reply reply = new Reply();
-            reply.setUserId(userOptional.get().getId());
+            reply.setUserId(replyRequest.getUserId());
             reply.setContent(replyRequest.getContent());
-
-            if (replyRequest.getParentReplyId() != null) {
-                Reply parentReply = replyRepository.findById(replyRequest.getParentReplyId())
-                        .orElseThrow(() -> new EntityNotFoundException("Parent reply not found"));
-                reply.setParentReply(parentReply);
-            } else {
-                Comment parentComment = commentRepository.findById(replyRequest.getCommentId())
-                        .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
-                reply.setParentComment(parentComment);
-            }
+            reply.setUsername(userRepository.findById(replyRequest.getUserId()).get().getUsername());
+            Comment parentComment = commentRepository.findById(replyRequest.getCommentId())
+                    .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
+            reply.setParentComment(parentComment);
 
             replyRepository.save(reply);
             return ResponseBuilder.okResponse(
