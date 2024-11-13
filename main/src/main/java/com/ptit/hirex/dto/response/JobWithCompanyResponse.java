@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Builder
@@ -23,5 +24,7 @@ public class JobWithCompanyResponse {
     private String companyName;
     private String companyLogo;
     private String companyDescription;
+
     private UserInfoDto employer;
+    private Map<String, Object> jobDetails;
 }

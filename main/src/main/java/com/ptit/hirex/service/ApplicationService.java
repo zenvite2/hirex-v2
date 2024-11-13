@@ -112,6 +112,7 @@ public class ApplicationService {
     public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
         List<Application> applications = applicationRepository.findAll();
 
+        if(applications.isEmpty()){
         List<ApplicationResponse> applicationResponses = applications.stream()
                 .map(application -> {
                     Job job = jobRepository.findById(application.getJobId())
@@ -139,6 +140,11 @@ public class ApplicationService {
                 applicationResponses,
                 StatusCodeEnum.APPLICATION1000
         );
+        }
+        return ResponseBuilder.badRequestResponse(
+                "get list success",
+                StatusCodeEnum.APPLICATION1000
+        );
     }
 
     public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) {
@@ -161,6 +167,7 @@ public class ApplicationService {
                 .jobTitle(job.getTitle())
                 .address(job.getLocation())
                 .employeeId(employee.getId())
+                .cvPdf(application.getCvPdf())
                 .cvPdf(application.getCvPdf())
                 .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
                 .coverLetter(application.getCoverLetter())

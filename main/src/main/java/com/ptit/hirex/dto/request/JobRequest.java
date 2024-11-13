@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,4 +25,5 @@ public class JobRequest {
     private Long jobType;
     private Long contractType;
     private String deadline;
+    private Map<String, Object> jobDetails;
 }
