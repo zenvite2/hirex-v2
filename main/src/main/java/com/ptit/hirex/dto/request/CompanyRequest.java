@@ -26,4 +26,6 @@ public class CompanyRequest {
     private Long city;
 
     private Long district;
+
+    private Long scale;
 }

@@ -1,20 +1,18 @@
-package com.ptit.data.entity;
+package com.ptit.hirex.dto.response;
 
-import jakarta.persistence.*;
+import com.ptit.data.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "company")
-public class Company {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CompanyResponse {
     private Long id;
 
     private Long employerId;
@@ -29,9 +27,11 @@ public class Company {
 
     private String address;
 
-    private Long city;
+    private String city;
 
-    private Long district;
+    private String district;
 
-    private Long scale;
+    private String scale;
+
+    private List<Job> jobs;
 }
