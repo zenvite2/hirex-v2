@@ -20,6 +20,11 @@ public class CompanyController {
         return companyService.getCompany();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto<Object>> getCompanyById(@PathVariable("id") Long id) {
+        return companyService.getCompanyById(id);
+    }
+
     @PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResponseDto<Object>> updateCompany(@ModelAttribute @Valid CompanyRequest companyRequest) {
         return companyService.updateCompany(companyRequest);

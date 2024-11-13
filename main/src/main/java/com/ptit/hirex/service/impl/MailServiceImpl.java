@@ -9,6 +9,10 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -16,10 +20,12 @@ public class MailServiceImpl implements MailService {
 
     private final JavaMailSender mailSender;
     private final String sender;
+    private final TemplateEngine templateEngine;
 
-    public MailServiceImpl(JavaMailSender mailSender, @Value("${spring.mail.from}") String sender) {
+    public MailServiceImpl(JavaMailSender mailSender, @Value("${spring.mail.from}") String sender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.sender = sender;
+        this.templateEngine = templateEngine;
     }
 
     @Override
@@ -78,6 +84,23 @@ public class MailServiceImpl implements MailService {
             log.error("Failed to send password reset email to: {}", to, e);
             throw new Exception("Failed to send password reset email", e);
         }
+    }
+
+    @Override
+    public void sendJobApplicationEmail(String to, String subject, Map<String, Object> templateModel) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
+
+        Context context = new Context();
+        context.setVariables(templateModel);
+        String htmlContent = templateEngine.process("notification-email", context);
+
+        helper.setText(htmlContent, true);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setFrom(sender);
+
+        mailSender.send(message);
     }
 
     private String buildPasswordResetEmailTemplate(String newPassword) {

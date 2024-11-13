@@ -23,6 +23,7 @@ public class Comment extends Auditable {
     private String content;
     private Long userId;
     private Long companyId;
+    private String username;
 
     @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();

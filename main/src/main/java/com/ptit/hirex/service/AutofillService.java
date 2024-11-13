@@ -9,6 +9,7 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -161,7 +162,7 @@ public class AutofillService {
 
     public ResponseEntity<ResponseDto<List<YearExperience>>> autofillYearExperience() {
         try {
-            List<YearExperience> experiences = yearExperienceRepository.findAll();
+            List<YearExperience> experiences = yearExperienceRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("autofill.year.experience.success"),

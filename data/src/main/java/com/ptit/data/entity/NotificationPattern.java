@@ -14,6 +14,8 @@ public class NotificationPattern {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String type;
+
     @Column(nullable = false)
     private String subject;
 
