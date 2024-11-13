@@ -4,6 +4,7 @@ import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
+import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -13,6 +14,8 @@ import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +69,7 @@ public class JobService {
 
         try {
             Job job = modelMapper.map(jobRequest, Job.class);
+            job.setJobDetails(jobRequest.getJobDetails());
             job.setEmployer(employer.getId());
 
             jobRepository.save(job);
@@ -134,7 +138,7 @@ public class JobService {
 
             Company company = null;
             if (employer != null) {
-                company = companyRepository.findById(employer.getId())
+                company = companyRepository.findById(employer.getCompany())
                         .orElse(null);
             }
 
@@ -282,6 +286,7 @@ public class JobService {
 
     public ResponseEntity<ResponseDto<Object>> getAllJobsWithCompany() {
         try {
+
             // Lấy tất cả job từ database
             List<Job> jobEntities = jobRepository.findAll();
 
@@ -305,7 +310,7 @@ public class JobService {
 
                         Company company = null;
                         if (employer != null) {
-                            company = companyRepository.findById(employer.getId())
+                            company = companyRepository.findById(employer.getCompany())
                                     .orElse(null);
                         }
 
@@ -320,6 +325,7 @@ public class JobService {
                                 .companyName(company != null ? company.getCompanyName() : null)
                                 .companyLogo(company != null ? company.getLogo() : null)
                                 .companyDescription(company != null ? company.getDescription() : null)
+                                .jobDetails(job.getJobDetails())
                                 .build();
                     })
                     .collect(Collectors.toList());
@@ -330,6 +336,7 @@ public class JobService {
                     StatusCodeEnum.JOB1001
             );
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.all.jobs.failed"),
                     StatusCodeEnum.JOB0001
@@ -359,5 +366,62 @@ public class JobService {
                     StatusCodeEnum.JOB0003
             );
         }
+    }
+
+    public ResponseEntity<ResponseDto<Object>>  searchJobs(JobSearchRequest request) {
+        List<Job> jobEntities = jobRepository.searchJobs(
+                request.getSearchQuery(),
+                request.getCity(),
+                request.getExperienceIds(),
+                request.getTechIds(),
+                request.getSalaryIds(),
+                request.getJobTypeIds(),
+                request.getPositionIds(),
+                request.getContractTypeIds()
+        );
+
+        List<JobWithCompanyResponse> jobs = jobEntities.stream()
+                .map(job -> {
+                    // Lấy thông tin district
+                    String districtName = districtRepository.findById(job.getDistrict())
+                            .map(District::getName)
+                            .orElse("");
+
+                    // Lấy thông tin city
+                    String cityName = cityRepository.findById(job.getCity())
+                            .map(City::getName)
+                            .orElse("");
+
+                    // Lấy thông tin employer và company
+                    Employer employer = employerRepository.findById(job.getEmployer())
+                            .orElse(null);
+
+                    Company company = null;
+                    if (employer != null) {
+                        company = companyRepository.findById(employer.getCompany())
+                                .orElse(null);
+                    }
+
+                    return JobWithCompanyResponse.builder()
+                            .id(job.getId())
+                            .title(job.getTitle())
+                            .location(job.getLocation())
+                            .district(districtName)
+                            .city(cityName)
+                            .deadline(job.getDeadline())
+                            .createdAt(job.getCreatedAt())
+                            .companyName(company != null ? company.getCompanyName() : null)
+                            .companyLogo(company != null ? company.getLogo() : null)
+                            .companyDescription(company != null ? company.getDescription() : null)
+                            .jobDetails(job.getJobDetails())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return ResponseBuilder.okResponse(
+                languageService.getMessage("get.all.jobs.success"),
+                jobs,
+                StatusCodeEnum.JOB1001
+        );
     }
 }

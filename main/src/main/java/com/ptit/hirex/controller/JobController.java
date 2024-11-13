@@ -1,12 +1,20 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.entity.Job;
 import com.ptit.hirex.dto.request.JobRequest;
+import com.ptit.hirex.dto.request.JobSearchRequest;
+import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +24,7 @@ public class JobController {
 
     @PostMapping()
     public ResponseEntity<ResponseDto<Object>> createJob(@Valid @RequestBody JobRequest jobRequest) {
+        System.out.println(jobRequest);
         return jobService.createJob(jobRequest);
     }
 
@@ -49,4 +58,10 @@ public class JobController {
         return jobService.deleteJob(id);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<ResponseDto<Object>> searchJobs(
+            JobSearchRequest request
+    ) {
+        return  jobService.searchJobs(request);
+    }
 }
