@@ -136,6 +136,8 @@ public class JobService {
             Employer employer = employerRepository.findById(job.getEmployer())
                     .orElse(null);
 
+            User user = userRepository.findById(employer.getUserId()).orElse(null);
+
             Company company = null;
             if (employer != null) {
                 company = companyRepository.findById(employer.getCompany())
@@ -153,7 +155,12 @@ public class JobService {
                     .companyName(company != null ? company.getCompanyName() : null)
                     .companyLogo(company != null ? company.getLogo() : null)
                     .companyDescription(company != null ? company.getDescription() : null)
-                    .employer(modelMapper.map(employer, UserInfoDto.class))
+                    .employer(UserInfoDto.builder()
+                            .userId(user.getId())
+                            .email(user.getEmail())
+                            .avatar(user.getAvatar())
+                            .fullName(user.getFullName())
+                            .build())
                     .build();
 
             return ResponseBuilder.okResponse(

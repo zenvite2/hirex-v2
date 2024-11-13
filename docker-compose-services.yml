@@ -1,15 +1,18 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:16.4-alpine3.20
     container_name: hirex-postgres-container
     environment:
       POSTGRES_USER: hirex
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: hirex
+      TZ: Asia/Ho_Chi_Minh
+    restart: always
     ports:
       - "5433:5432"
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
   redis:
     image: redis:6.2-alpine
     container_name: redis
@@ -19,22 +22,37 @@ services:
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_DISABLE_COMMANDS=FLUSHDB;FLUSHALL
+    restart: always
     networks:
       - backend
 
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     container_name: minio
     ports:
       - "9000:9000"
       - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: hirexminio
+      MINIO_ROOT_PASSWORD: hirexminio
+      MINIO_SERVER_URL: "https://s3.deploy-hirexptit.io.vn"
     volumes:
       - ./storage:/data
-    environment:
-      MINIO_ROOT_USER: hirex
-      MINIO_ROOT_PASSWORD: hirex
     command: server --console-address ":9001" /data
+    restart: unless-stopped
+    hostname: "https://s3.deploy-hirexptit.io.vn"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c " sleep 10 && /usr/bin/mc config host add myminio http://minio:9000 hirex hirex && /usr/bin/mc mb myminio/hirex --ignore-existing && /usr/bin/mc policy set public myminio/hirex && exit 0; "
 
 networks:
   backend:
     driver: bridge
+
+volumes:
+  minio_data:
+    external: false
