@@ -1,0 +1,152 @@
+# Main domain server block
+server {
+    listen 443 ssl;
+    server_name deploy-hirexptit.io.vn;
+
+    ssl_certificate /etc/letsencrypt/live/deploy-hirexptit.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deploy-hirexptit.io.vn/privkey.pem;
+
+    client_max_body_size 20M;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+
+        # Security headers
+        add_header X-Content-Type-Options nosniff;
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header X-XSS-Protection "1; mode=block";
+
+        # Handle OPTIONS requests for CORS preflight
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin "*";
+            add_header Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT";
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With";
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+
+# API server block
+server {
+    listen 443 ssl;
+    server_name api.deploy-hirexptit.io.vn;
+
+    ssl_certificate /etc/letsencrypt/live/deploy-hirexptit.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deploy-hirexptit.io.vn/privkey.pem;
+
+    client_max_body_size 20M;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+
+        # Handle OPTIONS requests for CORS preflight
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin "*";
+            add_header Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT";
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With";
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+
+# WebSocket server block
+server {
+    listen 443 ssl;
+    server_name ws.deploy-hirexptit.io.vn;
+
+    ssl_certificate /etc/letsencrypt/live/deploy-hirexptit.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deploy-hirexptit.io.vn/privkey.pem;
+
+    client_max_body_size 20M;
+
+    location / {
+        proxy_pass http://localhost:8888;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+
+        # Handle OPTIONS requests for CORS preflight
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin "*";
+            add_header Access-Control-Allow-Methods "GET, POST, OPTIONS";
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type";
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+
+# S3 server block
+server {
+    listen 443 ssl;
+    server_name s3.deploy-hirexptit.io.vn;
+
+    ssl_certificate /etc/letsencrypt/live/deploy-hirexptit.io.vn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/deploy-hirexptit.io.vn/privkey.pem;
+
+    client_max_body_size 20M;
+
+    location / {
+        proxy_pass http://localhost:9000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+
+        # Handle OPTIONS requests for CORS preflight
+        if ($request_method = 'OPTIONS') {
+            add_header Access-Control-Allow-Origin "*";
+            add_header Access-Control-Allow-Methods "GET, POST, OPTIONS, DELETE, PUT";
+            add_header Access-Control-Allow-Headers "Authorization, Content-Type, X-Requested-With";
+            add_header Content-Length 0;
+            add_header Content-Type text/plain;
+            return 204;
+        }
+    }
+
+    error_page 404 /404.html;
+    error_page 500 502 503 504 /50x.html;
+
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
