@@ -40,7 +40,7 @@ public class JobController {
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<ResponseDto<Object>> getJobWith(@PathVariable Long id) {
-        return jobService.getJobWith(id);
+        return jobService.getJobDetail(id);
     }
 
     @GetMapping()

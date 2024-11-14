@@ -111,7 +111,7 @@ public class AutofillService {
 
     public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
         try {
-            List<Salary> salaries = salaryRepository.findAll();
+            List<Salary> salaries = salaryRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("autofill.salary.success"),
