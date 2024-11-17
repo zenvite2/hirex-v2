@@ -8,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -80,7 +78,7 @@ public class Job extends Auditable {
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 
-    @Column(name = "job_details")
+    @Column(name = "job_details", columnDefinition = "TEXT")
     @Convert(converter = HashMapConverter.class)
     private Map<String, Object> jobDetails;
 }

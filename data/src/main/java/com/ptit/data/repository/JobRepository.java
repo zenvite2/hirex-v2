@@ -26,6 +26,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
                          @Param("city") Long city,
                          @Param("experience") List<Long> experience,
                          @Param("tech") List<Long> tech,
+                         @Param("salary") List<Long> salary,
                          @Param("jobType") List<Long> jobType,
                          @Param("position") List<Long> position,
                          @Param("contractType") List<Long> contractType,

@@ -24,7 +24,7 @@ public class JobWithCompanyResponse {
     private String companyName;
     private String companyLogo;
     private String companyDescription;
-
+    private String salary;
     private UserInfoDto employer;
     private Map<String, Object> jobDetails;
 }

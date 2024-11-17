@@ -1,20 +1,15 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.Application;
-import com.ptit.data.entity.Employee;
-import com.ptit.data.entity.Job;
-import com.ptit.data.entity.User;
+import com.ptit.data.entity.*;
 import com.ptit.data.enums.ApplicationStatus;
-import com.ptit.data.repository.ApplicationRepository;
-import com.ptit.data.repository.EmployeeRepository;
-import com.ptit.data.repository.JobRepository;
-import com.ptit.data.repository.UserRepository;
+import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.request.ApplicationRequest;
 import com.ptit.hirex.dto.response.ApplicationResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +17,9 @@ import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,6 +28,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ApplicationService {
 
+    private final NotificationService notificationService;
     @Value("${minio.url.public}")
     private String publicUrl;
 
@@ -41,6 +39,8 @@ public class ApplicationService {
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final MailService mailService;
+    private final EmployerRepository employerRepository;
 
     public ResponseEntity<ResponseDto<Object>> createApplication(ApplicationRequest applicationRequest) {
         try {
@@ -72,6 +72,9 @@ public class ApplicationService {
                         StatusCodeEnum.JOB4000
                 );
             }
+
+            //tao thong bao
+            notificationService.createNotification(user.getId(), applicationRequest.getJobId(), "APPLY");
 
             Application application = Application.builder()
                     .jobId(applicationRequest.getJobId())
@@ -147,18 +150,41 @@ public class ApplicationService {
         );
     }
 
-    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) {
+    public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) throws MessagingException {
         // Cập nhật status
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ExpressionException("Application not found with id: " + id));
         application.setStatus(status);
         applicationRepository.save(application);
 
-        // Lấy thông tin job và employee
-        Job job = jobRepository.findById(application.getJobId())
-                .orElseThrow(() -> new RuntimeException("Job not found"));
-        Employee employee = employeeRepository.findById(application.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        //tao thong bao
+        notificationService.createNotification(application.getEmployeeId(), application.getJobId(), String.valueOf(application.getStatus()));
+
+        Employee employee = employeeRepository.findByUserId(application.getEmployeeId());
+        if (employee == null) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.employee"),
+                    StatusCodeEnum.EMPLOYER4000
+            );
+        }
+
+        Optional<Job> jobOptional = jobRepository.findById(application.getJobId());
+        if (jobOptional.isEmpty()) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.job"),
+                    StatusCodeEnum.JOB4000
+            );
+        }
+
+        Job job = jobOptional.get();
+
+        Optional<Employer> employer = employerRepository.findById(job.getEmployer());
+        if(employer.isEmpty()){
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.employer"),
+                    StatusCodeEnum.EMPLOYER4000
+            );
+        }
 
         // Map sang response
         ApplicationResponse applicationResponse = ApplicationResponse.builder()
@@ -174,6 +200,14 @@ public class ApplicationService {
                 .status(application.getStatus())
                 .createdAt(application.getCreatedAt())
                 .build();
+
+        Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("employeeName", userRepository.findById(employee.getUserId()).get().getFullName());
+        templateModel.put("jobTitle", job.getTitle());
+        templateModel.put("employerName", userRepository.findById(employer.get().getUserId()).get().getFullName());
+        templateModel.put("status", application.getStatus());
+
+        mailService.sendJobApplicationEmail(employee.getEmail(), job.getTitle(), templateModel);
 
         return ResponseBuilder.badRequestResponse(
                 "Update status successfully",

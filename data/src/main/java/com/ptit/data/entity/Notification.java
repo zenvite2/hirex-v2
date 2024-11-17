@@ -23,9 +23,9 @@ public class Notification extends Auditable {
     @Column(nullable = false)
     private Long toUserId;
 
-    @Column(nullable = false)
-    private Long patternId;
+    private String title;
 
-    @Convert(converter = HashMapConverter.class)
-    private HashMap<String, String> lstParams = new HashMap<>();
+    private String content;
+
+    private boolean read = false;
 }

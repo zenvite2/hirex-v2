@@ -3,10 +3,9 @@ package com.ptit.hirex.service;
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
 import com.ptit.data.entity.User;
-import com.ptit.data.repository.CompanyRepository;
-import com.ptit.data.repository.EmployerRepository;
-import com.ptit.data.repository.UserRepository;
+import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.request.CompanyRequest;
+import com.ptit.hirex.dto.response.CompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -36,6 +35,10 @@ public class CompanyService {
     private final UserRepository userRepository;
     private final EmployerRepository employerRepository;
     private final ModelMapper modelMapper;
+    private final ScaleRepository scaleRepository;
+    private final CityRepository cityRepository;
+    private final DistrictRepository districtRepository;
+    private final JobRepository jobRepository;
 
     public ResponseEntity<ResponseDto<Object>> getCompany() {
 
@@ -60,11 +63,46 @@ public class CompanyService {
         }
 
         try {
-            Optional<Company> company = companyRepository.findById(employer.getCompany());
+            Optional<Company> companyOpt = companyRepository.findById(employer.getCompany());
+
+            Company company = companyOpt.get();
+
+            CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
+            companyResponse.setScale(scaleRepository.findById(company.getScale()).get().getName());
+            companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
+            companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
+            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.getId()));
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),
-                    company,
+                    companyResponse,
+                    StatusCodeEnum.COMPANY1001
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.company.failed"),
+                    StatusCodeEnum.COMPANY0001
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> getCompanyById(Long id) {
+        try {
+            Optional<Company> companyOpt = companyRepository.findById(id);
+
+            Company company = companyOpt.get();
+
+            Optional<Employer> employer = employerRepository.findById(company.getEmployerId());
+
+            CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
+            companyResponse.setScale(scaleRepository.findById(company.getScale()).get().getName());
+            companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
+            companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
+            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.get().getId()));
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.company.success"),
+                    companyResponse,
                     StatusCodeEnum.COMPANY1001
             );
         } catch (Exception e) {
@@ -126,9 +164,14 @@ public class CompanyService {
 
             companyRepository.save(company);
 
+            CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
+            companyResponse.setScale(scaleRepository.findById(companyRequest.getScale()).get().getName());
+            companyResponse.setCity(cityRepository.findById(companyRequest.getCity()).get().getName());
+            companyResponse.setDistrict(districtRepository.findById(companyRequest.getDistrict()).get().getName());
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.company.success"),
-                    company,
+                    companyResponse,
                     StatusCodeEnum.COMPANY1002
             );
         } catch (Exception e) {

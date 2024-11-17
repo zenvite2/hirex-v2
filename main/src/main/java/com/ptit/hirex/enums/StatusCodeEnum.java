@@ -148,7 +148,15 @@ public enum StatusCodeEnum {
 
     // REPLY
     REPLY1000("Reply created successfully"),
-    REPLY0000("Failed to create reply");
+    REPLY0000("Failed to create reply"),
+
+    // NOTIFICATION
+    NOTIFICATION1000("Mark notification success"),
+    NOTIFICATION0000("Mark notification failed"),
+    NOTIFICATION1001("Get notification success"),
+    NOTIFICATION0001("Get notification failed"),
+    NOTIFICATION1002("Get notification success"),
+    NOTIFICATION0002("Get notification failed");
 
     public final String value;
 

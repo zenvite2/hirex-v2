@@ -5,6 +5,7 @@ import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
+import com.ptit.hirex.dto.response.EmployerResponse;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -43,6 +44,7 @@ public class JobService {
     private final JobTypeRepository jobTypeRepository;
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
+    private final TechRepository techRepository;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
@@ -182,7 +184,7 @@ public class JobService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> getJobWith(Long id) {
+    public ResponseEntity<ResponseDto<Object>> getJobDetail(Long id) {
         try {
             Job job = jobRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
@@ -193,26 +195,39 @@ public class JobService {
 
             Company company = null;
             if (employer != null) {
-                company = companyRepository.findById(employer.getId())
+                company = companyRepository.findById(employer.getCompany())
                         .orElse(null);
             }
+
+            User user = userRepository.findById(employer.getUserId()).orElse(null);
+
+            EmployerResponse employerResponse = EmployerResponse.builder()
+                    .userId(user.getId())
+                    .email(user.getEmail())
+                    .avatar(user.getAvatar())
+                    .fullName(user.getFullName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .build();
 
             JobResponse jobResponse = JobResponse.builder()
                     .id(job.getId())
                     .title(job.getTitle())
                     .location(job.getLocation())
-                    .district(job.getDistrict())
-                    .city(job.getCity())
+                    .district(districtRepository.findById(job.getDistrict()).get().getName())
+                    .city(cityRepository.findById(job.getCity()).get().getName())
                     .deadline(job.getDeadline())
                     .description(job.getDescription())
                     .requirements(job.getRequirement())
-                    .yearExperience(job.getYearExperience())
-                    .salary(job.getSalary())
-                    .position(job.getPosition())
-                    .tech(job.getTech())
-                    .jobType(job.getJobType())
-                    .contractType(job.getContractType())
+                    .yearExperience(experienceRepository.findById(job.getYearExperience()).get().getName())
+                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
+                    .position(positionRepository.findById(job.getPosition()).get().getName())
+                    .tech(techRepository.findById(job.getTech()).get().getName())
+                    .jobType(jobTypeRepository.findById(job.getJobType()).get().getName())
+                    .contractType(contractTypeRepository.findById(job.getContractType()).get().getName())
                     .createdAt(job.getCreatedAt())
+                    .jobDetails(job.getJobDetails())
+                    .company(company)
+                    .employer(employerResponse)
                     .build();
 
             return ResponseBuilder.okResponse(
@@ -273,6 +288,7 @@ public class JobService {
                                 .location(job.getLocation())
 //                                .district(districtName)
 //                                .city(cityName)
+                                .salary(salaryRepository.findById(job.getSalary()).get().getName())
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .build();
@@ -422,6 +438,7 @@ public class JobService {
                             .companyName(company != null ? company.getCompanyName() : null)
                             .companyLogo(company != null ? company.getLogo() : null)
                             .companyDescription(company != null ? company.getDescription() : null)
+                            .salary(salaryRepository.findById(job.getSalary()).get().getName())
                             .jobDetails(job.getJobDetails())
                             .build();
                 })
