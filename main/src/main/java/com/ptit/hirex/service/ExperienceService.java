@@ -1,5 +1,6 @@
 package com.ptit.hirex.service;
 
+import com.ptit.data.entity.Employee;
 import com.ptit.data.entity.Experience;
 import com.ptit.data.repository.ExperienceRepository;
 import com.ptit.hirex.dto.request.ExperienceRequest;
@@ -27,9 +28,9 @@ public class ExperienceService {
     private final AuthenticationService authenticationService;
 
     public ResponseEntity<ResponseDto<Object>> createExperience(ExperienceRequest experienceRequest) {
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -39,7 +40,7 @@ public class ExperienceService {
 
         try {
             Experience experience = modelMapper.map(experienceRequest, Experience.class);
-            experience.setEmployeeId(employeeId);
+            experience.setEmployeeId(employee.getId());
 
             experienceRepository.save(experience);
             return ResponseBuilder.okResponse(
@@ -88,9 +89,9 @@ public class ExperienceService {
 
     public ResponseEntity<ResponseDto<List<Experience>>> getExperience() {
 
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -99,7 +100,7 @@ public class ExperienceService {
         }
 
         try {
-            List<Experience> experience = experienceRepository.findAllByEmployeeId(employeeId);
+            List<Experience> experience = experienceRepository.findAllByEmployeeId(employee.getId());
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.experience.success"),
                     experience,

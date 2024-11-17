@@ -1,19 +1,19 @@
 package com.ptit.hirex.controller;
 
-import com.ptit.data.entity.Job;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ptit.data.dto.SalaryDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
-import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping()
     public ResponseEntity<ResponseDto<Object>> createJob(@Valid @RequestBody JobRequest jobRequest) {
@@ -59,7 +60,42 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto<Object>> searchJobs(@ModelAttribute JobSearchRequest request) {
-        return  jobService.searchJobs(request);
+    public ResponseEntity<?> searchJobs(
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) Long city,
+            @RequestParam(required = false) List<Long> techIds,
+            @RequestParam(required = false) List<Long> positionIds,
+            @RequestParam(required = false) List<Long> experienceIds,
+            @RequestParam(required = false) List<Long> educationIds,
+            @RequestParam(required = false) List<Long> jobTypeIds,
+            @RequestParam(required = false) String salaryOptions
+    ) {
+        List<SalaryDto> parsedSalaryOptions = parseSalaryOptions(salaryOptions);
+
+        JobSearchRequest searchRequest = JobSearchRequest.builder()
+                .searchQuery(searchQuery)
+                .city(city)
+                .techIds(techIds)
+                .positionIds(positionIds)
+                .experienceIds(experienceIds)
+                .educationIds(educationIds)
+                .jobTypeIds(jobTypeIds)
+                .salaryOptions(parsedSalaryOptions)
+                .build();
+
+        return jobService.searchJobs(searchRequest);
+    }
+
+    private List<SalaryDto> parseSalaryOptions(String salaryOptionsJson) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(
+                    URLDecoder.decode(salaryOptionsJson, StandardCharsets.UTF_8),
+                    new TypeReference<List<SalaryDto>>() {
+                    }
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -23,7 +23,9 @@ public class JobResponse {
     private String description;
     private String requirements;
     private String yearExperience;
-    private String salary;
+//    private String salary;
+    private Long minSalary;
+    private Long maxSalary;
     private String tech;
     private String position;
     private String jobType;

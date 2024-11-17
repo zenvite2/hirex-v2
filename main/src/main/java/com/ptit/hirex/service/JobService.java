@@ -1,5 +1,6 @@
 package com.ptit.hirex.service;
 
+import com.ptit.data.dto.SalaryDto;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.UserInfoDto;
@@ -12,17 +13,21 @@ import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,12 +44,12 @@ public class JobService {
     private final DistrictRepository districtRepository;
     private final CityRepository cityRepository;
     private final YearExperienceRepository experienceRepository;
-//    private final SalaryRepository salaryRepository;
     private final PositionRepository positionRepository;
     private final JobTypeRepository jobTypeRepository;
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
     private final TechRepository techRepository;
+    private final EntityManager entityManager;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
@@ -219,7 +224,9 @@ public class JobService {
                     .description(job.getDescription())
                     .requirements(job.getRequirement())
                     .yearExperience(experienceRepository.findById(job.getYearExperience()).get().getName())
-                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
+//                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
+                    .minSalary(job.getMinSalary())
+                    .maxSalary(job.getMaxSalary())
                     .position(positionRepository.findById(job.getPosition()).get().getName())
                     .tech(techRepository.findById(job.getTech()).get().getName())
                     .jobType(jobTypeRepository.findById(job.getJobType()).get().getName())
@@ -288,7 +295,9 @@ public class JobService {
                                 .location(job.getLocation())
 //                                .district(districtName)
 //                                .city(cityName)
-                                .salary(salaryRepository.findById(job.getSalary()).get().getName())
+//                                .salary(salaryRepository.findById(job.getSalary()).get().getName())
+                                .minSalary(job.getMinSalary())
+                                .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .build();
@@ -392,33 +401,80 @@ public class JobService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>>  searchJobs(JobSearchRequest request) {
-        List<Job> jobEntities = jobRepository.searchJobs(
-                request.getSearchQuery(),
-                request.getCity(),
-                request.getExperienceIds(),
-                request.getTechIds(),
-                request.getJobTypeIds(),
-                request.getPositionIds(),
-                request.getContractTypeIds(),
-                request.getMinSalary(),
-                request.getMaxSalary()
-        );
+    @Transactional
+    public ResponseEntity<ResponseDto<Object>> searchJobs(JobSearchRequest searchRequest) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Job> query = criteriaBuilder.createQuery(Job.class);
+        Root<Job> job = query.from(Job.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        // Apply filters based on input parameters
+        if (searchRequest.getSearchQuery() != null) {
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(job.get("title")), "%" + searchRequest.getSearchQuery().toLowerCase() + "%"));
+        }
+        if (searchRequest.getCity() != null) {
+            predicates.add(criteriaBuilder.equal(job.get("city"), searchRequest.getCity()));
+        }
+        if (searchRequest.getExperienceIds() != null && !searchRequest.getExperienceIds().isEmpty()) {
+            predicates.add(job.get("yearExperience").in(searchRequest.getExperienceIds()));
+        }
+        if (searchRequest.getTechIds() != null && !searchRequest.getTechIds().isEmpty()) {
+            predicates.add(job.get("tech").in(searchRequest.getTechIds()));
+        }
+        if (searchRequest.getJobTypeIds() != null && !searchRequest.getJobTypeIds().isEmpty()) {
+            predicates.add(job.get("jobType").in(searchRequest.getJobTypeIds()));
+        }
+        if (searchRequest.getPositionIds() != null && !searchRequest.getPositionIds().isEmpty()) {
+            predicates.add(job.get("position").in(searchRequest.getPositionIds()));
+        }
+        if (searchRequest.getContractTypeIds() != null && !searchRequest.getContractTypeIds().isEmpty()) {
+            predicates.add(job.get("contractType").in(searchRequest.getContractTypeIds()));
+        }
+
+        System.out.println("vite");
+        System.out.println(searchRequest.getSalaryOptions());
+        if (searchRequest.getSalaryOptions() != null && !searchRequest.getSalaryOptions().isEmpty()) {
+            List<Predicate> salaryPredicates = searchRequest.getSalaryOptions().stream()
+                    .map(salaryOption -> {
+                        Long optionMinSalary = salaryOption.getMinSalary() != null
+                                ? salaryOption.getMinSalary()
+                                : 0L;
+
+                        Long optionMaxSalary = salaryOption.getMaxSalary() != null
+                                ? salaryOption.getMaxSalary()
+                                : Long.MAX_VALUE;
+
+                        // Only check if job's min salary is within the option's salary range
+                        return criteriaBuilder.and(
+                                // Job's min salary is greater than or equal to option's min salary
+                                criteriaBuilder.greaterThanOrEqualTo(job.get("minSalary"), optionMinSalary),
+                                // Job's min salary is less than or equal to option's max salary
+                                criteriaBuilder.lessThanOrEqualTo(job.get("minSalary"), optionMaxSalary)
+                        );
+                    })
+                    .toList();
+            if (!salaryPredicates.isEmpty()) {
+                predicates.add(criteriaBuilder.or(salaryPredicates.toArray(new Predicate[0])));
+            }
+        }
+        query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+        List<Job> jobEntities = entityManager.createQuery(query).getResultList();
 
         List<JobWithCompanyResponse> jobs = jobEntities.stream()
-                .map(job -> {
+                .map(jobItem -> {
                     // Lấy thông tin district
-                    String districtName = districtRepository.findById(job.getDistrict())
+                    String districtName = districtRepository.findById(jobItem.getDistrict())
                             .map(District::getName)
                             .orElse("");
 
                     // Lấy thông tin city
-                    String cityName = cityRepository.findById(job.getCity())
+                    String cityName = cityRepository.findById(jobItem.getCity())
                             .map(City::getName)
                             .orElse("");
 
                     // Lấy thông tin employer và company
-                    Employer employer = employerRepository.findById(job.getEmployer())
+                    Employer employer = employerRepository.findById(jobItem.getEmployer())
                             .orElse(null);
 
                     Company company = null;
@@ -428,18 +484,19 @@ public class JobService {
                     }
 
                     return JobWithCompanyResponse.builder()
-                            .id(job.getId())
-                            .title(job.getTitle())
-                            .location(job.getLocation())
+                            .id(jobItem.getId())
+                            .title(jobItem.getTitle())
+                            .location(jobItem.getLocation())
                             .district(districtName)
                             .city(cityName)
-                            .deadline(job.getDeadline())
-                            .createdAt(job.getCreatedAt())
+                            .deadline(jobItem.getDeadline())
+                            .createdAt(jobItem.getCreatedAt())
                             .companyName(company != null ? company.getCompanyName() : null)
                             .companyLogo(company != null ? company.getLogo() : null)
                             .companyDescription(company != null ? company.getDescription() : null)
-                            .salary(salaryRepository.findById(job.getSalary()).get().getName())
-                            .jobDetails(job.getJobDetails())
+                            .minSalary(jobItem.getMinSalary())
+                            .maxSalary(jobItem.getMaxSalary())
+                            .jobDetails(jobItem.getJobDetails())
                             .build();
                 })
                 .collect(Collectors.toList());

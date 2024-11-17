@@ -56,9 +56,9 @@ public class Job extends Auditable {
      */
     private Long maxSalary;
 
-    private Long yearExperience;
+    private Long careerGoalId;
 
-    private Long salary;
+    private Long yearExperience;
 
     private Long tech;
 

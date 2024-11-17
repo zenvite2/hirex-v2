@@ -186,6 +186,8 @@ public class ApplicationService {
             );
         }
 
+        User user = userRepository.findById(employee.getUserId()).get();
+
         // Map sang response
         ApplicationResponse applicationResponse = ApplicationResponse.builder()
                 .id(application.getId())
@@ -195,19 +197,19 @@ public class ApplicationService {
                 .employeeId(employee.getId())
                 .cvPdf(application.getCvPdf())
                 .cvPdf(application.getCvPdf())
-                .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
+                .fullName(user.getFullName())
                 .coverLetter(application.getCoverLetter())
                 .status(application.getStatus())
                 .createdAt(application.getCreatedAt())
                 .build();
 
         Map<String, Object> templateModel = new HashMap<>();
-        templateModel.put("employeeName", userRepository.findById(employee.getUserId()).get().getFullName());
+        templateModel.put("employeeName", user.getFullName());
         templateModel.put("jobTitle", job.getTitle());
-        templateModel.put("employerName", userRepository.findById(employer.get().getUserId()).get().getFullName());
+        templateModel.put("employerName", user.getFullName());
         templateModel.put("status", application.getStatus());
 
-        mailService.sendJobApplicationEmail(employee.getEmail(), job.getTitle(), templateModel);
+        mailService.sendJobApplicationEmail(user.getEmail(), job.getTitle(), templateModel);
 
         return ResponseBuilder.badRequestResponse(
                 "Update status successfully",

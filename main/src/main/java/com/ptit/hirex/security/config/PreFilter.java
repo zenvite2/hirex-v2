@@ -57,6 +57,9 @@ public class PreFilter extends OncePerRequestFilter {
                     context.setAuthentication(authentication);
                     SecurityContextHolder.setContext(context);
                 }
+                else {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                }
             }
             filterChain.doFilter(request, response);
         } catch (ExpiredJwtException e) {

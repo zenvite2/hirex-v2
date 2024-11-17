@@ -1,5 +1,6 @@
 package com.ptit.hirex.service;
 
+import com.ptit.data.entity.Employee;
 import com.ptit.data.entity.Skill;
 import com.ptit.data.entity.Tech;
 import com.ptit.data.repository.SkillRepository;
@@ -31,9 +32,9 @@ public class SkillService {
     private final TechRepository techRepository;
 
     public ResponseEntity<ResponseDto<Object>> createSkill(SkillRequest skillRequest) {
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -43,7 +44,7 @@ public class SkillService {
 
         try {
             Skill skill = modelMapper.map(skillRequest, Skill.class);
-            skill.setEmployeeId(employeeId);
+            skill.setEmployeeId(employee.getId());
 
             skillRepository.save(skill);
             return ResponseBuilder.okResponse(
@@ -108,9 +109,9 @@ public class SkillService {
     }
 
     public ResponseEntity<ResponseDto<List<SkillResponse>>> getAllSkill() {
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -119,7 +120,7 @@ public class SkillService {
         }
 
         try {
-            List<Skill> skills = skillRepository.findAllByEmployeeId(employeeId);
+            List<Skill> skills = skillRepository.findAllByEmployeeId(employee.getId());
             List<SkillResponse> skillResponses = skills.stream()
                     .map(skill -> {
                         // Lấy technology name từ repository
@@ -148,7 +149,7 @@ public class SkillService {
                     StatusCodeEnum.SKILL1002
             );
         } catch (RuntimeException e) {
-            log.error("Error getting skills for employee {}: {}", employeeId, e.getMessage());
+            log.error("Error getting skills for employee {}: {}", employee.getId(), e.getMessage());
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.skill.failed"),
                     StatusCodeEnum.SKILL0002

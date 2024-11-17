@@ -1,6 +1,7 @@
 package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Education;
+import com.ptit.data.entity.Employee;
 import com.ptit.data.repository.EducationRepository;
 import com.ptit.hirex.dto.request.EducationRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -27,9 +28,9 @@ public class EducationService {
     private final AuthenticationService authenticationService;
 
     public ResponseEntity<ResponseDto<Object>> createEducation(EducationRequest educationRequest) {
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -39,7 +40,7 @@ public class EducationService {
 
         try {
             Education education = modelMapper.map(educationRequest, Education.class);
-            education.setEmployeeId(employeeId);
+            education.setEmployeeId(employee.getId());
 
             educationRepository.save(education);
             return ResponseBuilder.okResponse(
@@ -103,9 +104,9 @@ public class EducationService {
 
     public ResponseEntity<ResponseDto<List<Education>>> getAllEducation() {
 
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -114,7 +115,7 @@ public class EducationService {
         }
 
         try {
-            List<Education> education = educationRepository.findAllByEmployeeId(employeeId);
+            List<Education> education = educationRepository.findAllByEmployeeId(employee.getId());
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.education.success"),
                     education,

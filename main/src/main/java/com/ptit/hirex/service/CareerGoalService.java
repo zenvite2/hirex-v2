@@ -1,7 +1,9 @@
 package com.ptit.hirex.service;
 
 import com.ptit.data.entity.CareerGoal;
+import com.ptit.data.entity.Employee;
 import com.ptit.data.repository.CareerGoalRepository;
+import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.CareerGoalRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -25,11 +27,12 @@ public class CareerGoalService {
     private final LanguageService languageService;
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
+    private final EmployeeRepository employeeRepository;
 
     public ResponseEntity<ResponseDto<Object>> createCareerGoal(CareerGoalRequest careerGoalRequest) {
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
+        if (employee == null) {
             log.error("EmployeeId is null");
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
@@ -39,7 +42,6 @@ public class CareerGoalService {
 
         try {
             CareerGoal careerGoal = modelMapper.map(careerGoalRequest, CareerGoal.class);
-            careerGoal.setEmployeeId(employeeId);
 
             careerGoalRepository.save(careerGoal);
             return ResponseBuilder.okResponse(
@@ -86,10 +88,9 @@ public class CareerGoalService {
 
     public ResponseEntity<ResponseDto<Object>> getCareerGoal() {
 
-        Long employeeId = authenticationService.getEmployeeFromContext();
+        Employee employee = authenticationService.getEmployeeFromContext();
 
-        if (employeeId == null) {
-            log.error("EmployeeId is null");
+        if (employee == null) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("employee.not.found"),
                     StatusCodeEnum.AUTH0016
@@ -97,7 +98,13 @@ public class CareerGoalService {
         }
 
         try {
-            CareerGoal careerGoal = careerGoalRepository.findByEmployeeId(employeeId);
+            CareerGoal careerGoal = careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null);
+            if(careerGoal == null) {
+                return ResponseBuilder.badRequestResponse(
+                        languageService.getMessage("get.career.failed"),
+                        StatusCodeEnum.CAREER0002
+                );
+            }
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.career.success"),
                     careerGoal,

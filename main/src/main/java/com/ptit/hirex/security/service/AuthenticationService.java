@@ -254,14 +254,14 @@ public class AuthenticationService {
         }
     }
 
-    public Long getEmployeeFromContext() {
+    public Employee getEmployeeFromContext() {
         String username = getUserFromContext();
 
         Optional<User> user = userRepository.findByUsername(username);
 
         if (user.isPresent()) {
             Employee employee = employeeRepository.findByUserId(user.get().getId());
-            return employee.getId();
+            return employee;
         } else {
             return null;
         }

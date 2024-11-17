@@ -11,6 +11,5 @@ public class CareerGoalRequestToCareerGoal extends PropertyMap<CareerGoalRequest
     @Override
     protected void configure() {
         skip(destination.getId());
-        skip(destination.getEmployeeId());
     }
 }

@@ -1,5 +1,6 @@
 package com.ptit.hirex.dto.request;
 
+import com.ptit.data.dto.SalaryDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,8 +18,7 @@ public class JobSearchRequest {
     private List<Long> techIds;
     private List<Long> positionIds;
     private List<Long> experienceIds;
-    private Long minSalary;
-    private Long maxSalary;
+    private List<SalaryDto> salaryOptions;
     private List<Long> educationIds;
     private List<Long> jobTypeIds;
     private List<Long> contractTypeIds;
