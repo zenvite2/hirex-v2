@@ -22,14 +22,14 @@ public class Employee {
     @Column(name = "user_id", unique = true)
     private Long userId;
 
-    private String email;
+    /**
+     * Career goals
+     */
+    private Long careerGoalId;
 
     private String dateOfBirth;
 
     private String address;
 
-    private BigDecimal salary;
-
     private String gender;
-
 }

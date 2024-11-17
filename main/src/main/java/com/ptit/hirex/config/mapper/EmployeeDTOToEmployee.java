@@ -12,7 +12,6 @@ public class EmployeeDTOToEmployee extends PropertyMap<EmployeeDto, Employee> {
     protected void configure() {
         map().setDateOfBirth(source.getDateOfBirth());
         map().setAddress(source.getAddress());
-        map().setEmail(source.getEmail());
         map().setGender(source.getGender());
     }
 }

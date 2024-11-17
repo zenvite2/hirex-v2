@@ -17,7 +17,8 @@ public class JobSearchRequest {
     private List<Long> techIds;
     private List<Long> positionIds;
     private List<Long> experienceIds;
-    private List<Long> salaryIds;
+    private Long minSalary;
+    private Long maxSalary;
     private List<Long> educationIds;
     private List<Long> jobTypeIds;
     private List<Long> contractTypeIds;

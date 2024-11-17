@@ -38,7 +38,7 @@ public class JobService {
     private final DistrictRepository districtRepository;
     private final CityRepository cityRepository;
     private final YearExperienceRepository experienceRepository;
-    private final SalaryRepository salaryRepository;
+//    private final SalaryRepository salaryRepository;
     private final PositionRepository positionRepository;
     private final JobTypeRepository jobTypeRepository;
     private final ContractTypeRepository contractTypeRepository;
@@ -205,7 +205,7 @@ public class JobService {
                     .city(job.getCity())
                     .deadline(job.getDeadline())
                     .description(job.getDescription())
-                    .requirements(job.getRequirements())
+                    .requirements(job.getRequirement())
                     .yearExperience(job.getYearExperience())
                     .salary(job.getSalary())
                     .position(job.getPosition())
@@ -382,10 +382,11 @@ public class JobService {
                 request.getCity(),
                 request.getExperienceIds(),
                 request.getTechIds(),
-                request.getSalaryIds(),
                 request.getJobTypeIds(),
                 request.getPositionIds(),
-                request.getContractTypeIds()
+                request.getContractTypeIds(),
+                request.getMinSalary(),
+                request.getMaxSalary()
         );
 
         List<JobWithCompanyResponse> jobs = jobEntities.stream()

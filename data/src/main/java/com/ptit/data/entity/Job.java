@@ -24,10 +24,39 @@ public class Job extends Auditable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long employer;
+    /**
+     * Tên job
+     */
     private String title;
+    /**
+     * Mô tả job
+     */
     private String description;
-    private String requirements;
+
+    /**
+     * Quyền lợi, lợi ích của job
+     */
+    private String benefit;
+
+    /**
+     * Yêu cầu ứng viên
+     */
+    private String requirement;
+
+    /**
+     * Địa chỉ làm việc
+     */
     private String location;
+
+    /**
+     * Mức lương
+     */
+    private Long minSalary;
+
+    /**
+     * Mức lương
+     */
+    private Long maxSalary;
 
     private Long yearExperience;
 

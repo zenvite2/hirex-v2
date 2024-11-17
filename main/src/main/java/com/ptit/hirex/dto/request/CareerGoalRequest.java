@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class CareerGoalRequest {
     private String position;
 
-    private Long salary;
+    private Long minSalary;
+
+    private Long maxSalary;
 
     private Long jobType;
 }

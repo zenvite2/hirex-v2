@@ -23,7 +23,7 @@ public class AutofillService {
     private final DistrictRepository districtRepository;
     private final LanguageService languageService;
     private final ModelMapper modelMapper;
-    private final SalaryRepository salaryRepository;
+//    private final SalaryRepository salaryRepository;
     private final JobTypeRepository jobTypeRepository;
     private final TechRepository techRepository;
     private final YearExperienceRepository yearExperienceRepository;
@@ -108,22 +108,22 @@ public class AutofillService {
         }
     }
 
-    public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
-        try {
-            List<Salary> salaries = salaryRepository.findAll();
-
-            return ResponseBuilder.okResponse(
-                    languageService.getMessage("autofill.salary.success"),
-                    salaries,
-                    StatusCodeEnum.SALARY1000
-            );
-        } catch (Exception e) {
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("autofill.salary.failed"),
-                    StatusCodeEnum.SALARY0000
-            );
-        }
-    }
+//    public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
+//        try {
+//            List<Salary> salaries = salaryRepository.findAll();
+//
+//            return ResponseBuilder.okResponse(
+//                    languageService.getMessage("autofill.salary.success"),
+//                    salaries,
+//                    StatusCodeEnum.SALARY1000
+//            );
+//        } catch (Exception e) {
+//            return ResponseBuilder.badRequestResponse(
+//                    languageService.getMessage("autofill.salary.failed"),
+//                    StatusCodeEnum.SALARY0000
+//            );
+//        }
+//    }
 
     public ResponseEntity<ResponseDto<List<JobType>>> autofillJobType() {
         try {

@@ -29,10 +29,10 @@ public class AutofillController {
         return autofillService.autofillDistrict(name, cityIds);
     }
 
-    @GetMapping("/salary")
-    public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
-        return autofillService.autofillSalary();
-    }
+//    @GetMapping("/salary")
+//    public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
+//        return autofillService.autofillSalary();
+//    }
 
     @GetMapping("/job-type")
     public ResponseEntity<ResponseDto<List<JobType>>> autofillJobType() {

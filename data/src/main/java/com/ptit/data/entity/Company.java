@@ -21,6 +21,7 @@ public class Company {
 
     private String companyName;
 
+    @Column(length = 2000)
     private String description;
 
     private String website;

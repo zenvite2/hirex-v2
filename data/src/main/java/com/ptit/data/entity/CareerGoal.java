@@ -19,9 +19,13 @@ public class CareerGoal {
 
     private Long employeeId;
 
-    private String position;
+    private Long industryId;
 
-    private Long salary;
+    private Long minSalary;
+
+    private Long maxSalary;
+
+    private Long position;
 
     private Long jobType;
 }

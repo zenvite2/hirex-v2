@@ -9,7 +9,6 @@ spring:
       maximumPoolSize: 10
       idleTimeout: 120000
       connectionTimeout: 300000
-      leakDetectionThreshold: 300000
   jpa:
     hibernate:
       ddl-auto: update

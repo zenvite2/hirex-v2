@@ -60,9 +60,7 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto<Object>> searchJobs(
-            JobSearchRequest request
-    ) {
+    public ResponseEntity<ResponseDto<Object>> searchJobs(@ModelAttribute JobSearchRequest request) {
         return  jobService.searchJobs(request);
     }
 }
