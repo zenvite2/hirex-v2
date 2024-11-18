@@ -33,10 +33,10 @@ public class SkillController {
         return skillService.getSkill(id);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<ResponseDto<List<SkillResponse>>> getSkill() {
-        return skillService.getAllSkill();
-    }
+//    @GetMapping("/list")
+//    public ResponseEntity<ResponseDto<List<SkillResponse>>> getSkill() {
+//        return skillService.getAllSkill();
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDto<Object>> deleteSkill(@PathVariable Long id) {

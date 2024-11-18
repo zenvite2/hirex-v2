@@ -44,7 +44,6 @@ public class SkillService {
 
         try {
             Skill skill = modelMapper.map(skillRequest, Skill.class);
-            skill.setEmployeeId(employee.getId());
 
             skillRepository.save(skill);
             return ResponseBuilder.okResponse(
@@ -108,54 +107,54 @@ public class SkillService {
         }
     }
 
-    public ResponseEntity<ResponseDto<List<SkillResponse>>> getAllSkill() {
-        Employee employee = authenticationService.getEmployeeFromContext();
-
-        if (employee == null) {
-            log.error("EmployeeId is null");
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("employee.not.found"),
-                    StatusCodeEnum.AUTH0016
-            );
-        }
-
-        try {
-            List<Skill> skills = skillRepository.findAllByEmployeeId(employee.getId());
-            List<SkillResponse> skillResponses = skills.stream()
-                    .map(skill -> {
-                        // Lấy technology name từ repository
-                        String techName = null;
-                        if (skill.getTechId() != null) {
-                            Tech tech = techRepository.findById(skill.getTechId())
-                                    .orElse(null);
-                            if (tech != null) {
-                                techName = tech.getName();
-                            }
-                        }
-
-                        return SkillResponse.builder()
-                                .skillName(null)
-                                .techId(skill.getTechId())
-                                .techName(techName)
-                                .level(skill.getLevel())
-                                .description(skill.getDescription())
-                                .build();
-                    })
-                    .collect(Collectors.toList());
-
-            return ResponseBuilder.okResponse(
-                    languageService.getMessage("get.skill.success"),
-                    skillResponses,
-                    StatusCodeEnum.SKILL1002
-            );
-        } catch (RuntimeException e) {
-            log.error("Error getting skills for employee {}: {}", employee.getId(), e.getMessage());
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("get.skill.failed"),
-                    StatusCodeEnum.SKILL0002
-            );
-        }
-    }
+//    public ResponseEntity<ResponseDto<List<SkillResponse>>> getAllSkill() {
+//        Employee employee = authenticationService.getEmployeeFromContext();
+//
+//        if (employee == null) {
+//            log.error("EmployeeId is null");
+//            return ResponseBuilder.badRequestResponse(
+//                    languageService.getMessage("employee.not.found"),
+//                    StatusCodeEnum.AUTH0016
+//            );
+//        }
+//
+//        try {
+//            List<Skill> skills = skillRepository.findAllByEmployeeId(employee.getId());
+//            List<SkillResponse> skillResponses = skills.stream()
+//                    .map(skill -> {
+//                        // Lấy technology name từ repository
+//                        String techName = null;
+//                        if (skill.getTechId() != null) {
+//                            Tech tech = techRepository.findById(skill.getTechId())
+//                                    .orElse(null);
+//                            if (tech != null) {
+//                                techName = tech.getName();
+//                            }
+//                        }
+//
+//                        return SkillResponse.builder()
+//                                .skillName(null)
+//                                .techId(skill.getTechId())
+//                                .techName(techName)
+//                                .level(skill.getLevel())
+//                                .description(skill.getDescription())
+//                                .build();
+//                    })
+//                    .collect(Collectors.toList());
+//
+//            return ResponseBuilder.okResponse(
+//                    languageService.getMessage("get.skill.success"),
+//                    skillResponses,
+//                    StatusCodeEnum.SKILL1002
+//            );
+//        } catch (RuntimeException e) {
+//            log.error("Error getting skills for employee {}: {}", employee.getId(), e.getMessage());
+//            return ResponseBuilder.badRequestResponse(
+//                    languageService.getMessage("get.skill.failed"),
+//                    StatusCodeEnum.SKILL0002
+//            );
+//        }
+//    }
 
     public ResponseEntity<ResponseDto<Object>> deleteSkill(Long id) {
 

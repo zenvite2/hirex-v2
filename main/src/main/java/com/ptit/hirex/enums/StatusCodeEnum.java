@@ -92,6 +92,16 @@ public enum StatusCodeEnum {
     CAREER1003("CAREER1003"), //Delete career goal success
     CAREER0003("CAREER0003"), //Delete career goal failed
 
+    //SAVE JOB
+    SAVE1000("SAVE1000"), //Save job success
+    SAVE0000("SAVE0000"), //Save job failed
+    SAVE1001("SAVE1001"), //Update save job success
+    SAVE0001("SAVE0001"), //Update save job failed
+    SAVE1002("SAVE1002"), //Get save job success
+    SAVE0002("SAVE0002"), //Get save job failed
+    SAVE1003("SAVE1003"), //Delete save job success
+    SAVE0003("SAVE0003"), //Delete save job failed
+
     //JOB
     JOB0000("Create job failed"),
     JOB1000("Create job success"),

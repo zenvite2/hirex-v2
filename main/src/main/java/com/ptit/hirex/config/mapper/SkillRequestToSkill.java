@@ -11,6 +11,5 @@ public class SkillRequestToSkill extends PropertyMap<SkillRequest, Skill> {
     @Override
     protected void configure() {
         skip(destination.getId());
-        skip(destination.getEmployeeId());
     }
 }
