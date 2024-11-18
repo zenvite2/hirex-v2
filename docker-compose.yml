@@ -6,8 +6,7 @@ services:
     image: main:latest
     ports:
       - "8080:8080"
-    depends_on:
-      - websocket-service
+    restart: always
 
   websocket-service:
     build:
@@ -16,3 +15,6 @@ services:
     image: websocket:latest
     ports:
       - "8888:8888"
+    restart: always
+    depends_on:
+      - main-service

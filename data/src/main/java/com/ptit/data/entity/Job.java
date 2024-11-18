@@ -56,26 +56,27 @@ public class Job extends Auditable {
      */
     private Long maxSalary;
 
-    private Long careerGoalId;
-
     private Long yearExperience;
 
-    private Long tech;
+    private Long cityId;
 
-    private Long city;
+    private Long districtId;
 
-    private Long district;
+    private Long positionId;
 
-    private Long position;
+    private Long jobTypeId;
 
-    private Long jobType;
-
-    private Long contractType;
+    private Long contractTypeId;
 
     // han nop ho so
     private String deadline;
 
-    private Long industry;
+    private Long industryId;
+
+    /**
+     * Trinh do hoc van
+     */
+    private Long educationLevelId;
 
     @Enumerated(EnumType.STRING)
     private JobStatus status;

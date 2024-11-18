@@ -130,12 +130,12 @@ public class JobService {
                     .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
             // Lấy thông tin district
-            String districtName = districtRepository.findById(job.getDistrict())
+            String districtName = districtRepository.findById(job.getDistrictId())
                     .map(District::getName)
                     .orElse("");
 
             // Lấy thông tin city
-            String cityName = cityRepository.findById(job.getCity())
+            String cityName = cityRepository.findById(job.getCityId())
                     .map(City::getName)
                     .orElse("");
 
@@ -218,8 +218,8 @@ public class JobService {
                     .id(job.getId())
                     .title(job.getTitle())
                     .location(job.getLocation())
-                    .district(districtRepository.findById(job.getDistrict()).get().getName())
-                    .city(cityRepository.findById(job.getCity()).get().getName())
+                    .district(districtRepository.findById(job.getDistrictId()).get().getName())
+                    .city(cityRepository.findById(job.getCityId()).get().getName())
                     .deadline(job.getDeadline())
                     .description(job.getDescription())
                     .requirements(job.getRequirement())
@@ -227,10 +227,9 @@ public class JobService {
 //                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
-                    .position(positionRepository.findById(job.getPosition()).get().getName())
-                    .tech(techRepository.findById(job.getTech()).get().getName())
-                    .jobType(jobTypeRepository.findById(job.getJobType()).get().getName())
-                    .contractType(contractTypeRepository.findById(job.getContractType()).get().getName())
+                    .position(positionRepository.findById(job.getPositionId()).get().getName())
+                    .jobType(jobTypeRepository.findById(job.getJobTypeId()).get().getName())
+                    .contractType(contractTypeRepository.findById(job.getContractTypeId()).get().getName())
                     .createdAt(job.getCreatedAt())
                     .jobDetails(job.getJobDetails())
                     .company(company)
@@ -281,11 +280,11 @@ public class JobService {
             List<Job> jobEntities = jobRepository.findAllByEmployer(employer.getId());
             List<JobResponse> jobs = jobEntities.stream()
                     .map(job -> {
-                        String districtName = districtRepository.findById(job.getDistrict())
+                        String districtName = districtRepository.findById(job.getDistrictId())
                                 .map(District::getName)
                                 .orElse("");
 
-                        String cityName = cityRepository.findById(job.getCity())
+                        String cityName = cityRepository.findById(job.getCityId())
                                 .map(City::getName)
                                 .orElse("");
 
@@ -328,12 +327,12 @@ public class JobService {
             List<JobWithCompanyResponse> jobs = jobEntities.stream()
                     .map(job -> {
                         // Lấy thông tin district
-                        String districtName = districtRepository.findById(job.getDistrict())
+                        String districtName = districtRepository.findById(job.getDistrictId())
                                 .map(District::getName)
                                 .orElse("");
 
                         // Lấy thông tin city
-                        String cityName = cityRepository.findById(job.getCity())
+                        String cityName = cityRepository.findById(job.getCityId())
                                 .map(City::getName)
                                 .orElse("");
 
@@ -464,12 +463,12 @@ public class JobService {
         List<JobWithCompanyResponse> jobs = jobEntities.stream()
                 .map(jobItem -> {
                     // Lấy thông tin district
-                    String districtName = districtRepository.findById(jobItem.getDistrict())
+                    String districtName = districtRepository.findById(jobItem.getDistrictId())
                             .map(District::getName)
                             .orElse("");
 
                     // Lấy thông tin city
-                    String cityName = cityRepository.findById(jobItem.getCity())
+                    String cityName = cityRepository.findById(jobItem.getCityId())
                             .map(City::getName)
                             .orElse("");
 
