@@ -1,9 +1,9 @@
 package com.ptit.data.repository;
 
-import com.ptit.data.entity.Scale;
+import com.ptit.data.entity.Industry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScaleRepository extends JpaRepository<Scale, Long> {
+public interface IndustryRepository extends JpaRepository<Industry, Long> {
 }

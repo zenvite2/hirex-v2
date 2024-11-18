@@ -75,6 +75,8 @@ public class Job extends Auditable {
     // han nop ho so
     private String deadline;
 
+    private Long industry;
+
     @Enumerated(EnumType.STRING)
     private JobStatus status;
 

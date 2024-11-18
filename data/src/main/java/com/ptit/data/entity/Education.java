@@ -19,7 +19,7 @@ public class Education {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String educationLevelId;
+    private Long educationLevelId;
 
     private Long employeeId;
 

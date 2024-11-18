@@ -25,7 +25,6 @@ public class JobController {
 
     @PostMapping()
     public ResponseEntity<ResponseDto<Object>> createJob(@Valid @RequestBody JobRequest jobRequest) {
-        System.out.println(jobRequest);
         return jobService.createJob(jobRequest);
     }
 

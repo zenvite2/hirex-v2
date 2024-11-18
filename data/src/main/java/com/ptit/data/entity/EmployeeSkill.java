@@ -1,5 +1,6 @@
 package com.ptit.data.entity;
 
+import com.ptit.data.base.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,17 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "scale")
-public class Scale {
+@Table(name = "employee_skill")
+public class EmployeeSkill extends Auditable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private String name;
+    private Long skillId;
 
-    @Column(columnDefinition = "BIGINT", nullable = false)
-    private Long minEmployee;
-
-    @Column(columnDefinition = "BIGINT")
-    private Long maxEmployee;
+    private Long employeeId;
 }

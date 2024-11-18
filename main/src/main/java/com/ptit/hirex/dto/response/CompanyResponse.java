@@ -31,7 +31,7 @@ public class CompanyResponse {
 
     private String district;
 
-    private String scale;
+    private Long scale;
 
     private List<Job> jobs;
 }

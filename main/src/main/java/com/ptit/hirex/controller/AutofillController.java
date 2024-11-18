@@ -29,11 +29,6 @@ public class AutofillController {
         return autofillService.autofillDistrict(name, cityIds);
     }
 
-//    @GetMapping("/salary")
-//    public ResponseEntity<ResponseDto<List<Salary>>> autofillSalary() {
-//        return autofillService.autofillSalary();
-//    }
-
     @GetMapping("/job-type")
     public ResponseEntity<ResponseDto<List<JobType>>> autofillJobType() {
         return autofillService.autofillJobType();
@@ -42,6 +37,11 @@ public class AutofillController {
     @GetMapping("/tech")
     public ResponseEntity<ResponseDto<List<Tech>>> autofillTech() {
         return autofillService.autofillTech();
+    }
+
+    @GetMapping("/industry")
+    public ResponseEntity<ResponseDto<List<Industry>>> autofillIndustry() {
+        return autofillService.autofillIndustry();
     }
 
     @GetMapping("/year-experience")

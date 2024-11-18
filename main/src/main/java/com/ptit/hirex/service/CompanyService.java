@@ -35,7 +35,6 @@ public class CompanyService {
     private final UserRepository userRepository;
     private final EmployerRepository employerRepository;
     private final ModelMapper modelMapper;
-    private final ScaleRepository scaleRepository;
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
     private final JobRepository jobRepository;
@@ -68,7 +67,6 @@ public class CompanyService {
             Company company = companyOpt.get();
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
-            companyResponse.setScale(scaleRepository.findById(company.getScale()).get().getName());
             companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
             companyResponse.setJobs(jobRepository.findAllByEmployer(employer.getId()));
@@ -95,7 +93,6 @@ public class CompanyService {
             Optional<Employer> employer = employerRepository.findById(company.getEmployerId());
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
-            companyResponse.setScale(scaleRepository.findById(company.getScale()).get().getName());
             companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
             companyResponse.setJobs(jobRepository.findAllByEmployer(employer.get().getId()));
@@ -165,7 +162,6 @@ public class CompanyService {
             companyRepository.save(company);
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
-            companyResponse.setScale(scaleRepository.findById(companyRequest.getScale()).get().getName());
             companyResponse.setCity(cityRepository.findById(companyRequest.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(companyRequest.getDistrict()).get().getName());
 

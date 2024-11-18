@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "skill")
-public class Skill {
+@Table(name = "industry")
+public class Industry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
