@@ -3,9 +3,11 @@ package com.ptit.hirex.service;
 import com.ptit.data.entity.Employee;
 import com.ptit.data.entity.Job;
 import com.ptit.data.entity.SavedJob;
+import com.ptit.data.entity.User;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.JobRepository;
 import com.ptit.data.repository.SavedJobRepository;
+import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.SavedJobRequest;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.SavedJobResponse;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +35,11 @@ public class SavedJobService {
     private final AuthenticationService authenticationService;
     private final JobRepository jobRepository;
     private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
 
+    @Transactional
     public ResponseEntity<ResponseDto<Object>> savedJob(SavedJobRequest savedJobRequest) {
-        Employee employee = employeeRepository.findById(savedJobRequest.getEmployeeId()).get();
+        Employee employee = employeeRepository.findByUserId(savedJobRequest.getEmployeeId());
 
         if (employee == null) {
             return ResponseBuilder.badRequestResponse(
@@ -54,7 +59,7 @@ public class SavedJobService {
 
             SavedJob savedJob = SavedJob.builder()
                     .jobId(savedJobRequest.getJobId())
-                    .employeeId(savedJobRequest.getEmployeeId())
+                    .employeeId(employee.getId())
                     .build();
 
             savedJobRepository.save(savedJob);
@@ -122,10 +127,24 @@ public class SavedJobService {
         }
     }
 
+    @Transactional
     public ResponseEntity<ResponseDto<Object>> deleteSavedJob(Long id) {
 
+        String userName = authenticationService.getUserFromContext();
+
+        Optional<User> user = userRepository.findByUsername(userName);
+
+        Employee employee = employeeRepository.findByUserId(user.get().getId());
+
+        if (employee == null) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.AUTH0016
+            );
+        }
+
         try {
-            savedJobRepository.deleteById(id);
+            savedJobRepository.deleteByEmployeeIdAndJobId(employee.getId(), id);
             return ResponseBuilder.okResponse(
                     languageService.getMessage("delete.save.job.success"),
                     StatusCodeEnum.SAVE1003

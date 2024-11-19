@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface SavedJobRepository extends JpaRepository<SavedJob, Long> {
     List<SavedJob> findAllByEmployeeId(Long id);
+
+    void deleteByEmployeeIdAndJobId(Long id, Long jobId);
 }
