@@ -10,6 +10,7 @@ import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
@@ -21,14 +22,15 @@ import java.util.List;
 @RequestMapping("/job")
 public class JobController {
     private final JobService jobService;
-    private final ObjectMapper objectMapper;
 
     @PostMapping()
+    @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<ResponseDto<Object>> createJob(@Valid @RequestBody JobRequest jobRequest) {
         return jobService.createJob(jobRequest);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<ResponseDto<Object>> updateJob(@PathVariable Long id, @Valid @RequestBody JobRequest jobRequest) {
         return jobService.updateJob(id, jobRequest);
     }

@@ -1,24 +1,22 @@
 package com.ptit.hirex.dto.response;
 
-import com.ptit.data.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JobResponse {
+public class JobDTO {
     private Long id;
     private String title;
     private String location;
-    private String district;
-    private String city;
+    private Long district;
+    private Long city;
     private String deadline;
     private String description;
     private String requirement;
@@ -27,11 +25,11 @@ public class JobResponse {
     private String workingTime;
     private Long minSalary;
     private Long maxSalary;
-    private String position;
-    private String jobType;
-    private String contractType;
+    private Long position;
+    private Long jobType;
+    private Long contractType;
+    private Long education;
+    private Long industry;
     private String email;
-    private Company company;
-    private EmployerResponse employer;
     private LocalDateTime createdAt;
 }

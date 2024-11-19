@@ -6,6 +6,7 @@ import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.response.EmployerResponse;
+import com.ptit.hirex.dto.response.JobDTO;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -124,47 +125,7 @@ public class JobService {
             Job job = jobRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
-            // Lấy thông tin district
-            String districtName = districtRepository.findById(job.getDistrictId())
-                    .map(District::getName)
-                    .orElse("");
-
-            // Lấy thông tin city
-            String cityName = cityRepository.findById(job.getCityId())
-                    .map(City::getName)
-                    .orElse("");
-
-            // Lấy thông tin employer và company
-            Employer employer = employerRepository.findById(job.getEmployer())
-                    .orElse(null);
-
-            User user = userRepository.findById(employer.getUserId()).orElse(null);
-
-            Company company = null;
-            if (employer != null) {
-                company = companyRepository.findById(employer.getCompany())
-                        .orElse(null);
-            }
-
-            JobWithCompanyResponse jobResponse = JobWithCompanyResponse.builder()
-                    .id(job.getId())
-                    .title(job.getTitle())
-                    .location(job.getLocation())
-                    .district(districtName)
-                    .city(cityName)
-                    .deadline(job.getDeadline())
-                    .createdAt(job.getCreatedAt())
-                    .companyName(company != null ? company.getCompanyName() : null)
-                    .companyLogo(company != null ? company.getLogo() : null)
-                    .companyDescription(company != null ? company.getDescription() : null)
-                    .employer(UserInfoDto.builder()
-                            .userId(user.getId())
-                            .email(user.getEmail())
-                            .avatar(user.getAvatar())
-                            .fullName(user.getFullName())
-                            .phoneNumber(user.getPhoneNumber())
-                            .build())
-                    .build();
+            JobDTO jobResponse = modelMapper.map(job, JobDTO.class);
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.job.success"),
@@ -217,12 +178,13 @@ public class JobService {
                     .city(cityRepository.findById(job.getCityId()).get().getName())
                     .deadline(job.getDeadline())
                     .description(job.getDescription())
-                    .requirements(job.getRequirement())
+                    .requirement(job.getRequirement())
                     .yearExperience(experienceRepository.findById(job.getYearExperience()).get().getName())
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
                     .benefit(job.getBenefit())
-                    .benefit(job.getWorkingTime())
+                    .email(job.getEmail())
+                    .workingTime(job.getWorkingTime())
                     .position(positionRepository.findById(job.getPositionId()).get().getName())
                     .jobType(jobTypeRepository.findById(job.getJobTypeId()).get().getName())
                     .contractType(contractTypeRepository.findById(job.getContractTypeId()).get().getName())
@@ -289,7 +251,6 @@ public class JobService {
                                 .location(job.getLocation())
 //                                .district(districtName)
 //                                .city(cityName)
-//                                .salary(salaryRepository.findById(job.getSalary()).get().getName())
                                 .minSalary(job.getMinSalary())
                                 .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
