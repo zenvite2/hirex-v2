@@ -1,15 +1,12 @@
 package com.ptit.data.entity;
 
 import com.ptit.data.base.Auditable;
-import com.ptit.data.base.HashMapConverter;
 import com.ptit.data.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Map;
 
 @Entity
 @Data
@@ -78,10 +75,8 @@ public class Job extends Auditable {
      */
     private Long educationLevelId;
 
+    private String workingTime;
+
     @Enumerated(EnumType.STRING)
     private JobStatus status;
-
-    @Column(name = "job_details", columnDefinition = "TEXT")
-    @Convert(converter = HashMapConverter.class)
-    private Map<String, Object> jobDetails;
 }

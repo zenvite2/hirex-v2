@@ -1,6 +1,5 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.dto.SalaryDto;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.UserInfoDto;
@@ -14,7 +13,6 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -23,7 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +45,6 @@ public class JobService {
     private final JobTypeRepository jobTypeRepository;
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
-    private final TechRepository techRepository;
     private final EntityManager entityManager;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
@@ -76,7 +72,6 @@ public class JobService {
 
         try {
             Job job = modelMapper.map(jobRequest, Job.class);
-            job.setJobDetails(jobRequest.getJobDetails());
             job.setEmployer(employer.getId());
 
             jobRepository.save(job);
@@ -224,14 +219,14 @@ public class JobService {
                     .description(job.getDescription())
                     .requirements(job.getRequirement())
                     .yearExperience(experienceRepository.findById(job.getYearExperience()).get().getName())
-//                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
+                    .benefit(job.getBenefit())
+                    .benefit(job.getWorkingTime())
                     .position(positionRepository.findById(job.getPositionId()).get().getName())
                     .jobType(jobTypeRepository.findById(job.getJobTypeId()).get().getName())
                     .contractType(contractTypeRepository.findById(job.getContractTypeId()).get().getName())
                     .createdAt(job.getCreatedAt())
-                    .jobDetails(job.getJobDetails())
                     .company(company)
                     .employer(employerResponse)
                     .build();
@@ -357,7 +352,6 @@ public class JobService {
                                 .companyName(company != null ? company.getCompanyName() : null)
                                 .companyLogo(company != null ? company.getLogo() : null)
                                 .companyDescription(company != null ? company.getDescription() : null)
-                                .jobDetails(job.getJobDetails())
                                 .build();
                     })
                     .collect(Collectors.toList());
@@ -495,7 +489,6 @@ public class JobService {
                             .companyDescription(company != null ? company.getDescription() : null)
                             .minSalary(jobItem.getMinSalary())
                             .maxSalary(jobItem.getMaxSalary())
-                            .jobDetails(jobItem.getJobDetails())
                             .build();
                 })
                 .collect(Collectors.toList());

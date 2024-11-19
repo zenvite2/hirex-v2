@@ -32,6 +32,7 @@ public class AutofillService {
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
     private final IndustryRepository industryRepository;
+    private final EducationLevelRepository educationLevelRepository;
 
 
     public ResponseEntity<ResponseDto<List<City>>> autofillCity(String name) {
@@ -242,6 +243,23 @@ public class AutofillService {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("autofill.company.failed"),
                     StatusCodeEnum.COMPANY0000
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<List<EducationLevel>>> autofillEducationLevel() {
+        try {
+            List<EducationLevel> educationLevels = educationLevelRepository.findAll();
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("autofill.industry.success"),
+                    educationLevels,
+                    StatusCodeEnum.EDUCATIONLEVEL1000
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("autofill.industry.failed"),
+                    StatusCodeEnum.EDUCATIONLEVEL0000
             );
         }
     }
