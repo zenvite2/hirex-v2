@@ -368,22 +368,25 @@ public class JobService {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(job.get("title")), "%" + searchRequest.getSearchQuery().toLowerCase() + "%"));
         }
         if (searchRequest.getCity() != null) {
-            predicates.add(criteriaBuilder.equal(job.get("city"), searchRequest.getCity()));
+            predicates.add(criteriaBuilder.equal(job.get("cityId"), searchRequest.getCity()));
         }
         if (searchRequest.getExperienceIds() != null && !searchRequest.getExperienceIds().isEmpty()) {
             predicates.add(job.get("yearExperience").in(searchRequest.getExperienceIds()));
         }
-        if (searchRequest.getTechIds() != null && !searchRequest.getTechIds().isEmpty()) {
-            predicates.add(job.get("tech").in(searchRequest.getTechIds()));
+        if (searchRequest.getIndustryIds() != null && !searchRequest.getIndustryIds().isEmpty()) {
+            predicates.add(job.get("industryId").in(searchRequest.getIndustryIds()));
         }
         if (searchRequest.getJobTypeIds() != null && !searchRequest.getJobTypeIds().isEmpty()) {
-            predicates.add(job.get("jobType").in(searchRequest.getJobTypeIds()));
+            predicates.add(job.get("jobTypeId").in(searchRequest.getJobTypeIds()));
         }
         if (searchRequest.getPositionIds() != null && !searchRequest.getPositionIds().isEmpty()) {
-            predicates.add(job.get("position").in(searchRequest.getPositionIds()));
+            predicates.add(job.get("positionId").in(searchRequest.getPositionIds()));
         }
         if (searchRequest.getContractTypeIds() != null && !searchRequest.getContractTypeIds().isEmpty()) {
-            predicates.add(job.get("contractType").in(searchRequest.getContractTypeIds()));
+            predicates.add(job.get("contractTypeId").in(searchRequest.getContractTypeIds()));
+        }
+        if (searchRequest.getEducationIds() != null && !searchRequest.getEducationIds().isEmpty()) {
+            predicates.add(job.get("educationLevelId").in(searchRequest.getEducationIds()));
         }
 
         System.out.println("vite");

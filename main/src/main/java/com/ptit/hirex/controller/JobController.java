@@ -61,10 +61,11 @@ public class JobController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) Long city,
-            @RequestParam(required = false) List<Long> techIds,
+            @RequestParam(required = false) List<Long> industryIds,
             @RequestParam(required = false) List<Long> positionIds,
             @RequestParam(required = false) List<Long> experienceIds,
             @RequestParam(required = false) List<Long> educationIds,
@@ -76,7 +77,7 @@ public class JobController {
         JobSearchRequest searchRequest = JobSearchRequest.builder()
                 .searchQuery(searchQuery)
                 .city(city)
-                .techIds(techIds)
+                .industryIds(industryIds)
                 .positionIds(positionIds)
                 .experienceIds(experienceIds)
                 .educationIds(educationIds)
