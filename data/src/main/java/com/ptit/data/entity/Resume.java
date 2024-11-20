@@ -26,10 +26,25 @@ public class Resume {
 
     private String hobby;
 
+    private Long employeeId;
+
     @Convert(converter = JSONConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> projects;
 
     @Convert(converter = JSONConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> certificates;
 
+    @Convert(converter = JSONConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<Map<String, Object>> educations;
+
+    @Convert(converter = JSONConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<Map<String, Object>> experiences;
+
+    @Convert(converter = JSONConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<Map<String, Object>> skills;
 }
