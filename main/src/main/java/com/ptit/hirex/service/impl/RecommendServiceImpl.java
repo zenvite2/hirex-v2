@@ -33,21 +33,22 @@ public class RecommendServiceImpl implements RecommendService {
     private final WebClient webClient;
     private final JobService jobService;
     private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
     private final JobRepository jobRepository;
     private final EmployerRepository employerRepository;
     private final DistrictRepository districtRepository;
     private final CityRepository cityRepository;
     private final CompanyRepository companyRepository;
 
-    public Mono<List<?>> getListJobForRecommend(Long employeeId) {
+    public Mono<List<?>> getListJobForRecommend(Long userId) {
+        Long employeeId = employeeRepository.findByUserId(userId).getId();
         List<FullJobDto> lstJobs = jobService.getFullDataJobs();
         FullEmployeeDto employeeDto = employeeService.getFullEmployeeData(employeeId);
         RecommendRequestDto requestDto = new RecommendRequestDto(
                 lstJobs,
                 employeeDto
         );
-        System.out.println(lstJobs);
-        System.out.println(employeeDto);
+
         return webClient.post()
                 .uri("/recommend")
                 .body(Mono.just(requestDto), RecommendRequestDto.class)
@@ -64,7 +65,7 @@ public class RecommendServiceImpl implements RecommendService {
                     return jobIds.isEmpty()
                             ? Mono.just(Collections.emptyList())
                             : Flux.fromIterable(jobIds)
-                            .flatMap(jobId -> createJobWithCompanyResponse(jobId))
+                            .flatMap(this::createJobWithCompanyResponse)
                             .collectList();
                 })
                 .onErrorResume(this::handleError);
