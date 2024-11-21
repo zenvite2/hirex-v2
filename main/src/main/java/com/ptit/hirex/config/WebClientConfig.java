@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class WebClientConfig {
-    @Value("${suggest-service.baseUrl}")
+    @Value("${recommend-service.baseUrl}")
     private String baseUrl;
 
     @Bean
