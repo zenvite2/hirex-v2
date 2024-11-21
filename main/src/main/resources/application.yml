@@ -45,5 +45,5 @@ minio:
     private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
   bucket: ${S3_BUCKET:hirex}
 
-suggest-service:
-  baseUrl: http://127.0.0.1:5000/api
+recommend-service:
+  baseUrl: https://re.deploy-hirexptit.io.vn/api
