@@ -17,10 +17,7 @@ import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,7 +71,7 @@ public class ApplicationService {
             }
 
             //tao thong bao
-            notificationService.createNotification(user.getId(), applicationRequest.getJobId(), "APPLY");
+            notificationService.createNotification(employee.getId(), applicationRequest.getJobId(), "APPLY");
 
             Application application = Application.builder()
                     .jobId(applicationRequest.getJobId())
@@ -113,42 +110,132 @@ public class ApplicationService {
 
 
     public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
-        List<Application> applications = applicationRepository.findAll();
+        try {
+            List<Application> applications = applicationRepository.findAll();
 
-        if (applications.isEmpty()) {
+            if (applications.isEmpty()) {
+                return ResponseBuilder.okResponse(
+                        "No applications found",
+                        StatusCodeEnum.APPLICATION1000
+                );
+            }
+
             List<ApplicationResponse> applicationResponses = applications.stream()
                     .map(application -> {
-                        Job job = jobRepository.findById(application.getJobId())
-                                .orElseThrow(() -> new RuntimeException("Job not found"));
-                        Employee employee = employeeRepository.findById(application.getEmployeeId())
-                                .orElseThrow(() -> new RuntimeException("Employee not found"));
+                        Job job = jobRepository.findById(application.getJobId()).orElse(null);
+                        if (job == null) {
+                            log.error("Job not found for id: " + application.getJobId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
+
+                        Employee employee = employeeRepository.findById(application.getEmployeeId()).orElse(null);
+                        if (employee == null) {
+                            log.error("Employee not found for id: " + application.getEmployeeId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
+
+                        User user = userRepository.findById(employee.getUserId()).orElse(null);
+                        if (user == null) {
+                            log.error("User not found for id: " + employee.getUserId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
 
                         return ApplicationResponse.builder()
                                 .id(application.getId())
                                 .jobId(job.getId())
                                 .jobTitle(job.getTitle())
                                 .address(job.getLocation())
-                                .cvPdf(application.getCvPdf())
+                                .cvPdf(application.getCvPdf() != null ? application.getCvPdf() : "No CV provided")
                                 .employeeId(employee.getId())
-                                .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
+                                .fullName(user.getFullName() != null ? user.getFullName() : "No name provided")
                                 .coverLetter(application.getCoverLetter())
                                 .status(application.getStatus())
                                 .createdAt(application.getCreatedAt())
                                 .build();
                     })
+                    .filter(Objects::nonNull) // Loại bỏ null khỏi danh sách
                     .collect(Collectors.toList());
 
-            return ResponseBuilder.badRequestResponse(
+            return ResponseBuilder.okResponse(
                     "get list success",
                     applicationResponses,
                     StatusCodeEnum.APPLICATION1000
             );
+
+        } catch (Exception e) {
+            log.error("Error while fetching applications", e); // Log lỗi
+            return ResponseBuilder.badRequestResponse(
+                    "get list failed: " + e.getMessage(),
+                    StatusCodeEnum.APPLICATION1000
+            );
         }
-        return ResponseBuilder.badRequestResponse(
-                "get list success",
-                StatusCodeEnum.APPLICATION1000
-        );
     }
+
+    public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getApplicationByUserId(Long userId) {
+        try {
+
+            Employee employeeOpt = employeeRepository.findByUserId(userId);
+
+            List<Application> applications = applicationRepository.findByEmployeeId(employeeOpt.getId());
+
+            if (applications.isEmpty()) {
+                return ResponseBuilder.okResponse(
+                        "No applications found",
+                        StatusCodeEnum.APPLICATION1000
+                );
+            }
+
+            List<ApplicationResponse> applicationResponses = applications.stream()
+                    .map(application -> {
+                        Job job = jobRepository.findById(application.getJobId()).orElse(null);
+                        if (job == null) {
+                            log.error("Job not found for id: " + application.getJobId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
+
+                        Employee employee = employeeRepository.findById(application.getEmployeeId()).orElse(null);
+                        if (employee == null) {
+                            log.error("Employee not found for id: " + application.getEmployeeId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
+
+                        User user = userRepository.findById(employee.getUserId()).orElse(null);
+                        if (user == null) {
+                            log.error("User not found for id: " + employee.getUserId());
+                            return null; // Hoặc ném lỗi tùy trường hợp
+                        }
+
+                        return ApplicationResponse.builder()
+                                .id(application.getId())
+                                .jobId(job.getId())
+                                .jobTitle(job.getTitle())
+                                .address(job.getLocation())
+                                .cvPdf(application.getCvPdf() != null ? application.getCvPdf() : "No CV provided")
+                                .employeeId(employee.getId())
+                                .fullName(user.getFullName() != null ? user.getFullName() : "No name provided")
+                                .coverLetter(application.getCoverLetter())
+                                .status(application.getStatus())
+                                .createdAt(application.getCreatedAt())
+                                .build();
+                    })
+                    .filter(Objects::nonNull) // Loại bỏ null khỏi danh sách
+                    .collect(Collectors.toList());
+
+            return ResponseBuilder.okResponse(
+                    "get list success",
+                    applicationResponses,
+                    StatusCodeEnum.APPLICATION1000
+            );
+
+        } catch (Exception e) {
+            log.error("Error while fetching applications", e); // Log lỗi
+            return ResponseBuilder.badRequestResponse(
+                    "get list failed: " + e.getMessage(),
+                    StatusCodeEnum.APPLICATION1000
+            );
+        }
+    }
+
 
     public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(Long id, ApplicationStatus status) throws MessagingException {
         // Cập nhật status
@@ -157,16 +244,16 @@ public class ApplicationService {
         application.setStatus(status);
         applicationRepository.save(application);
 
-        //tao thong bao
-        notificationService.createNotification(application.getEmployeeId(), application.getJobId(), String.valueOf(application.getStatus()));
-
-        Employee employee = employeeRepository.findByUserId(application.getEmployeeId());
-        if (employee == null) {
+        Optional<Employee> employee = employeeRepository.findById(application.getEmployeeId());
+        if (employee.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("not.found.employee"),
                     StatusCodeEnum.EMPLOYER4000
             );
         }
+
+        //tao thong bao
+        notificationService.createNotification(employee.get().getUserId(), application.getJobId(), String.valueOf(application.getStatus()));
 
         Optional<Job> jobOptional = jobRepository.findById(application.getJobId());
         if (jobOptional.isEmpty()) {
@@ -186,7 +273,7 @@ public class ApplicationService {
             );
         }
 
-        User user = userRepository.findById(employee.getUserId()).get();
+        User user = userRepository.findById(employee.get().getUserId()).get();
 
         // Map sang response
         ApplicationResponse applicationResponse = ApplicationResponse.builder()
@@ -194,7 +281,7 @@ public class ApplicationService {
                 .jobId(job.getId())
                 .jobTitle(job.getTitle())
                 .address(job.getLocation())
-                .employeeId(employee.getId())
+                .employeeId(employee.get().getId())
                 .cvPdf(application.getCvPdf())
                 .cvPdf(application.getCvPdf())
                 .fullName(user.getFullName())
@@ -216,6 +303,21 @@ public class ApplicationService {
                 applicationResponse,
                 StatusCodeEnum.APPLICATION1000
         );
+    }
+
+    public ResponseEntity<ResponseDto<Object>> delete(Long id) {
+        try{
+            applicationRepository.deleteById(id);
+            return ResponseBuilder.badRequestResponse(
+                    "Update status successfully",
+                    StatusCodeEnum.APPLICATION1000
+            );
+        }catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    "Update status successfully",
+                    StatusCodeEnum.APPLICATION1000
+            );
+        }
     }
 
 }

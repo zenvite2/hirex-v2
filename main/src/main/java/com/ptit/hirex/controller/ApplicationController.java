@@ -30,10 +30,20 @@ public class ApplicationController {
         return applicationService.getAllApplications();
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getApplicationByUser(@PathVariable Long userId) {
+        return applicationService.getApplicationByUserId(userId);
+    }
+
     @PatchMapping("/{id}/status")
     public ResponseEntity<ResponseDto<ApplicationResponse>> updateStatus(
             @PathVariable("id") Long id,
             @RequestParam ApplicationStatus status) throws MessagingException {
         return applicationService.updateStatus(id, status);
+    }
+
+    @PatchMapping("/delete/{id}")
+    public ResponseEntity<ResponseDto<Object>> delete(@PathVariable("id") Long id) {
+        return applicationService.delete(id);
     }
 }

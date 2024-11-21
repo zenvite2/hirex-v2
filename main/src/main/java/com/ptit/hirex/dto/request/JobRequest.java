@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,15 +13,20 @@ public class JobRequest {
     private String title;
     private String description;
     private String location;
-    private String requirements;
+    private String requirement;
     private Long yearExperience;
-    private Long salary;
-    private Long tech;
+    private Long minSalary;
+    private Long maxSalary;
     private Long city;
     private Long district;
     private Long position;
     private Long jobType;
     private Long contractType;
     private String deadline;
-    private Map<String, Object> jobDetails;
+    private Long education;
+    private String benefit;
+    private String workingTime;
+    private String email;
+    private String phone;
+    private Long industry;
 }
