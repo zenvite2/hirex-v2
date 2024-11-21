@@ -1,5 +1,6 @@
 package com.ptit.data.entity;
 
+import com.ptit.data.base.Auditable;
 import com.ptit.data.converter.JSONConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,11 +17,12 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 @Table(name = "resume")
-public class Resume {
-
+public class Resume extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String title;
 
     private String career;
 

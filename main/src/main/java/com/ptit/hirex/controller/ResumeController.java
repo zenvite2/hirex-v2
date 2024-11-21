@@ -1,12 +1,11 @@
 package com.ptit.hirex.controller;
 
 import com.ptit.data.entity.Resume;
+import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/resumes")
@@ -16,8 +15,8 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping
-    public ResponseEntity<Resume> createResume(@RequestBody Resume resume) {
-        return ResponseEntity.ok(resumeService.save(resume));
+    public ResponseEntity<ResponseDto<Object>> createResume() {
+        return resumeService.createResume();
     }
 
     @GetMapping("/{id}")
@@ -26,8 +25,8 @@ public class ResumeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Resume>> getAllResumes() {
-        return ResponseEntity.ok(resumeService.findAll());
+    public ResponseEntity<ResponseDto<Object>> getAllResumes() {
+        return resumeService.getAllResume();
     }
 
     @PutMapping("/{id}")
