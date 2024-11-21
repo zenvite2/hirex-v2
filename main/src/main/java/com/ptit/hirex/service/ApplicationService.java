@@ -115,34 +115,34 @@ public class ApplicationService {
     public ResponseEntity<ResponseDto<List<ApplicationResponse>>> getAllApplications() {
         List<Application> applications = applicationRepository.findAll();
 
-        if(applications.isEmpty()){
-        List<ApplicationResponse> applicationResponses = applications.stream()
-                .map(application -> {
-                    Job job = jobRepository.findById(application.getJobId())
-                            .orElseThrow(() -> new RuntimeException("Job not found"));
-                    Employee employee = employeeRepository.findById(application.getEmployeeId())
-                            .orElseThrow(() -> new RuntimeException("Employee not found"));
+        if (applications.isEmpty()) {
+            List<ApplicationResponse> applicationResponses = applications.stream()
+                    .map(application -> {
+                        Job job = jobRepository.findById(application.getJobId())
+                                .orElseThrow(() -> new RuntimeException("Job not found"));
+                        Employee employee = employeeRepository.findById(application.getEmployeeId())
+                                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-                    return ApplicationResponse.builder()
-                            .id(application.getId())
-                            .jobId(job.getId())
-                            .jobTitle(job.getTitle())
-                            .address(job.getLocation())
-                            .cvPdf(application.getCvPdf())
-                            .employeeId(employee.getId())
-                            .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
-                            .coverLetter(application.getCoverLetter())
-                            .status(application.getStatus())
-                            .createdAt(application.getCreatedAt())
-                            .build();
-                })
-                .collect(Collectors.toList());
+                        return ApplicationResponse.builder()
+                                .id(application.getId())
+                                .jobId(job.getId())
+                                .jobTitle(job.getTitle())
+                                .address(job.getLocation())
+                                .cvPdf(application.getCvPdf())
+                                .employeeId(employee.getId())
+                                .fullName(userRepository.findById(employee.getUserId()).get().getFullName())
+                                .coverLetter(application.getCoverLetter())
+                                .status(application.getStatus())
+                                .createdAt(application.getCreatedAt())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
 
-        return ResponseBuilder.badRequestResponse(
-                "get list success",
-                applicationResponses,
-                StatusCodeEnum.APPLICATION1000
-        );
+            return ResponseBuilder.badRequestResponse(
+                    "get list success",
+                    applicationResponses,
+                    StatusCodeEnum.APPLICATION1000
+            );
         }
         return ResponseBuilder.badRequestResponse(
                 "get list success",
@@ -179,7 +179,7 @@ public class ApplicationService {
         Job job = jobOptional.get();
 
         Optional<Employer> employer = employerRepository.findById(job.getEmployer());
-        if(employer.isEmpty()){
+        if (employer.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("not.found.employer"),
                     StatusCodeEnum.EMPLOYER4000

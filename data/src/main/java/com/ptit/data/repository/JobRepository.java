@@ -1,10 +1,7 @@
 package com.ptit.data.repository;
 
-import com.ptit.data.dto.SalaryDto;
 import com.ptit.data.entity.Job;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

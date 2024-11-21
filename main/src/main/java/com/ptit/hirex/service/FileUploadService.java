@@ -57,7 +57,7 @@ public class FileUploadService {
         }
 
         String originalFileName = "default-url";
-        if(StringUtils.isNotBlank(file.getOriginalFilename())) {
+        if (StringUtils.isNotBlank(file.getOriginalFilename())) {
             String sanitizedFileName = file.getOriginalFilename()
                     .replaceAll("[^a-zA-Z0-9.\\-]", "_");
 

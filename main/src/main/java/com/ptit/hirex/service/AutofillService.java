@@ -24,7 +24,7 @@ public class AutofillService {
     private final DistrictRepository districtRepository;
     private final LanguageService languageService;
     private final ModelMapper modelMapper;
-//    private final SalaryRepository salaryRepository;
+    //    private final SalaryRepository salaryRepository;
     private final JobTypeRepository jobTypeRepository;
     private final TechRepository techRepository;
     private final YearExperienceRepository yearExperienceRepository;

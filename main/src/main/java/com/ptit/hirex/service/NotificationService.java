@@ -28,7 +28,7 @@ public class NotificationService {
     private final JobRepository jobRepository;
     private final LanguageService languageService;
 
-    public void createNotification(Long userId, Long jobId, String type){
+    public void createNotification(Long userId, Long jobId, String type) {
         Optional<NotificationPattern> patternOpt = patternRepository.findByType(type);
         if (patternOpt.isPresent()) {
             NotificationPattern pattern = patternOpt.get();
@@ -67,9 +67,9 @@ public class NotificationService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> getNotification(Long userId){
+    public ResponseEntity<ResponseDto<Object>> getNotification(Long userId) {
 
-        try{
+        try {
             List<Notification> list = notificationRepository.findAllByToUserId(userId, Sort.by(Sort.Order.desc("createdAt")));
 
             return ResponseBuilder.badRequestResponse(
@@ -77,7 +77,7 @@ public class NotificationService {
                     list,
                     StatusCodeEnum.NOTIFICATION1001
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("get.notification.failed"),
                     StatusCodeEnum.NOTIFICATION0001

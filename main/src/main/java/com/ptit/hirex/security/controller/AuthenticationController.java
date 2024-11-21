@@ -6,7 +6,6 @@ import com.ptit.hirex.security.dto.request.ChangePasswordRequest;
 import com.ptit.hirex.security.dto.request.SignInRequest;
 import com.ptit.hirex.security.dto.request.SignUpRequest;
 import com.ptit.hirex.security.service.AuthenticationService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.dto.SalaryDto;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.FullJobDto;
 import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
@@ -14,7 +14,6 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -23,11 +22,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,8 +49,11 @@ public class JobService {
     private final JobTypeRepository jobTypeRepository;
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
-    private final TechRepository techRepository;
     private final EntityManager entityManager;
+    private final IndustryRepository industryRepository;
+    private final EducationLevelRepository educationLevelRepository;
+    private final EmployeeSkillRepository employeeSkillRepository;
+    private final JobSkillRepository jobSkillRepository;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
@@ -431,8 +435,6 @@ public class JobService {
             predicates.add(job.get("contractType").in(searchRequest.getContractTypeIds()));
         }
 
-        System.out.println("vite");
-        System.out.println(searchRequest.getSalaryOptions());
         if (searchRequest.getSalaryOptions() != null && !searchRequest.getSalaryOptions().isEmpty()) {
             List<Predicate> salaryPredicates = searchRequest.getSalaryOptions().stream()
                     .map(salaryOption -> {
@@ -506,4 +508,39 @@ public class JobService {
                 StatusCodeEnum.JOB1001
         );
     }
+
+    public List<FullJobDto> getFullDataJobs() {
+        List<Job> jobs = jobRepository.findAll();
+        return jobs.stream().map(job -> FullJobDto.builder()
+                .id(job.getId())
+                .industry(job.getIndustryId() != null
+                        ? industryRepository.findById(job.getIndustryId()).orElse(null)
+                        : null)
+                .jobType(job.getJobTypeId() != null
+                        ? jobTypeRepository.findById(job.getJobTypeId()).orElse(null)
+                        : null)
+                .district(job.getDistrictId() != null
+                        ? districtRepository.findById(job.getDistrictId()).orElse(null)
+                        : null)
+                .city(job.getCityId() != null
+                        ? cityRepository.findById(job.getCityId()).orElse(null)
+                        : null)
+                .minSalary(job.getMinSalary())
+                .maxSalary(job.getMaxSalary())
+                .educationLevel(job.getEducationLevelId() != null
+                        ? educationLevelRepository.findById(job.getEducationLevelId()).orElse(null)
+                        : null)
+                .position(job.getPositionId() != null
+                        ? positionRepository.findById(job.getPositionId()).orElse(null)
+                        : null)
+                .yearExperience(job.getYearExperience())
+                .contractType(job.getContractTypeId() != null
+                        ? contractTypeRepository.findById(job.getContractTypeId()).orElse(null)
+                        : null)
+                .skill_ids(job.getId() != null
+                        ? jobSkillRepository.findByJobId(job.getId()).stream().map(JobSkill::getSkillId).toList()
+                        : null)
+                .build()).toList();
+    }
+
 }

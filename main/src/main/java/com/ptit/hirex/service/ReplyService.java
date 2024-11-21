@@ -2,7 +2,6 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Comment;
 import com.ptit.data.entity.Reply;
-import com.ptit.data.entity.User;
 import com.ptit.data.repository.CommentRepository;
 import com.ptit.data.repository.ReplyRepository;
 import com.ptit.data.repository.UserRepository;
@@ -15,8 +14,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

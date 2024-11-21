@@ -2,11 +2,9 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Employee;
 import com.ptit.data.entity.Skill;
-import com.ptit.data.entity.Tech;
 import com.ptit.data.repository.SkillRepository;
 import com.ptit.data.repository.TechRepository;
 import com.ptit.hirex.dto.request.SkillRequest;
-import com.ptit.hirex.dto.response.SkillResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -17,9 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j

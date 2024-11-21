@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
-    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**"};
+    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/recommend/**"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/saved-job/**"};
     private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};

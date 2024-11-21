@@ -1,8 +1,6 @@
 package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Comment;
-import com.ptit.data.entity.Notification;
-import com.ptit.data.entity.User;
 import com.ptit.data.repository.CommentRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.CommentRequest;
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

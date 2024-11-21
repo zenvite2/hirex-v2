@@ -1,15 +1,12 @@
 package com.ptit.hirex.controller;
 
 import com.ptit.hirex.dto.request.SkillRequest;
-import com.ptit.hirex.dto.response.SkillResponse;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.SkillService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

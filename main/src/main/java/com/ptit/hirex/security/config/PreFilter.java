@@ -56,8 +56,7 @@ public class PreFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     context.setAuthentication(authentication);
                     SecurityContextHolder.setContext(context);
-                }
-                else {
+                } else {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 }
             }

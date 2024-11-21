@@ -1,12 +1,10 @@
 package com.ptit.hirex.service.impl;
 
 import com.ptit.data.entity.Notification;
-import com.ptit.data.entity.NotificationPattern;
 import com.ptit.data.repository.NotificationPatternRepository;
 import com.ptit.data.repository.NotificationRepository;
 import com.ptit.hirex.dto.request.NotificationRequest;
 import com.ptit.hirex.service.MailService;
-import com.ptit.hirex.service.NotificationService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -14,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationServiceImpl{
+public class NotificationServiceImpl {
 
     private final ModelMapper modelMapper;
     private final NotificationRepository repository;

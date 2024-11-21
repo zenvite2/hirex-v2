@@ -24,7 +24,7 @@ public class JobWithCompanyResponse {
     private String companyName;
     private String companyLogo;
     private String companyDescription;
-//    private String salary;
+    //    private String salary;
     private Long minSalary;
     private Long maxSalary;
     private UserInfoDto employer;

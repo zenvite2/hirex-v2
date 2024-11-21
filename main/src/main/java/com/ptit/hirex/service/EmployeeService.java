@@ -1,11 +1,12 @@
 package com.ptit.hirex.service;
 
+import com.ptit.data.entity.Education;
 import com.ptit.data.entity.Employee;
+import com.ptit.data.entity.EmployeeSkill;
 import com.ptit.data.entity.User;
-import com.ptit.data.repository.EmployeeRepository;
-import com.ptit.data.repository.RoleRepository;
-import com.ptit.data.repository.UserRepository;
+import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.EmployeeDto;
+import com.ptit.hirex.dto.FullEmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
 import com.ptit.hirex.dto.response.EmployeeResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -28,7 +29,9 @@ import java.util.Optional;
 public class EmployeeService {
     @Value("${minio.url.public}")
     private String publicUrl;
-
+    private final EmployeeSkillRepository employeeSkillRepository;
+    private final CareerGoalRepository careerGoalRepository;
+    private final EducationRepository educationRepository;
     private final EmployeeRepository employeeRepository;
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
@@ -191,5 +194,14 @@ public class EmployeeService {
                     StatusCodeEnum.EMPLOYEE0002
             );
         }
+    }
+
+    public FullEmployeeDto getFullEmployeeData(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow();
+        return FullEmployeeDto.builder()
+                .careerGoal(careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null))
+                .educationLevelIds(educationRepository.findAllByEmployeeId(id).stream().map(Education::getEducationLevelId).toList())
+                .skillIds(employeeSkillRepository.findAllByEmployeeId(id).stream().map(EmployeeSkill::getSkillId).toList())
+                .build();
     }
 }

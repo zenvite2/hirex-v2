@@ -99,7 +99,7 @@ public class CareerGoalService {
 
         try {
             CareerGoal careerGoal = careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null);
-            if(careerGoal == null) {
+            if (careerGoal == null) {
                 return ResponseBuilder.badRequestResponse(
                         languageService.getMessage("get.career.failed"),
                         StatusCodeEnum.CAREER0002
