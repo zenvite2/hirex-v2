@@ -15,6 +15,11 @@ public class ResumeController {
 
     private final ResumeService resumeService;
 
+    @PostMapping("/new/{id}")
+    public ResponseEntity<Long> createNewResume(@PathVariable Long id) {
+        return ResponseEntity.ok(resumeService.createNewResume(id));
+    }
+
     @PostMapping
     public ResponseEntity<Resume> createResume(@RequestBody Resume resume) {
         return ResponseEntity.ok(resumeService.save(resume));
@@ -42,4 +47,3 @@ public class ResumeController {
         return ResponseEntity.ok().build();
     }
 }
-

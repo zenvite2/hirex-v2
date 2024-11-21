@@ -13,12 +13,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Table(name = "employee_skill")
-public class EmployeeSkill extends Auditable  {
+public class EmployeeSkill extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long skillId;
+
+    @Transient
+    private Skill skill;
 
     private Long employeeId;
 }

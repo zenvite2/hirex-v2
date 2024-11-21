@@ -23,6 +23,9 @@ public class Experience {
 
     private String companyName;
 
+    @Transient
+    private Position positionObj;
+
     private Long position;
 
     private LocalDate startDate;

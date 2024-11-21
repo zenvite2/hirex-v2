@@ -21,6 +21,9 @@ public class Education {
 
     private Long educationLevelId;
 
+    @Transient
+    private EducationLevel educationLevel;
+
     private Long employeeId;
 
     private String universityName;

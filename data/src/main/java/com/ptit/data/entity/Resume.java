@@ -38,13 +38,13 @@ public class Resume {
 
     @Convert(converter = JSONConverter.class)
     @Column(columnDefinition = "TEXT")
-    private List<Map<String, Object>> educations;
+    private List<Education> educations;
 
     @Convert(converter = JSONConverter.class)
     @Column(columnDefinition = "TEXT")
-    private List<Map<String, Object>> experiences;
+    private List<Experience> experiences;
 
     @Convert(converter = JSONConverter.class)
     @Column(columnDefinition = "TEXT")
-    private List<Map<String, Object>> skills;
+    private List<Skill> skills;
 }
