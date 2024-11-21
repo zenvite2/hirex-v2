@@ -15,7 +15,7 @@ import java.util.List;
 public class JobSearchRequest {
     private String searchQuery;
     private Long city;
-    private List<Long> techIds;
+    private List<Long> industryIds;
     private List<Long> positionIds;
     private List<Long> experienceIds;
     private List<SalaryDto> salaryOptions;

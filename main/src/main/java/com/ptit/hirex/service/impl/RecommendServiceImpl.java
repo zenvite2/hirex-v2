@@ -104,7 +104,6 @@ public class RecommendServiceImpl implements RecommendService {
                     .createdAt(job.getCreatedAt())
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
-                    .jobDetails(job.getJobDetails())
                     .companyName(companyOpt.map(Company::getCompanyName).orElse(null))
                     .companyLogo(companyOpt.map(Company::getLogo).orElse(null))
                     .companyDescription(companyOpt.map(Company::getDescription).orElse(null))

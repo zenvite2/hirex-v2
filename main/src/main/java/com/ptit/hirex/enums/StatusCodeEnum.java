@@ -145,6 +145,8 @@ public enum StatusCodeEnum {
     SALARY0000("SALARY0000"), //Autofill salary failed
     INDUSTRY1000("INDUSTRY1000"), //Autofill industry success
     INDUSTRY0000("INDUSTRY0000"), //Autofill industry failed
+    EDUCATIONLEVEL1000("EDUCATIONLEVEL1000"), //Autofill education level success
+    EDUCATIONLEVEL0000("EDUCATIONLEVEL0000"), //Autofill education level failed
 
     // USER-INFO
     USERINFO1000("USERINFO1000"),

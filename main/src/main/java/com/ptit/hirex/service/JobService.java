@@ -7,6 +7,7 @@ import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.response.EmployerResponse;
+import com.ptit.hirex.dto.response.JobDTO;
 import com.ptit.hirex.dto.response.JobResponse;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -80,7 +81,6 @@ public class JobService {
 
         try {
             Job job = modelMapper.map(jobRequest, Job.class);
-            job.setJobDetails(jobRequest.getJobDetails());
             job.setEmployer(employer.getId());
 
             jobRepository.save(job);
@@ -133,47 +133,7 @@ public class JobService {
             Job job = jobRepository.findById(id)
                     .orElseThrow(() -> new NoSuchElementException(languageService.getMessage("not.found.job")));
 
-            // Lấy thông tin district
-            String districtName = districtRepository.findById(job.getDistrictId())
-                    .map(District::getName)
-                    .orElse("");
-
-            // Lấy thông tin city
-            String cityName = cityRepository.findById(job.getCityId())
-                    .map(City::getName)
-                    .orElse("");
-
-            // Lấy thông tin employer và company
-            Employer employer = employerRepository.findById(job.getEmployer())
-                    .orElse(null);
-
-            User user = userRepository.findById(employer.getUserId()).orElse(null);
-
-            Company company = null;
-            if (employer != null) {
-                company = companyRepository.findById(employer.getCompany())
-                        .orElse(null);
-            }
-
-            JobWithCompanyResponse jobResponse = JobWithCompanyResponse.builder()
-                    .id(job.getId())
-                    .title(job.getTitle())
-                    .location(job.getLocation())
-                    .district(districtName)
-                    .city(cityName)
-                    .deadline(job.getDeadline())
-                    .createdAt(job.getCreatedAt())
-                    .companyName(company != null ? company.getCompanyName() : null)
-                    .companyLogo(company != null ? company.getLogo() : null)
-                    .companyDescription(company != null ? company.getDescription() : null)
-                    .employer(UserInfoDto.builder()
-                            .userId(user.getId())
-                            .email(user.getEmail())
-                            .avatar(user.getAvatar())
-                            .fullName(user.getFullName())
-                            .phoneNumber(user.getPhoneNumber())
-                            .build())
-                    .build();
+            JobDTO jobResponse = modelMapper.map(job, JobDTO.class);
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.job.success"),
@@ -226,16 +186,17 @@ public class JobService {
                     .city(cityRepository.findById(job.getCityId()).get().getName())
                     .deadline(job.getDeadline())
                     .description(job.getDescription())
-                    .requirements(job.getRequirement())
+                    .requirement(job.getRequirement())
                     .yearExperience(experienceRepository.findById(job.getYearExperience()).get().getName())
-//                    .salary(salaryRepository.findById(job.getSalary()).get().getName())
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
+                    .benefit(job.getBenefit())
+                    .email(job.getEmail())
+                    .workingTime(job.getWorkingTime())
                     .position(positionRepository.findById(job.getPositionId()).get().getName())
                     .jobType(jobTypeRepository.findById(job.getJobTypeId()).get().getName())
                     .contractType(contractTypeRepository.findById(job.getContractTypeId()).get().getName())
                     .createdAt(job.getCreatedAt())
-                    .jobDetails(job.getJobDetails())
                     .company(company)
                     .employer(employerResponse)
                     .build();
@@ -298,7 +259,6 @@ public class JobService {
                                 .location(job.getLocation())
 //                                .district(districtName)
 //                                .city(cityName)
-//                                .salary(salaryRepository.findById(job.getSalary()).get().getName())
                                 .minSalary(job.getMinSalary())
                                 .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
@@ -361,7 +321,6 @@ public class JobService {
                                 .companyName(company != null ? company.getCompanyName() : null)
                                 .companyLogo(company != null ? company.getLogo() : null)
                                 .companyDescription(company != null ? company.getDescription() : null)
-                                .jobDetails(job.getJobDetails())
                                 .build();
                     })
                     .collect(Collectors.toList());
@@ -417,22 +376,25 @@ public class JobService {
             predicates.add(criteriaBuilder.like(criteriaBuilder.lower(job.get("title")), "%" + searchRequest.getSearchQuery().toLowerCase() + "%"));
         }
         if (searchRequest.getCity() != null) {
-            predicates.add(criteriaBuilder.equal(job.get("city"), searchRequest.getCity()));
+            predicates.add(criteriaBuilder.equal(job.get("cityId"), searchRequest.getCity()));
         }
         if (searchRequest.getExperienceIds() != null && !searchRequest.getExperienceIds().isEmpty()) {
             predicates.add(job.get("yearExperience").in(searchRequest.getExperienceIds()));
         }
-        if (searchRequest.getTechIds() != null && !searchRequest.getTechIds().isEmpty()) {
-            predicates.add(job.get("tech").in(searchRequest.getTechIds()));
+        if (searchRequest.getIndustryIds() != null && !searchRequest.getIndustryIds().isEmpty()) {
+            predicates.add(job.get("industryId").in(searchRequest.getIndustryIds()));
         }
         if (searchRequest.getJobTypeIds() != null && !searchRequest.getJobTypeIds().isEmpty()) {
-            predicates.add(job.get("jobType").in(searchRequest.getJobTypeIds()));
+            predicates.add(job.get("jobTypeId").in(searchRequest.getJobTypeIds()));
         }
         if (searchRequest.getPositionIds() != null && !searchRequest.getPositionIds().isEmpty()) {
-            predicates.add(job.get("position").in(searchRequest.getPositionIds()));
+            predicates.add(job.get("positionId").in(searchRequest.getPositionIds()));
         }
         if (searchRequest.getContractTypeIds() != null && !searchRequest.getContractTypeIds().isEmpty()) {
-            predicates.add(job.get("contractType").in(searchRequest.getContractTypeIds()));
+            predicates.add(job.get("contractTypeId").in(searchRequest.getContractTypeIds()));
+        }
+        if (searchRequest.getEducationIds() != null && !searchRequest.getEducationIds().isEmpty()) {
+            predicates.add(job.get("educationLevelId").in(searchRequest.getEducationIds()));
         }
 
         if (searchRequest.getSalaryOptions() != null && !searchRequest.getSalaryOptions().isEmpty()) {
@@ -497,7 +459,6 @@ public class JobService {
                             .companyDescription(company != null ? company.getDescription() : null)
                             .minSalary(jobItem.getMinSalary())
                             .maxSalary(jobItem.getMaxSalary())
-                            .jobDetails(jobItem.getJobDetails())
                             .build();
                 })
                 .collect(Collectors.toList());

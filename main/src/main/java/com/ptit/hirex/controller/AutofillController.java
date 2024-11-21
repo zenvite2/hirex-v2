@@ -64,4 +64,9 @@ public class AutofillController {
         return autofillService.autofillCompany();
     }
 
+    @GetMapping("/education")
+    public ResponseEntity<ResponseDto<List<EducationLevel>>> autofillEducationLevel() {
+        return autofillService.autofillEducationLevel();
+    }
+
 }
