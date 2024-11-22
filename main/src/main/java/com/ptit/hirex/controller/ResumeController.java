@@ -36,9 +36,8 @@ public class ResumeController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteResume(@PathVariable Long id) {
-        resumeService.deleteById(id);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ResponseDto<Object>> deleteResume(@PathVariable Long id) {
+        return resumeService.deleteResume(id);
     }
 }
 
