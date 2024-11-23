@@ -63,8 +63,8 @@ public class ResumeService {
                 experienceMap.put("id", experience.getId());
                 experienceMap.put("company", experience.getCompanyName());
                 experienceMap.put("position", positionRepository.findById(experience.getPosition()).get().getName());
-                experienceMap.put("startDate", experience.getStartDate());
-                experienceMap.put("endDate", experience.getEndDate());
+                experienceMap.put("startDate", experience.getStartDate().toString());
+                experienceMap.put("endDate", experience.getEndDate().toString());
                 experienceMap.put("description", experience.getDescription());
                 experienceList.add(experienceMap);
             }
@@ -76,8 +76,8 @@ public class ResumeService {
                 Map<String, Object> educationMap = new HashMap<>();
                 educationMap.put("id", education.getId());
                 educationMap.put("name", education.getUniversityName());
-                educationMap.put("startDate", education.getStartDate());
-                educationMap.put("endDate", education.getEndDate());
+                educationMap.put("startDate", education.getStartDate().toString());
+                educationMap.put("endDate", education.getEndDate().toString());
                 educationList.add(educationMap);
             }
 
@@ -89,6 +89,7 @@ public class ResumeService {
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("mark.notifications.read.success"),
+                    resume,
                     StatusCodeEnum.NOTIFICATION1000
             );
         } catch (Exception e) {
@@ -143,7 +144,20 @@ public class ResumeService {
         return resumeRepository.save(resume);
     }
 
-    public void deleteById(Long id) {
-        resumeRepository.deleteById(id);
+    public ResponseEntity<ResponseDto<Object>> deleteResume(Long id) {
+        try {
+
+            resumeRepository.deleteById(id);
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("mark.notifications.read.success"),
+                    StatusCodeEnum.NOTIFICATION1000
+            );
+        }catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("mark.notifications.read.failed"),
+                    StatusCodeEnum.NOTIFICATION0000
+            );
+        }
     }
 }

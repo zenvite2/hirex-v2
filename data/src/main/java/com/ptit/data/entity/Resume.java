@@ -2,6 +2,7 @@ package com.ptit.data.entity;
 
 import com.ptit.data.base.Auditable;
 import com.ptit.data.converter.JSONConverter;
+import com.ptit.data.converter.JSONListConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,23 +31,23 @@ public class Resume extends Auditable {
 
     private Long employeeId;
 
-    @Convert(converter = JSONConverter.class)
+    @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> projects;
 
-    @Convert(converter = JSONConverter.class)
+    @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> certificates;
 
-    @Convert(converter = JSONConverter.class)
+    @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> educations;
 
-    @Convert(converter = JSONConverter.class)
+    @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> experiences;
 
-    @Convert(converter = JSONConverter.class)
+    @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> skills;
 }
