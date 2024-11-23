@@ -8,6 +8,7 @@ import com.ptit.hirex.dto.RecommendJobDto;
 import com.ptit.hirex.dto.request.RecommendRequestDto;
 import com.ptit.hirex.dto.request.SimilarRequestDto;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
+import com.ptit.hirex.service.CompanyService;
 import com.ptit.hirex.service.EmployeeService;
 import com.ptit.hirex.service.JobService;
 import com.ptit.hirex.service.RecommendService;
@@ -40,6 +41,7 @@ public class RecommendServiceImpl implements RecommendService {
     private final DistrictRepository districtRepository;
     private final CityRepository cityRepository;
     private final CompanyRepository companyRepository;
+    private final JobTypeRepository jobTypeRepository;
 
     public Mono<List<?>> getListJobForRecommend(Long userId) {
         Long employeeId = employeeRepository.findByUserId(userId).getId();
@@ -116,6 +118,10 @@ public class RecommendServiceImpl implements RecommendService {
                     .map(District::getName)
                     .orElse("");
 
+            String jobTypeName = jobTypeRepository.findById(job.getJobTypeId())
+                    .map(JobType::getName)
+                    .orElse("");
+
             String cityName = cityRepository.findById(job.getCityId())
                     .map(City::getName)
                     .orElse("");
@@ -131,6 +137,7 @@ public class RecommendServiceImpl implements RecommendService {
                     .location(job.getLocation())
                     .district(districtName)
                     .city(cityName)
+                    .jobType(jobTypeName)
                     .deadline(job.getDeadline())
                     .createdAt(job.getCreatedAt())
                     .minSalary(job.getMinSalary())

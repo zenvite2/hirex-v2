@@ -21,6 +21,8 @@ public class JobWithCompanyResponse {
     private String city;
     private String deadline;
     private LocalDateTime createdAt;
+    private String jobType;
+    private String contractType;
     private String companyName;
     private String companyLogo;
     private String companyDescription;

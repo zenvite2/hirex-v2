@@ -41,11 +41,12 @@ pipeline {
                 script {
                     echo "Deploying Docker containers to prod server...."
                     sh '''
-                        sshpass -p "$HIREX_VPS_PW" ssh -o StrictHostKeyChecking=no "$HIREX_VPS_USER@$HIREX_VPS" bash << 'EOF'
-                            docker compose -f /root/hirex/deploy/docker-compose.yml down && \
-                            docker compose -f /root/hirex/deploy/docker-compose.yml pull && \
-                            docker compose -f /root/hirex/deploy/docker-compose.yml up -d
-                        << EOF
+                        sudo -u viet bash -c "
+                        cd /home/viet/code/deploy/services && \
+                        docker compose -f docker-compose.yml down && \
+                        docker compose -f docker-compose.yml pull && \
+                        docker compose -f docker-compose.yml up -d
+                        "
                     '''
                 }
             }

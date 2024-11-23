@@ -286,8 +286,6 @@ public class JobService {
             // Lấy tất cả job từ database
             List<Job> jobEntities = jobRepository.findAll();
 
-            System.out.println("size: " + jobEntities.size());
-
             List<JobWithCompanyResponse> jobs = jobEntities.stream()
                     .map(job -> {
                         // Lấy thông tin district
@@ -298,6 +296,11 @@ public class JobService {
                         // Lấy thông tin city
                         String cityName = cityRepository.findById(job.getCityId())
                                 .map(City::getName)
+                                .orElse("");
+
+                        // Lấy thông tin contractType
+                        String contractTypeName = contractTypeRepository.findById(job.getContractTypeId())
+                                .map(ContractType::getName)
                                 .orElse("");
 
                         // Lấy thông tin employer và company
@@ -316,6 +319,7 @@ public class JobService {
                                 .location(job.getLocation())
                                 .district(districtName)
                                 .city(cityName)
+                                .contractType(contractTypeName)
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .companyName(company != null ? company.getCompanyName() : null)
@@ -436,6 +440,11 @@ public class JobService {
                             .map(City::getName)
                             .orElse("");
 
+                    // Lấy thông tin contractType
+                    String contractTypeName = contractTypeRepository.findById(jobItem.getContractTypeId())
+                            .map(ContractType::getName)
+                            .orElse("");
+
                     // Lấy thông tin employer và company
                     Employer employer = employerRepository.findById(jobItem.getEmployer())
                             .orElse(null);
@@ -452,6 +461,7 @@ public class JobService {
                             .location(jobItem.getLocation())
                             .district(districtName)
                             .city(cityName)
+                            .contractType(contractTypeName)
                             .deadline(jobItem.getDeadline())
                             .createdAt(jobItem.getCreatedAt())
                             .companyName(company != null ? company.getCompanyName() : null)

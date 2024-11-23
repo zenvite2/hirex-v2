@@ -9,7 +9,7 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_pass http://localhost:3000;
+        proxy_pass http://10.242.156.132:3000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -51,7 +51,7 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_pass http://localhost:8080;
+        proxy_pass http://10.242.156.132:8080;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -88,7 +88,7 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_pass http://localhost:8888;
+        proxy_pass http://10.242.156.132:8888;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -125,7 +125,7 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_pass http://localhost:9000;
+        proxy_pass http://10.242.156.132:9000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -162,7 +162,7 @@ server {
     client_max_body_size 20M;
 
     location / {
-        proxy_pass http://localhost:5000;
+        proxy_pass http://10.242.156.132:6000;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
