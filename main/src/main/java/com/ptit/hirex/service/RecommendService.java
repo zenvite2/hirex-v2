@@ -7,4 +7,6 @@ import java.util.List;
 public interface RecommendService {
 
     Mono<List<?>> getListJobForRecommend(Long employeeId);
+
+    Mono<List<?>> getListJobForSimilar(Long jobId);
 }

@@ -1,6 +1,5 @@
 package com.ptit.hirex.dto.request;
 
-import com.ptit.hirex.dto.FullEmployeeDto;
 import com.ptit.hirex.dto.FullJobDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Builder
-public class RecommendRequestDto {
+public class SimilarRequestDto {
     private List<FullJobDto> jobs;
-    private FullEmployeeDto employee;
+    private Long jobId;
 }

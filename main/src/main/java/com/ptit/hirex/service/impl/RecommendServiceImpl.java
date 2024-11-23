@@ -6,6 +6,7 @@ import com.ptit.hirex.dto.FullEmployeeDto;
 import com.ptit.hirex.dto.FullJobDto;
 import com.ptit.hirex.dto.RecommendJobDto;
 import com.ptit.hirex.dto.request.RecommendRequestDto;
+import com.ptit.hirex.dto.request.SimilarRequestDto;
 import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.service.EmployeeService;
 import com.ptit.hirex.service.JobService;
@@ -44,13 +45,42 @@ public class RecommendServiceImpl implements RecommendService {
         Long employeeId = employeeRepository.findByUserId(userId).getId();
         List<FullJobDto> lstJobs = jobService.getFullDataJobs();
         FullEmployeeDto employeeDto = employeeService.getFullEmployeeData(employeeId);
-        RecommendRequestDto requestDto = new RecommendRequestDto(
-                lstJobs,
-                employeeDto
-        );
+        RecommendRequestDto requestDto = RecommendRequestDto.builder()
+                .jobs(lstJobs)
+                .employee(employeeDto)
+                .build();
 
         return webClient.post()
                 .uri("/recommend")
+                .body(Mono.just(requestDto), RecommendRequestDto.class)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<RecommendJobDto>>() {
+                })
+                .timeout(Duration.ofSeconds(5))
+                .flatMap(recommendJobDtos -> {
+                    List<Long> jobIds = recommendJobDtos.stream()
+                            .sorted(Comparator.comparing(RecommendJobDto::getSimilarityScore).reversed())
+                            .map(RecommendJobDto::getJobId)
+                            .collect(Collectors.toList());
+
+                    return jobIds.isEmpty()
+                            ? Mono.just(Collections.emptyList())
+                            : Flux.fromIterable(jobIds)
+                            .flatMap(this::createJobWithCompanyResponse)
+                            .collectList();
+                })
+                .onErrorResume(this::handleError);
+    }
+
+    public Mono<List<?>> getListJobForSimilar(Long jobId) {
+        List<FullJobDto> lstJobs = jobService.getFullDataJobs();
+        SimilarRequestDto requestDto = SimilarRequestDto.builder()
+                .jobs(lstJobs)
+                .jobId(jobId)
+                .build();
+
+        return webClient.post()
+                .uri("/similar")
                 .body(Mono.just(requestDto), RecommendRequestDto.class)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<RecommendJobDto>>() {

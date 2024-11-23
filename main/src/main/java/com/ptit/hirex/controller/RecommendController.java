@@ -19,8 +19,12 @@ public class RecommendController {
     private final RecommendService recommendService;
 
     @GetMapping("/recommend/{id}")
-    public Mono<List<?>> recommend(@PathVariable Long id) {
+    public Mono<List<?>> getRecommendJobs(@PathVariable Long id) {
         return recommendService.getListJobForRecommend(id);
     }
 
+    @GetMapping("/similar/{id}")
+    public Mono<List<?>> getSimilarJobs(@PathVariable Long id) {
+        return recommendService.getListJobForSimilar(id);
+    }
 }
