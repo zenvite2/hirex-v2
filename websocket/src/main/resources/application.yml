@@ -21,4 +21,3 @@ logging:
       ptit:
         websocket:
           controller: DEBUG
-  

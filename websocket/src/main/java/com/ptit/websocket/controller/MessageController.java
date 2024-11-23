@@ -33,9 +33,9 @@ public class MessageController {
     @MessageMapping("/private-message")
     public void processPrivateMessage(@Payload MessageDto messageDto) {
         log.info("Private message from {} to {}: {}", messageDto.getSender(), messageDto.getReceiver(), messageDto.getMessage());
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(messageDto.getReceiver()), "/private", messageDto);
         if (messageDto.getStatus() != Status.JOIN) {
             messageService.saveMessage(messageDto);
         }
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(messageDto.getReceiver()), "/private", messageDto);
     }
 }

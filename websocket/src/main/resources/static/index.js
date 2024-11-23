@@ -1,10 +1,14 @@
 const elements = {
     localVideo: document.getElementById("localVideo"),
     remoteVideo: document.getElementById("remoteVideo"),
-    // callBtn: document.getElementById("callBtn")
+    micToggleBtn: document.getElementById("micToggleBtn"),
+    camToggleBtn: document.getElementById("camToggleBtn"),
+    endCallBtn: document.getElementById("endCallBtn")
 };
 
 let localStream, localPeer, stompClient;
+let isMicActive = true;
+let isCamActive = true;
 
 const url = 'https://ws.deploy-hirexptit.io.vn'
 
@@ -17,6 +21,78 @@ async function initLocalPeer() {
     elements.localVideo.srcObject = stream;
     console.log("Local stream setup complete!!!");
     connectToWebSocket();
+
+    // Add event listeners for control buttons
+    elements.micToggleBtn.addEventListener('click', toggleMicrophone);
+    elements.camToggleBtn.addEventListener('click', toggleCamera);
+    elements.endCallBtn.addEventListener('click', endCall);
+}
+
+function toggleMicrophone() {
+    isMicActive = !isMicActive;
+    const audioTracks = localStream.getAudioTracks();
+
+    audioTracks.forEach(track => {
+        track.enabled = isMicActive;
+    });
+
+    // Update button style
+    if (isMicActive) {
+        elements.micToggleBtn.classList.remove('inactive');
+        elements.micToggleBtn.classList.add('active');
+    } else {
+        elements.micToggleBtn.classList.remove('active');
+        elements.micToggleBtn.classList.add('inactive');
+    }
+}
+
+function toggleCamera() {
+    isCamActive = !isCamActive;
+    const videoTracks = localStream.getVideoTracks();
+
+    videoTracks.forEach(track => {
+        track.enabled = isCamActive;
+    });
+
+    // Update button style and video visibility
+    if (isCamActive) {
+        elements.camToggleBtn.classList.remove('inactive');
+        elements.camToggleBtn.classList.add('active');
+        elements.localVideo.style.display = 'block';
+    } else {
+        elements.camToggleBtn.classList.remove('active');
+        elements.camToggleBtn.classList.add('inactive');
+        elements.localVideo.style.display = 'none';
+    }
+}
+
+function endCall(isReceiver) {
+    // Close the peer connection
+    if (localPeer) {
+        localPeer.close();
+    }
+
+    // Stop all tracks in the local stream
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+
+    // Send end call signal to the other user (optional)
+    if (stompClient && fromUser && toUser && !(isReceiver === true)) {
+        console.log("SENDING END CALL SIGNAL......");
+        stompClient.send("/app/end-call", {}, JSON.stringify({
+            fromUser: fromUser,
+            toUser: toUser
+        }));
+    }
+
+    // Disconnect from WebSocket
+    if (stompClient) {
+        stompClient.disconnect();
+    }
+
+    // Close the window or redirect
+    window.close(); // or window.location.href = 'some_page.html';
 }
 
 function connectToWebSocket() {
@@ -26,6 +102,11 @@ function connectToWebSocket() {
 
     stompClient.connect({}, frame => {
         console.log("Connected to WebSocket:", isCallee);
+
+        stompClient.subscribe(`/user/${fromUser}/topic/end-call`, message => {
+            alert('Call ended by the other user');
+            endCall(true);
+        });
 
         stompClient.subscribe(`/user/${fromUser}/topic/call`, message => {
             toUser = message.body;

@@ -27,7 +27,7 @@ public class WebRTCController {
         model.addAttribute("fromUser", fromUser);
         model.addAttribute("toUser", toUser);
         model.addAttribute("isCallee", isCallee);
-        log.info("Video call redirect: \n{\n    fromUser: {}\n  toUser: {}\n    isCallee: {}\n}", fromUser, toUser, isCallee);
+        log.info("Video call redirect: \n{\n    fromUser: {}\n   toUser: {}\n    isCallee: {}\n}", fromUser, toUser, isCallee);
         return "index";
     }
 
@@ -93,5 +93,17 @@ public class WebRTCController {
                 "}"
         );
         simpMessagingTemplate.convertAndSendToUser(jsonObject.getString("toUser"), "/topic/candidate", candidate);
+    }
+
+    @MessageMapping("/end-call")
+    public void endCall(String endCall) {
+        JSONObject jsonObject = new JSONObject(endCall);
+        log.info("End call redirect:\n" +
+                "{\n" +
+                "  \"fromUser\": \"" + jsonObject.get("fromUser") + "\",\n" +
+                "  \"toUser\": \"" + jsonObject.get("toUser") + "\"\n" +
+                "}"
+        );
+        simpMessagingTemplate.convertAndSendToUser(jsonObject.getString("toUser"), "/topic/end-call", endCall);
     }
 }
