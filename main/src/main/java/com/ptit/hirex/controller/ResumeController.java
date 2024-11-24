@@ -32,7 +32,7 @@ public class ResumeController {
     @PutMapping("/{id}")
     public ResponseEntity<Resume> updateResume(@PathVariable Long id, @RequestBody Resume resume) {
         resume.setId(id);
-        return ResponseEntity.ok(resumeService.update(resume));
+        return ResponseEntity.ok(resumeService.update(id, resume));
     }
 
     @DeleteMapping("/{id}")

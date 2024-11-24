@@ -2,6 +2,7 @@ package com.ptit.hirex.controller;
 
 import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
+import com.ptit.hirex.dto.request.EmployeeSkillRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -31,4 +32,10 @@ public class EmployeeController {
     public ResponseEntity<ResponseDto<Object>> updateEmployee(@Valid @ModelAttribute EmployeeDto employeeDTO) {
         return employeeService.updateEmployee(employeeDTO);
     }
+
+    @PutMapping
+    public ResponseEntity<ResponseDto<Object>> updateSkills(@RequestBody EmployeeSkillRequest request) {
+        return  employeeService.updateEmployeeSkills(request);
+    }
+
 }

@@ -129,7 +129,7 @@ public class ResumeService {
                     resumes,
                     StatusCodeEnum.NOTIFICATION1000
             );
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("mark.notifications.read.failed"),
                     StatusCodeEnum.NOTIFICATION0000
@@ -137,10 +137,14 @@ public class ResumeService {
         }
     }
 
-    public Resume update(Resume resume) {
-        if (!resumeRepository.existsById(resume.getId())) {
+    public Resume update(Long id, Resume resume) {
+        if (!resumeRepository.existsById(id)) {
             throw new RuntimeException("Resume not found with id: " + resume.getId());
         }
+        Optional<Resume> resumeDB = resumeRepository.findById(id);
+        resume.setEmployeeId(resumeDB.get().getEmployeeId());
+        resume.setTitle(resumeDB.get().getTitle());
+
         return resumeRepository.save(resume);
     }
 
@@ -153,7 +157,7 @@ public class ResumeService {
                     languageService.getMessage("mark.notifications.read.success"),
                     StatusCodeEnum.NOTIFICATION1000
             );
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("mark.notifications.read.failed"),
                     StatusCodeEnum.NOTIFICATION0000
