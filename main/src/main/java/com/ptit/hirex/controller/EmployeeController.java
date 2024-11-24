@@ -1,5 +1,6 @@
 package com.ptit.hirex.controller;
 
+import com.ptit.data.entity.Skill;
 import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
 import com.ptit.hirex.dto.request.EmployeeSkillRequest;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +36,13 @@ public class EmployeeController {
         return employeeService.updateEmployee(employeeDTO);
     }
 
-    @PutMapping
+    @PutMapping("/skill")
     public ResponseEntity<ResponseDto<Object>> updateSkills(@RequestBody EmployeeSkillRequest request) {
         return  employeeService.updateEmployeeSkills(request);
     }
 
+    @GetMapping("/skills")
+    public ResponseEntity<ResponseDto<List<Skill>>> getEmployeeSkills() {
+        return  employeeService.getEmployeeSkills();
+    }
 }

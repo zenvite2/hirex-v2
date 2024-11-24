@@ -1,9 +1,6 @@
 package com.ptit.hirex.service;
 
-import com.ptit.data.entity.Education;
-import com.ptit.data.entity.Employee;
-import com.ptit.data.entity.EmployeeSkill;
-import com.ptit.data.entity.User;
+import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.FullEmployeeDto;
@@ -21,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +39,7 @@ public class EmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepo;
     private final FileService fileService;
+    private final SkillRepository skillRepository;
     private final LanguageService languageService;
     private final ModelMapper modelMapper;
 
@@ -208,6 +207,7 @@ public class EmployeeService {
                 .build();
     }
 
+    @Transactional
     public ResponseEntity<ResponseDto<Object>> updateEmployeeSkills(EmployeeSkillRequest request) {
 
         List<Long> skillIds = request.getSkillIds();
@@ -234,6 +234,45 @@ public class EmployeeService {
             employeeSkillRepository.saveAll(employeeSkills);
         }
         return null;
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<ResponseDto<List<Skill>>> getEmployeeSkills() {
+        Employee employee = authenticationService.getEmployeeFromContext();
+
+        if (employee == null) {
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.EMPLOYEE4000
+            );
+        }
+
+        // Get all employee_skill records for the employee
+        List<EmployeeSkill> employeeSkills = employeeSkillRepository.findByEmployeeId(employee.getId());
+
+        // Get all skill ids
+        List<Long> skillIds = employeeSkills.stream()
+                .map(EmployeeSkill::getSkillId)
+                .collect(Collectors.toList());
+
+        // Fetch all skills and convert to DTOs
+        List<Skill> skills = skillRepository.findAllById(skillIds)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseBuilder.okResponse(
+                languageService.getMessage("get.skills.success"),
+                skills,
+                StatusCodeEnum.SKILL0000
+        );
+    }
+
+    private Skill convertToDTO(Skill skill) {
+        return Skill.builder()
+                .id(skill.getId())
+                .name(skill.getName())
+                .build();
     }
 
 }
