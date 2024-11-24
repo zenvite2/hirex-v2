@@ -26,7 +26,6 @@ public class AutofillService {
     private final ModelMapper modelMapper;
     //    private final SalaryRepository salaryRepository;
     private final JobTypeRepository jobTypeRepository;
-    private final TechRepository techRepository;
     private final YearExperienceRepository yearExperienceRepository;
     private final PositionRepository positionRepository;
     private final ContractTypeRepository contractTypeRepository;
@@ -142,23 +141,6 @@ public class AutofillService {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("autofill.job.type.failed"),
                     StatusCodeEnum.JOBTYPE0000
-            );
-        }
-    }
-
-    public ResponseEntity<ResponseDto<List<Tech>>> autofillTech() {
-        try {
-            List<Tech> techList = techRepository.findAll();
-
-            return ResponseBuilder.okResponse(
-                    languageService.getMessage("autofill.tech.success"),
-                    techList,
-                    StatusCodeEnum.TECH1000
-            );
-        } catch (Exception e) {
-            return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("autofill.tech.failed"),
-                    StatusCodeEnum.TECH0000
             );
         }
     }

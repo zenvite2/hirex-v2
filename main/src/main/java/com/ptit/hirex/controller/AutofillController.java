@@ -34,11 +34,6 @@ public class AutofillController {
         return autofillService.autofillJobType();
     }
 
-    @GetMapping("/tech")
-    public ResponseEntity<ResponseDto<List<Tech>>> autofillTech() {
-        return autofillService.autofillTech();
-    }
-
     @GetMapping("/industry")
     public ResponseEntity<ResponseDto<List<Industry>>> autofillIndustry() {
         return autofillService.autofillIndustry();

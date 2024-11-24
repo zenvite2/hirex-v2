@@ -3,7 +3,6 @@ package com.ptit.hirex.service;
 import com.ptit.data.entity.Employee;
 import com.ptit.data.entity.Skill;
 import com.ptit.data.repository.SkillRepository;
-import com.ptit.data.repository.TechRepository;
 import com.ptit.hirex.dto.request.SkillRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
@@ -25,7 +24,6 @@ public class SkillService {
     private final ModelMapper modelMapper;
     private final LanguageService languageService;
     private final AuthenticationService authenticationService;
-    private final TechRepository techRepository;
 
     public ResponseEntity<ResponseDto<Object>> createSkill(SkillRequest skillRequest) {
         Employee employee = authenticationService.getEmployeeFromContext();
