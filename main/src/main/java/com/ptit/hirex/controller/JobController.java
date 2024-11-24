@@ -9,6 +9,7 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +63,16 @@ public class JobController {
 
     @GetMapping("/search")
     @PreAuthorize("permitAll()")
+    @Cacheable(value = "jobSearchCache", key = "#root.methodName + '_' + " +
+            "T(java.util.Objects).hash(" +
+            "    #searchQuery, " +
+            "    #city, " +
+            "    #industryIds, " +
+            "    #positionIds, " +
+            "    #experienceIds, " +
+            "    #educationIds, " +
+            "    #jobTypeIds, " +
+            "    #salaryOptions)")
     public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) Long city,

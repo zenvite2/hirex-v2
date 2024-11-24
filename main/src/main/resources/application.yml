@@ -24,6 +24,11 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 30MB
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000
+      cache-null-values: false
 
 logging:
   level:
@@ -44,6 +49,8 @@ minio:
     public: ${S3_ENDPOINT:https://s3.deploy-hirexptit.io.vn}
     private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
   bucket: ${S3_BUCKET:hirex}
+
+
 
 recommend-service:
   baseUrl: https://re.deploy-hirexptit.io.vn/api

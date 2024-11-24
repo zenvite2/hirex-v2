@@ -320,6 +320,8 @@ public class JobService {
                                 .district(districtName)
                                 .city(cityName)
                                 .contractType(contractTypeName)
+                                .minSalary(job.getMinSalary())
+                                .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .companyName(company != null ? company.getCompanyName() : null)

@@ -31,6 +31,8 @@ public class Resume extends Auditable {
 
     private Long employeeId;
 
+    private Boolean status;
+
     @Convert(converter = JSONListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Map<String, Object>> projects;
