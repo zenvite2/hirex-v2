@@ -8,6 +8,7 @@ import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.EmployeeDto;
 import com.ptit.hirex.dto.FullEmployeeDto;
 import com.ptit.hirex.dto.request.EmployeeRequest;
+import com.ptit.hirex.dto.request.EmployeeSkillRequest;
 import com.ptit.hirex.dto.response.EmployeeResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
@@ -21,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -204,4 +207,33 @@ public class EmployeeService {
                 .skillIds(employeeSkillRepository.findAllByEmployeeId(id).stream().map(EmployeeSkill::getSkillId).toList())
                 .build();
     }
+
+    public ResponseEntity<ResponseDto<Object>> updateEmployeeSkills(EmployeeSkillRequest request) {
+
+        List<Long> skillIds = request.getSkillIds();
+        Employee employee = authenticationService.getEmployeeFromContext();
+
+        if (employee == null) {
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("employee.not.found"),
+                    StatusCodeEnum.EMPLOYEE4000
+            );
+        }
+        // Xóa skills cũ
+        employeeSkillRepository.deleteByEmployeeId(employee.getId());
+
+        // Thêm skills mới
+        if (skillIds != null && !skillIds.isEmpty()) {
+            List<EmployeeSkill> employeeSkills = skillIds.stream()
+                    .map(skillId -> EmployeeSkill.builder()
+                            .employeeId(employee.getId())
+                            .skillId(skillId)
+                            .build())
+                    .collect(Collectors.toList());
+
+            employeeSkillRepository.saveAll(employeeSkills);
+        }
+        return null;
+    }
+
 }

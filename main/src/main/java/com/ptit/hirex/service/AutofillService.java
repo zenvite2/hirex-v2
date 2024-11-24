@@ -33,6 +33,7 @@ public class AutofillService {
     private final CompanyRepository companyRepository;
     private final IndustryRepository industryRepository;
     private final EducationLevelRepository educationLevelRepository;
+    private final SkillRepository skillRepository;
 
 
     public ResponseEntity<ResponseDto<List<City>>> autofillCity(String name) {
@@ -261,6 +262,23 @@ public class AutofillService {
                     languageService.getMessage("autofill.industry.failed"),
                     StatusCodeEnum.EDUCATIONLEVEL0000
             );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<List<Skill>>> autofillSkill(String name) {
+        try {
+            List<Skill> skillList;
+
+            if (Util.isNullOrEmpty(name)) {
+                skillList = skillRepository.findAll();
+            } else {
+                skillList = skillRepository.findByNameContainingIgnoreCase(name);
+            }
+
+            return ResponseBuilder.okResponse(languageService.getMessage("autofill.skill.success"),
+                    skillList, StatusCodeEnum.SKILL1002);
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(languageService.getMessage("autofill.skill.failed"), StatusCodeEnum.SKILL0002);
         }
     }
 
