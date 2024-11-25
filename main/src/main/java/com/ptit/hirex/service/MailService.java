@@ -12,4 +12,6 @@ public interface MailService {
     void sendPasswordResetEmail(String to, String newPassword) throws Exception;
 
     void sendJobApplicationEmail(String to, String subject, Map<String, Object> templateModel) throws MessagingException;
+
+    void sendOTPEmail(String toEmail, String otp) throws MessagingException;
 }

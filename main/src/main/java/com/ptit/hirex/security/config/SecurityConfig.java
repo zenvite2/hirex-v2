@@ -1,8 +1,10 @@
 package com.ptit.hirex.security.config;
 
 import com.ptit.hirex.security.service.UserService;
+import jakarta.annotation.PostConstruct;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,17 +22,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
     private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**"};
-    private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**"};
+    private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/otp/**"};
     private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/resumes/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};
 

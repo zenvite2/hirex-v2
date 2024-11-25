@@ -53,7 +53,7 @@ public class EmployerService {
                 );
             }
 
-            if (!employerRequest.getPassword().equals(employerRequest.getRetryPassword())) {
+            if (!employerRequest.getPassword().equals(employerRequest.getConfirmPassword())) {
                 return ResponseBuilder.badRequestResponse(
                         languageService.getMessage("auth.signup.password.mismatch"),
                         StatusCodeEnum.AUTH0024

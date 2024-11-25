@@ -21,8 +21,4 @@ public class NotificationPattern {
 
     @Column(nullable = false)
     private String content;
-
-    private Boolean isHtml = false;
-
-    private Boolean hasParams = false;
 }

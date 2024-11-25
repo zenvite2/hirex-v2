@@ -11,7 +11,7 @@ public class EmployerRequest {
     private String username;
     private String email;
     private String password;
-    private String retryPassword;
+    private String confirmPassword;
     private String fullName;
     private String gender;
     private String phoneNumber;
