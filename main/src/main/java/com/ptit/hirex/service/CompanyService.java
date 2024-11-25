@@ -4,6 +4,7 @@ import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
 import com.ptit.data.entity.User;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.CompanyDTO;
 import com.ptit.hirex.dto.request.CompanyRequest;
 import com.ptit.hirex.dto.response.CompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
@@ -66,14 +67,12 @@ public class CompanyService {
 
             Company company = companyOpt.get();
 
-            CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
-            companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
-            companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
-            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.getId()));
+            CompanyDTO companyDTO = modelMapper.map(company, CompanyDTO.class);
+            companyDTO.setLogoUrl(company.getLogo());
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),
-                    companyResponse,
+                    companyDTO,
                     StatusCodeEnum.COMPANY1001
             );
         } catch (Exception e) {
