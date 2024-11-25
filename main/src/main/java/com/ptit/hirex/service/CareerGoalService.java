@@ -6,6 +6,7 @@ import com.ptit.data.repository.CareerGoalRepository;
 import com.ptit.data.repository.EmployeeRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.CareerGoalRequest;
+import com.ptit.hirex.dto.response.CareerGoalResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -41,7 +42,11 @@ public class CareerGoalService {
         }
 
         try {
-            CareerGoal careerGoal = modelMapper.map(careerGoalRequest, CareerGoal.class);
+            CareerGoal careerGoal = CareerGoal.builder()
+                    .jobTypeId(careerGoalRequest.getJobType())
+                    .positionId(careerGoalRequest.getPosition())
+                    .maxSalary(careerGoalRequest.getMaxSalary())
+                    .build();
 
             careerGoalRepository.save(careerGoal);
             return ResponseBuilder.okResponse(
@@ -99,15 +104,25 @@ public class CareerGoalService {
 
         try {
             CareerGoal careerGoal = careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null);
+
             if (careerGoal == null) {
                 return ResponseBuilder.badRequestResponse(
                         languageService.getMessage("get.career.failed"),
                         StatusCodeEnum.CAREER0002
                 );
             }
+
+            CareerGoalResponse careerGoalResponse = CareerGoalResponse.builder()
+                    .position(careerGoal.getPositionId())
+                    .maxSalary(careerGoal.getMaxSalary())
+                    .minSalary(careerGoal.getMinSalary())
+                    .jobType(careerGoal.getJobTypeId())
+                    .build();
+
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.career.success"),
-                    careerGoal,
+                    careerGoalResponse,
                     StatusCodeEnum.CAREER1002
             );
         } catch (Exception e) {
