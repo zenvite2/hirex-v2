@@ -23,4 +23,5 @@ public class MessageDto {
     private Status status;
     private MessageType type;
     private String fileUrl;
+    private String senderName;
 }
