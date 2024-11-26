@@ -70,8 +70,10 @@ public class ApplicationService {
                 );
             }
 
+            Optional<Employer> employer = employerRepository.findById(job.get().getEmployer());
+
             //tao thong bao
-            notificationService.createNotification(employee.getId(), applicationRequest.getJobId(), "APPLY");
+            notificationService.createNotification(employer.get().getUserId(), applicationRequest.getJobId(), "APPLY");
 
             Application application = Application.builder()
                     .jobId(applicationRequest.getJobId())

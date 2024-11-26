@@ -3,7 +3,6 @@ package com.ptit.hirex.service;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.FullJobDto;
-import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.response.EmployerResponse;
@@ -53,8 +52,11 @@ public class JobService {
     private final EntityManager entityManager;
     private final IndustryRepository industryRepository;
     private final EducationLevelRepository educationLevelRepository;
-    private final EmployeeSkillRepository employeeSkillRepository;
     private final JobSkillRepository jobSkillRepository;
+    private final FollowCompanyService followCompanyService;
+    private final NotificationService notificationService;
+    private final EmployeeRepository employeeRepository;
+    private final MailService mailService;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
@@ -80,10 +82,26 @@ public class JobService {
         }
 
         try {
-            Job job = modelMapper.map(jobRequest, Job.class);
+            Job job = new Job();
+            modelMapper.map(jobRequest, job);
             job.setEmployer(employer.getId());
 
             jobRepository.save(job);
+
+            notificationService.createNotification(employer.getUserId(), job.getId(), "JOB_POSTED");
+
+            List<FollowCompany> followCompany = followCompanyService.getListFollow();
+
+            for(FollowCompany follow: followCompany){
+                if(follow.getCompanyId() == employer.getCompany()){
+                    Optional<Employee> employee = employeeRepository.findById(follow.getEmployeeId());
+
+                    Optional<User> userEmployee = userRepository.findById(employee.get().getUserId());
+
+                    notificationService.createNotification(employee.get().getUserId(), job.getId(), "FOLLOW");
+                    mailService.sendEmailFollow(userEmployee.get().getEmail(), companyRepository.findById(employer.getCompany()).get().getCompanyName(), "https://deploy-hirexptit.io.vn/");
+                }
+            }
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("create.job.success"),

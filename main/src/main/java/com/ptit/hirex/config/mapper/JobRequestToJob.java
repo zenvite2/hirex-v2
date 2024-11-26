@@ -18,5 +18,6 @@ public class JobRequestToJob extends PropertyMap<JobRequest, Job> {
         map().setIndustryId(source.getIndustry());
         map().setJobTypeId(source.getJobType());
         map().setPositionId(source.getPosition());
+        map().setContractTypeId(source.getContractType());
     }
 }

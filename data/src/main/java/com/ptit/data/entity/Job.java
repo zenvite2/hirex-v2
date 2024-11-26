@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "jobs")
 public class Job extends Auditable {
     @Id
@@ -22,25 +21,30 @@ public class Job extends Auditable {
     /**
      * Tên job
      */
+    @Column(columnDefinition = "TEXT")
     private String title;
     /**
      * Mô tả job
      */
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     /**
      * Quyền lợi, lợi ích của job
      */
+    @Column(columnDefinition = "TEXT")
     private String benefit;
 
     /**
      * Yêu cầu ứng viên
      */
+    @Column(columnDefinition = "TEXT")
     private String requirement;
 
     /**
      * Địa chỉ làm việc
      */
+    @Column(columnDefinition = "TEXT")
     private String location;
 
     /**
@@ -77,6 +81,7 @@ public class Job extends Auditable {
      */
     private Long educationLevelId;
 
+    @Column(columnDefinition = "TEXT")
     private String workingTime;
 
     @Enumerated(EnumType.STRING)

@@ -150,6 +150,107 @@ public class MailServiceImpl implements MailService {
         }
     }
 
+    @Override
+    public void sendEmailFollow(String toEmail, String companyName, String jobPostUrl) throws MessagingException {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(sender);
+            helper.setTo(toEmail);
+            helper.setSubject("New Job Alert");
+
+            // Load HTML template
+            String htmlContent = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                    "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
+                    "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
+                    "    <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap\" rel=\"stylesheet\">\n" +
+                    "    <title>New Job Alert</title>\n" +
+                    "    <style>\n" +
+                    "        body {\n" +
+                    "            background-color: #f4f4f4;\n" +
+                    "            font-family: 'Noto Sans', sans-serif;\n" +
+                    "            margin: 0;\n" +
+                    "            padding: 0;\n" +
+                    "        }\n" +
+                    "        .container {\n" +
+                    "            margin: 2rem auto;\n" +
+                    "            padding: 1.5rem;\n" +
+                    "            max-width: 600px;\n" +
+                    "            background-color: #ffffff;\n" +
+                    "            border-radius: 8px;\n" +
+                    "            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);\n" +
+                    "            border-top: 5px solid #007bff;\n" +
+                    "        }\n" +
+                    "        h1 {\n" +
+                    "            color: #333333;\n" +
+                    "            font-size: 1.8rem;\n" +
+                    "            margin-bottom: 0.5rem;\n" +
+                    "            text-align: center;\n" +
+                    "        }\n" +
+                    "        p {\n" +
+                    "            color: #555555;\n" +
+                    "            font-size: 1rem;\n" +
+                    "            line-height: 1.5;\n" +
+                    "            text-align: center;\n" +
+                    "        }\n" +
+                    "        .job-link {\n" +
+                    "            display: block;\n" +
+                    "            margin: 1.5rem auto;\n" +
+                    "            padding: 0.75rem 1.5rem;\n" +
+                    "            text-align: center;\n" +
+                    "            background-color: #007bff;\n" +
+                    "            color: #ffffff;\n" +
+                    "            font-size: 1.2rem;\n" +
+                    "            font-weight: bold;\n" +
+                    "            text-decoration: none;\n" +
+                    "            border-radius: 5px;\n" +
+                    "            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);\n" +
+                    "            transition: background-color 0.3s ease;\n" +
+                    "        }\n" +
+                    "        .job-link:hover {\n" +
+                    "            background-color: #0056b3;\n" +
+                    "        }\n" +
+                    "        footer {\n" +
+                    "            text-align: center;\n" +
+                    "            margin-top: 2rem;\n" +
+                    "            font-size: 0.9rem;\n" +
+                    "            color: #999999;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class=\"container\">\n" +
+                    "        <h1>New Job Alert!</h1>\n" +
+                    "        <p>The company <strong>{{companyName}}</strong> you are following just posted a new job on HIrex!</p>\n" +
+                    "        <p>Click the button below to check it out now:</p>\n" +
+                    "        <a href=\"{{jobPostUrl}}\" class=\"job-link\">View Job</a>\n" +
+                    "    </div>\n" +
+                    "    <footer>\n" +
+                    "        <p>Thank you for using HIrex!</p>\n" +
+                    "    </footer>\n" +
+                    "</body>\n" +
+                    "</html>\n";
+
+            // Replace placeholders with actual values
+            htmlContent = htmlContent.replace("{{companyName}}", companyName);
+            htmlContent = htmlContent.replace("{{jobPostUrl}}", jobPostUrl);
+
+            // Set the content of the email
+            helper.setText(htmlContent, true);
+
+            // Send email
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+
     private String buildPasswordResetEmailTemplate(String newPassword) {
         return """
                 <html>

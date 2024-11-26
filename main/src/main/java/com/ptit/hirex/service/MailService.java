@@ -14,4 +14,6 @@ public interface MailService {
     void sendJobApplicationEmail(String to, String subject, Map<String, Object> templateModel) throws MessagingException;
 
     void sendOTPEmail(String toEmail, String otp) throws MessagingException;
+
+    void sendEmailFollow(String toEmail, String companyName, String jobPostUrl) throws MessagingException;
 }

@@ -2,7 +2,6 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
-import com.ptit.hirex.dto.request.RecommendRequestDto;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -21,11 +20,8 @@ import java.util.Optional;
 public class NotificationService {
     private final NotificationPatternRepository patternRepository;
     private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
     private final JobRepository jobRepository;
     private final LanguageService languageService;
-    private final EmployeeRepository employeeRepository;
-    private final EmployerRepository employerRepository;
     private final WebClient wsWebClient;
 
     public void createNotification(Long userId, Long jobId, String type) {
@@ -33,22 +29,9 @@ public class NotificationService {
         if (patternOpt.isPresent()) {
             NotificationPattern pattern = patternOpt.get();
 
-            User user = null;
             Job job = jobRepository.findById(jobId).orElse(null);
-            String content = "";
-            if (type.equals("APPLY")) {
-                Employee employee = employeeRepository.findById(userId).orElse(null);
-                user = userRepository.findById(employee.getUserId()).orElse(null);
-                Optional<Employer> employer = employerRepository.findById(job.getEmployer());
-                userId = employer.get().getUserId();
-
-                content = pattern.getContent()
-                        .replace("{user}", user.getFullName())
-                        .replace("{job}", job.getTitle());
-            } else {
-                content = pattern.getContent()
-                        .replace("{job}", job.getTitle());
-            }
+            String content = pattern.getContent()
+                    .replace("{job}", job.getTitle());
 
             Notification notification = new Notification();
             notification.setToUserId(userId);
