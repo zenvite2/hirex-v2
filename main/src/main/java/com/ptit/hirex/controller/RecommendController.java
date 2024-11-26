@@ -20,21 +20,11 @@ public class RecommendController {
     private final RecommendService recommendService;
 
     @GetMapping("/recommend/{id}")
-    @Cacheable(
-            value = "recommendJobsCache",
-            key = "'recommend_' + #id",
-            condition = "#result != null && !#result.isEmpty()"
-    )
     public Mono<List<?>> getRecommendJobs(@PathVariable Long id) {
         return recommendService.getListJobForRecommend(id);
     }
 
     @GetMapping("/similar/{id}")
-    @Cacheable(
-            value = "similarJobsCache",
-            key = "'similar_' + #id",
-            condition = "#result != null && !#result.isEmpty()"
-    )
     public Mono<List<?>> getSimilarJobs(@PathVariable Long id) {
         return recommendService.getListJobForSimilar(id);
     }

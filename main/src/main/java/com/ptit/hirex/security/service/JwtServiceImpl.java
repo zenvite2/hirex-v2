@@ -34,7 +34,7 @@ public class JwtServiceImpl implements JwtService {
     private String accessKey;
 
     @Autowired
-    RedisTemplate<String, RedisToken> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public String generateToken(User user) {
@@ -103,7 +103,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private boolean isTokenInRedisValid(String token) {
-        RedisToken tokenStatus = redisTemplate.opsForValue().get(token);
+        RedisToken tokenStatus = (RedisToken) redisTemplate.opsForValue().get(token);
         return tokenStatus != null;
     }
 

@@ -42,9 +42,9 @@ jwt:
 
 minio:
   access:
-    key: ${S3_ACCESS_KEY_ID:t508e8DLhHyRpA8WhK5K}
+    key: ${S3_ACCESS_KEY_ID:fIqgc4weD1UTFTWHL6QM}
   secret:
-    key: ${S3_SECRET_ACCESS_KEY:COoytFnVJEe6Y2ZQBURkyJO818CPakQP6jL2enG1}
+    key: ${S3_SECRET_ACCESS_KEY:JSFFZondksn3x6g8E9eVktFKed1TgaTd8cVntuue}
   url:
     public: ${S3_ENDPOINT:https://s3.deploy-hirexptit.io.vn}
     private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
