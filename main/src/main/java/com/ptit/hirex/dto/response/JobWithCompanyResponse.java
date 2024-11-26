@@ -29,6 +29,7 @@ public class JobWithCompanyResponse {
     //    private String salary;
     private Long minSalary;
     private Long maxSalary;
+    private String description;
     private UserInfoDto employer;
     private Map<String, Object> jobDetails;
 }

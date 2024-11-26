@@ -80,7 +80,8 @@ public class JobController {
             @RequestParam(required = false) List<Long> experienceIds,
             @RequestParam(required = false) List<Long> educationIds,
             @RequestParam(required = false) List<Long> jobTypeIds,
-            @RequestParam(required = false) String salaryOptions
+            @RequestParam(required = false) String salaryOptions,
+            @RequestParam(required = false) List<Long> contractTypeIds
     ) {
         List<SalaryDto> parsedSalaryOptions = parseSalaryOptions(salaryOptions);
 
@@ -93,6 +94,7 @@ public class JobController {
                 .educationIds(educationIds)
                 .jobTypeIds(jobTypeIds)
                 .salaryOptions(parsedSalaryOptions)
+                .contractTypeIds(contractTypeIds)
                 .build();
 
         return jobService.searchJobs(searchRequest);

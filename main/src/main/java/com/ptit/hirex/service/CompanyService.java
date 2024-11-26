@@ -89,12 +89,12 @@ public class CompanyService {
 
             Company company = companyOpt.get();
 
-            Optional<Employer> employer = employerRepository.findById(company.getEmployerId());
+            Employer employer = employerRepository.findByCompany(company.getId());
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
             companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
-            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.get().getId()));
+            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.getId()));
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),
@@ -144,7 +144,6 @@ public class CompanyService {
 
         try {
             modelMapper.map(companyRequest, company);
-            company.setEmployerId(employer.getId());
             if (companyRequest.getLogo() != null && !companyRequest.getLogo().isEmpty()) {
                 String logo = fileService.uploadImageFile(companyRequest.getLogo(), company.getLogo(), "LOGO");
                 if (logo == null) {

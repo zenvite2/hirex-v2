@@ -65,7 +65,7 @@ public class EmployerService {
                     .username(employerRequest.getUsername())
                     .password(passwordEncoder.encode(employerRequest.getPassword()))
                     .role(roleRepo.findById(2L).get())
-                    .phoneNumber(employerRequest.getPhoneNumber())
+                    .phoneNumber(employerRequest.getPhone())
                     .fullName(employerRequest.getFullName())
                     .build();
 
@@ -74,15 +74,15 @@ public class EmployerService {
             Long companyId;
 
             if (employerRequest.getCompanyId() == null) {
-                if (!companyRepository.existsByCompanyName(employerRequest.getNameCompany())) {
+                if (!companyRepository.existsByCompanyName(employerRequest.getCompany())) {
                     Company company = new Company();
-                    company.setCompanyName(employerRequest.getNameCompany());
+                    company.setCompanyName(employerRequest.getCompany());
                     company.setCity(employerRequest.getCity());
                     company.setDistrict(employerRequest.getDistrict());
                     companyRepository.save(company);
                     companyId = company.getId();
                 } else {
-                    companyId = companyRepository.findByCompanyName(employerRequest.getNameCompany()).getId();
+                    companyId = companyRepository.findByCompanyName(employerRequest.getCompany()).getId();
                 }
             } else {
                 companyId = employerRequest.getCompanyId();

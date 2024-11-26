@@ -487,6 +487,7 @@ public class JobService {
                             .companyName(company != null ? company.getCompanyName() : null)
                             .companyLogo(company != null ? company.getLogo() : null)
                             .companyDescription(company != null ? company.getDescription() : null)
+                            .description(jobItem.getDescription())
                             .minSalary(jobItem.getMinSalary())
                             .maxSalary(jobItem.getMaxSalary())
                             .build();
