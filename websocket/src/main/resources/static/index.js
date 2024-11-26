@@ -104,7 +104,7 @@ function connectToWebSocket() {
         console.log("Connected to WebSocket:", isCallee);
 
         stompClient.subscribe(`/user/${fromUser}/topic/end-call`, message => {
-            alert('Call ended by the other user');
+            alert('Cuộc gọi đã được tắt bởi người khác.');
             endCall(true);
         });
 

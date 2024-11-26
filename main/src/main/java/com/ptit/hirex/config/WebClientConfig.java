@@ -12,10 +12,21 @@ public class WebClientConfig {
     @Value("${recommend-service.baseUrl}")
     private String baseUrl;
 
+    @Value("${websocket-service.baseUrl}")
+    private String wsBaseUrl;
+
     @Bean
     public WebClient webClient(WebClient.Builder builder) {
         return builder
                 .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    public WebClient wsWebClient(WebClient.Builder builder) {
+        return builder
+                .baseUrl(wsBaseUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }

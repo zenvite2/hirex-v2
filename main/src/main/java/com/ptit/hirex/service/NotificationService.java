@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.request.RecommendRequestDto;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -9,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,7 @@ public class NotificationService {
     private final LanguageService languageService;
     private final EmployeeRepository employeeRepository;
     private final EmployerRepository employerRepository;
+    private final WebClient wsWebClient;
 
     public void createNotification(Long userId, Long jobId, String type) {
         Optional<NotificationPattern> patternOpt = patternRepository.findByType(type);
@@ -50,8 +54,11 @@ public class NotificationService {
             notification.setToUserId(userId);
             notification.setTitle(pattern.getSubject());
             notification.setContent(content);
+            Notification newNotification = notificationRepository.save(notification);
 
-            notificationRepository.save(notification);
+            wsWebClient.post()
+                    .uri("/send-notification")
+                    .body(Mono.just(newNotification), Notification.class);
         }
     }
 

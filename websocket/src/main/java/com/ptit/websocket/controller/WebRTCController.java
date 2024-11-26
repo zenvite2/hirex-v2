@@ -27,7 +27,7 @@ public class WebRTCController {
         model.addAttribute("fromUser", fromUser);
         model.addAttribute("toUser", toUser);
         model.addAttribute("isCallee", isCallee);
-        log.info("Video call redirect: \n{\n    fromUser: {}\n   toUser: {}\n    isCallee: {}\n}", fromUser, toUser, isCallee);
+        log.info("Video call redirect: \n{\n    fromUser: {}\n    toUser: {}\n    isCallee: {}\n}", fromUser, toUser, isCallee);
         return "index";
     }
 

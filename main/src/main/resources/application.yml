@@ -50,7 +50,8 @@ minio:
     private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
   bucket: ${S3_BUCKET:hirex}
 
-
+websocket-service:
+  baseUrl: https://ws.deploy-hirexptit.io.vn
 
 recommend-service:
   baseUrl: https://re.deploy-hirexptit.io.vn/api
