@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,4 +31,5 @@ public class JobRequest {
     private String email;
     private String phone;
     private Long industry;
+    private List<Long> skills;
 }

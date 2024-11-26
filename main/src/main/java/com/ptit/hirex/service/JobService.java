@@ -86,9 +86,21 @@ public class JobService {
             modelMapper.map(jobRequest, job);
             job.setEmployer(employer.getId());
 
-            jobRepository.save(job);
+            Job savedJob = jobRepository.save(job);
 
             notificationService.createNotification(employer.getUserId(), job.getId(), "JOB_POSTED");
+
+            if (jobRequest.getSkills() != null && !jobRequest.getSkills().isEmpty()) {
+                List<JobSkill> jobSkills = jobRequest.getSkills().stream()
+                        .map(skillId -> JobSkill.builder()
+                                .jobId(savedJob.getId())
+                                .skillId(skillId)
+                                .build())
+                        .collect(Collectors.toList());
+
+                // Lưu các JobSkill vào database
+                jobSkillRepository.saveAll(jobSkills);
+            }
 
             List<FollowCompany> followCompany = followCompanyService.getListFollow();
 
