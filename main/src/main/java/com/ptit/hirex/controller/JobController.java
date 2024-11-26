@@ -62,7 +62,6 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("permitAll()")
     @Cacheable(value = "jobSearchCache", key = "#root.methodName + '_' + " +
             "T(java.util.Objects).hash(" +
             "    #searchQuery, " +
