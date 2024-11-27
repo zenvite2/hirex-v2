@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.request.ResumeRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -26,7 +27,7 @@ public class ResumeService {
     private final PositionRepository positionRepository;
     private final EducationRepository educationRepository;
 
-    public ResponseEntity<ResponseDto<Object>> createResume() {
+    public ResponseEntity<ResponseDto<Object>> createResume(ResumeRequest resumeRequest) {
         try {
             Employee employee = authenticationService.getEmployeeFromContext();
 
@@ -39,6 +40,7 @@ public class ResumeService {
 
             Resume resume = new Resume();
             resume.setEmployeeId(employee.getId());
+            resume.setTitle(resumeRequest.getName());
 
             List<EmployeeSkill> employeeSkills = employeeSkillRepository.findAllByEmployeeId(employee.getId());
 
