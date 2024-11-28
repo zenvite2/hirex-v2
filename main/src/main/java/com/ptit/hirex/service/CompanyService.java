@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
+import com.ptit.data.entity.Job;
 import com.ptit.data.entity.User;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.CompanyDTO;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,12 +91,20 @@ public class CompanyService {
 
             Company company = companyOpt.get();
 
-            Employer employer = employerRepository.findByCompany(company.getId());
+            List<Employer> employer = employerRepository.findAllByCompany(company.getId());
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
             companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
-            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.getId()));
+
+            List<Job> jobs = new ArrayList<>();
+
+            for(Employer e : employer){
+                List<Job> job = jobRepository.findAllByEmployer(e.getId());
+                jobs.addAll(job);
+            }
+
+            companyResponse.setJobs(jobs);
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),

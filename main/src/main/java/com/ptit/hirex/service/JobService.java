@@ -106,12 +106,11 @@ public class JobService {
 
             for(FollowCompany follow: followCompany){
                 if(follow.getCompanyId() == employer.getCompany()){
-                    Optional<Employee> employee = employeeRepository.findById(follow.getEmployeeId());
 
-                    Optional<User> userEmployee = userRepository.findById(employee.get().getUserId());
+                    Optional<User> user1 = userRepository.findById(follow.getEmployeeId());
 
-                    notificationService.createNotification(employee.get().getUserId(), job.getId(), "FOLLOW");
-                    mailService.sendEmailFollow(userEmployee.get().getEmail(), companyRepository.findById(employer.getCompany()).get().getCompanyName(), "https://deploy-hirexptit.io.vn/");
+                    notificationService.createNotification(follow.getEmployeeId(), job.getId(), "FOLLOW");
+                    mailService.sendEmailFollow(user1.get().getEmail(), companyRepository.findById(employer.getCompany()).get().getCompanyName(), "https://deploy-hirexptit.io.vn/");
                 }
             }
 
