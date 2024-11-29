@@ -1,6 +1,6 @@
 package com.ptit.hirex.dto.request;
 
-import com.ptit.hirex.dto.FullJobDto;
+import com.ptit.data.dto.FullJobDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

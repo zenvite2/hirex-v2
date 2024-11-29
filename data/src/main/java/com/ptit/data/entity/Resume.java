@@ -34,22 +34,22 @@ public class Resume extends Auditable {
     private Boolean status;
 
     @Convert(converter = JSONListConverter.class)
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private List<Map<String, Object>> projects;
 
     @Convert(converter = JSONListConverter.class)
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private List<Map<String, Object>> certificates;
 
     @Convert(converter = JSONListConverter.class)
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private List<Map<String, Object>> educations;
 
     @Convert(converter = JSONListConverter.class)
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private List<Map<String, Object>> experiences;
 
     @Convert(converter = JSONListConverter.class)
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private List<Map<String, Object>> skills;
 }

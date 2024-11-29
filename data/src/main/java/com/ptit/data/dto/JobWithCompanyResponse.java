@@ -1,13 +1,11 @@
-package com.ptit.hirex.dto.response;
+package com.ptit.data.dto;
 
-import com.ptit.hirex.dto.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Data
 @Builder
@@ -26,9 +24,7 @@ public class JobWithCompanyResponse {
     private String companyName;
     private String companyLogo;
     private String companyDescription;
-    //    private String salary;
     private Long minSalary;
     private Long maxSalary;
     private UserInfoDto employer;
-    private Map<String, Object> jobDetails;
 }

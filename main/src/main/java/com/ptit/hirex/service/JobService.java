@@ -1,14 +1,14 @@
 package com.ptit.hirex.service;
 
+import com.ptit.data.dto.FullJobDto;
+import com.ptit.data.dto.JobWithCompanyResponse;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
-import com.ptit.hirex.dto.FullJobDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.response.EmployerResponse;
 import com.ptit.hirex.dto.response.JobDTO;
 import com.ptit.hirex.dto.response.JobResponse;
-import com.ptit.hirex.dto.response.JobWithCompanyResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
@@ -209,7 +209,6 @@ public class JobService {
                     .minSalary(job.getMinSalary())
                     .maxSalary(job.getMaxSalary())
                     .benefit(job.getBenefit())
-                    .email(job.getEmail())
                     .workingTime(job.getWorkingTime())
                     .position(positionRepository.findById(job.getPositionId()).get().getName())
                     .jobType(jobTypeRepository.findById(job.getJobTypeId()).get().getName())
@@ -300,54 +299,7 @@ public class JobService {
 
     public ResponseEntity<ResponseDto<Object>> getAllJobsWithCompany() {
         try {
-
-            // Lấy tất cả job từ database
-            List<Job> jobEntities = jobRepository.findAll();
-
-            List<JobWithCompanyResponse> jobs = jobEntities.stream()
-                    .map(job -> {
-                        // Lấy thông tin district
-                        String districtName = districtRepository.findById(job.getDistrictId())
-                                .map(District::getName)
-                                .orElse("");
-
-                        // Lấy thông tin city
-                        String cityName = cityRepository.findById(job.getCityId())
-                                .map(City::getName)
-                                .orElse("");
-
-                        // Lấy thông tin contractType
-                        String contractTypeName = contractTypeRepository.findById(job.getContractTypeId())
-                                .map(ContractType::getName)
-                                .orElse("");
-
-                        // Lấy thông tin employer và company
-                        Employer employer = employerRepository.findById(job.getEmployer())
-                                .orElse(null);
-
-                        Company company = null;
-                        if (employer != null) {
-                            company = companyRepository.findById(employer.getCompany())
-                                    .orElse(null);
-                        }
-
-                        return JobWithCompanyResponse.builder()
-                                .id(job.getId())
-                                .title(job.getTitle())
-                                .location(job.getLocation())
-                                .district(districtName)
-                                .city(cityName)
-                                .contractType(contractTypeName)
-                                .minSalary(job.getMinSalary())
-                                .maxSalary(job.getMaxSalary())
-                                .deadline(job.getDeadline())
-                                .createdAt(job.getCreatedAt())
-                                .companyName(company != null ? company.getCompanyName() : null)
-                                .companyLogo(company != null ? company.getLogo() : null)
-                                .companyDescription(company != null ? company.getDescription() : null)
-                                .build();
-                    })
-                    .collect(Collectors.toList());
+            List<JobWithCompanyResponse> jobs = jobRepository.getAllJobsWithCompany();
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.all.jobs.success"),
@@ -498,40 +450,6 @@ public class JobService {
                 jobs,
                 StatusCodeEnum.JOB1001
         );
-    }
-
-    public List<FullJobDto> getFullDataJobs() {
-        List<Job> jobs = jobRepository.findAll();
-        return jobs.stream().map(job -> FullJobDto.builder()
-                .id(job.getId())
-                .industry(job.getIndustryId() != null
-                        ? industryRepository.findById(job.getIndustryId()).orElse(null)
-                        : null)
-                .jobType(job.getJobTypeId() != null
-                        ? jobTypeRepository.findById(job.getJobTypeId()).orElse(null)
-                        : null)
-                .district(job.getDistrictId() != null
-                        ? districtRepository.findById(job.getDistrictId()).orElse(null)
-                        : null)
-                .city(job.getCityId() != null
-                        ? cityRepository.findById(job.getCityId()).orElse(null)
-                        : null)
-                .minSalary(job.getMinSalary())
-                .maxSalary(job.getMaxSalary())
-                .educationLevel(job.getEducationLevelId() != null
-                        ? educationLevelRepository.findById(job.getEducationLevelId()).orElse(null)
-                        : null)
-                .position(job.getPositionId() != null
-                        ? positionRepository.findById(job.getPositionId()).orElse(null)
-                        : null)
-                .yearExperience(job.getYearExperience())
-                .contractType(job.getContractTypeId() != null
-                        ? contractTypeRepository.findById(job.getContractTypeId()).orElse(null)
-                        : null)
-                .skill_ids(job.getId() != null
-                        ? jobSkillRepository.findByJobId(job.getId()).stream().map(JobSkill::getSkillId).toList()
-                        : null)
-                .build()).toList();
     }
 
 }

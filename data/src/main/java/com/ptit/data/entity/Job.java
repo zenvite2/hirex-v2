@@ -1,10 +1,8 @@
 package com.ptit.data.entity;
 
 import com.ptit.data.base.Auditable;
-import com.ptit.data.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,30 +19,30 @@ public class Job extends Auditable {
     /**
      * Tên job
      */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String title;
     /**
      * Mô tả job
      */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String description;
 
     /**
      * Quyền lợi, lợi ích của job
      */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String benefit;
 
     /**
      * Yêu cầu ứng viên
      */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String requirement;
 
     /**
      * Địa chỉ làm việc
      */
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String location;
 
     /**
@@ -74,16 +72,11 @@ public class Job extends Auditable {
 
     private Long industryId;
 
-    private String email;
-
     /**
      * Trinh do hoc van
      */
     private Long educationLevelId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "VARCHAR(5000)")
     private String workingTime;
-
-    @Enumerated(EnumType.STRING)
-    private JobStatus status;
 }

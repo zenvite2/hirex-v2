@@ -1,14 +1,13 @@
 package com.ptit.hirex.service.impl;
 
+import com.ptit.data.dto.FullJobDto;
+import com.ptit.data.dto.JobWithCompanyResponse;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.FullEmployeeDto;
-import com.ptit.hirex.dto.FullJobDto;
 import com.ptit.hirex.dto.RecommendJobDto;
 import com.ptit.hirex.dto.request.RecommendRequestDto;
 import com.ptit.hirex.dto.request.SimilarRequestDto;
-import com.ptit.hirex.dto.response.JobWithCompanyResponse;
-import com.ptit.hirex.service.CompanyService;
 import com.ptit.hirex.service.EmployeeService;
 import com.ptit.hirex.service.JobService;
 import com.ptit.hirex.service.RecommendService;
@@ -22,10 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -37,15 +34,10 @@ public class RecommendServiceImpl implements RecommendService {
     private final EmployeeService employeeService;
     private final EmployeeRepository employeeRepository;
     private final JobRepository jobRepository;
-    private final EmployerRepository employerRepository;
-    private final DistrictRepository districtRepository;
-    private final CityRepository cityRepository;
-    private final CompanyRepository companyRepository;
-    private final JobTypeRepository jobTypeRepository;
 
     public Mono<List<?>> getListJobForRecommend(Long userId) {
         Long employeeId = employeeRepository.findByUserId(userId).getId();
-        List<FullJobDto> lstJobs = jobService.getFullDataJobs();
+        List<FullJobDto> lstJobs = jobRepository.getFullDataJobs();
         FullEmployeeDto employeeDto = employeeService.getFullEmployeeData(employeeId);
         RecommendRequestDto requestDto = RecommendRequestDto.builder()
                 .jobs(lstJobs)
@@ -63,19 +55,28 @@ public class RecommendServiceImpl implements RecommendService {
                     List<Long> jobIds = recommendJobDtos.stream()
                             .sorted(Comparator.comparing(RecommendJobDto::getSimilarityScore).reversed())
                             .map(RecommendJobDto::getJobId)
-                            .collect(Collectors.toList());
+                            .toList();
 
-                    return jobIds.isEmpty()
-                            ? Mono.just(Collections.emptyList())
-                            : Flux.fromIterable(jobIds)
-                            .flatMap(this::createJobWithCompanyResponse)
-                            .collectList();
+                    if (jobIds.isEmpty()) {
+                        return Mono.just(Collections.emptyList());
+                    }
+
+                    return Mono.just(
+                            jobIds.stream()
+                                    .map(jobId -> lstJobs.stream()
+                                            .filter(job -> job.getId().equals(jobId))
+                                            .findFirst()
+                                            .orElse(null)
+                                    )
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList())
+                    );
                 })
                 .onErrorResume(this::handleError);
     }
 
     public Mono<List<?>> getListJobForSimilar(Long jobId) {
-        List<FullJobDto> lstJobs = jobService.getFullDataJobs();
+        List<FullJobDto> lstJobs = jobRepository.getFullDataJobs();
         SimilarRequestDto requestDto = SimilarRequestDto.builder()
                 .jobs(lstJobs)
                 .jobId(jobId)
@@ -83,22 +84,31 @@ public class RecommendServiceImpl implements RecommendService {
 
         return webClient.post()
                 .uri("/similar")
-                .body(Mono.just(requestDto), RecommendRequestDto.class)
+                .body(Mono.just(requestDto), SimilarRequestDto.class)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<RecommendJobDto>>() {
                 })
                 .timeout(Duration.ofSeconds(5))
                 .flatMap(recommendJobDtos -> {
+                    // Create a map for efficient lookup
+                    Map<Long, FullJobDto> jobMap = lstJobs.stream()
+                            .collect(Collectors.toMap(FullJobDto::getId, Function.identity()));
+
                     List<Long> jobIds = recommendJobDtos.stream()
                             .sorted(Comparator.comparing(RecommendJobDto::getSimilarityScore).reversed())
                             .map(RecommendJobDto::getJobId)
-                            .collect(Collectors.toList());
+                            .toList();
 
-                    return jobIds.isEmpty()
-                            ? Mono.just(Collections.emptyList())
-                            : Flux.fromIterable(jobIds)
-                            .flatMap(this::createJobWithCompanyResponse)
-                            .collectList();
+                    if (jobIds.isEmpty()) {
+                        return Mono.just(Collections.emptyList());
+                    }
+
+                    return Mono.just(
+                            jobIds.stream()
+                                    .map(jobMap::get)
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList())
+                    );
                 })
                 .onErrorResume(this::handleError);
     }
@@ -110,42 +120,4 @@ public class RecommendServiceImpl implements RecommendService {
         return Mono.error(new RuntimeException("External API call failed", error));
     }
 
-    private Mono<JobWithCompanyResponse> createJobWithCompanyResponse(Long jobId) {
-        Optional<Job> jobOpt = jobRepository.findById(jobId);
-
-        return jobOpt.map(job -> {
-            String districtName = districtRepository.findById(job.getDistrictId())
-                    .map(District::getName)
-                    .orElse("");
-
-            String jobTypeName = jobTypeRepository.findById(job.getJobTypeId())
-                    .map(JobType::getName)
-                    .orElse("");
-
-            String cityName = cityRepository.findById(job.getCityId())
-                    .map(City::getName)
-                    .orElse("");
-
-            Optional<Employer> employerOpt = employerRepository.findById(job.getEmployer());
-
-            Optional<Company> companyOpt = employerOpt
-                    .flatMap(employer -> companyRepository.findById(employer.getCompany()));
-
-            return JobWithCompanyResponse.builder()
-                    .id(job.getId())
-                    .title(job.getTitle())
-                    .location(job.getLocation())
-                    .district(districtName)
-                    .city(cityName)
-                    .jobType(jobTypeName)
-                    .deadline(job.getDeadline())
-                    .createdAt(job.getCreatedAt())
-                    .minSalary(job.getMinSalary())
-                    .maxSalary(job.getMaxSalary())
-                    .companyName(companyOpt.map(Company::getCompanyName).orElse(null))
-                    .companyLogo(companyOpt.map(Company::getLogo).orElse(null))
-                    .companyDescription(companyOpt.map(Company::getDescription).orElse(null))
-                    .build();
-        }).map(Mono::just).orElse(Mono.empty());
-    }
 }
