@@ -14,9 +14,9 @@ public class EmployerRequest {
     private String confirmPassword;
     private String fullName;
     private String gender;
-    private String phoneNumber;
+    private String phone;
     private Long companyId;
-    private String nameCompany;
+    private String company;
     private Long city;
     private Long district;
 }

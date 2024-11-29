@@ -86,20 +86,31 @@ public class JobService {
             modelMapper.map(jobRequest, job);
             job.setEmployer(employer.getId());
 
-            jobRepository.save(job);
+            Job savedJob = jobRepository.save(job);
 
             notificationService.createNotification(employer.getUserId(), job.getId(), "JOB_POSTED");
+
+            if (jobRequest.getSkills() != null && !jobRequest.getSkills().isEmpty()) {
+                List<JobSkill> jobSkills = jobRequest.getSkills().stream()
+                        .map(skillId -> JobSkill.builder()
+                                .jobId(savedJob.getId())
+                                .skillId(skillId)
+                                .build())
+                        .collect(Collectors.toList());
+
+                // Lưu các JobSkill vào database
+                jobSkillRepository.saveAll(jobSkills);
+            }
 
             List<FollowCompany> followCompany = followCompanyService.getListFollow();
 
             for(FollowCompany follow: followCompany){
                 if(follow.getCompanyId() == employer.getCompany()){
-                    Optional<Employee> employee = employeeRepository.findById(follow.getEmployeeId());
 
-                    Optional<User> userEmployee = userRepository.findById(employee.get().getUserId());
+                    Optional<User> user1 = userRepository.findById(follow.getEmployeeId());
 
-                    notificationService.createNotification(employee.get().getUserId(), job.getId(), "FOLLOW");
-                    mailService.sendEmailFollow(userEmployee.get().getEmail(), companyRepository.findById(employer.getCompany()).get().getCompanyName(), "https://deploy-hirexptit.io.vn/");
+                    notificationService.createNotification(follow.getEmployeeId(), job.getId(), "FOLLOW");
+                    mailService.sendEmailFollow(user1.get().getEmail(), companyRepository.findById(employer.getCompany()).get().getCompanyName(), "https://deploy-hirexptit.io.vn/");
                 }
             }
 
@@ -439,6 +450,7 @@ public class JobService {
                             .companyName(company != null ? company.getCompanyName() : null)
                             .companyLogo(company != null ? company.getLogo() : null)
                             .companyDescription(company != null ? company.getDescription() : null)
+                            .description(jobItem.getDescription())
                             .minSalary(jobItem.getMinSalary())
                             .maxSalary(jobItem.getMaxSalary())
                             .build();

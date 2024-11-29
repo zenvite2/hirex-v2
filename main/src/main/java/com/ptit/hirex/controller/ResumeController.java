@@ -1,6 +1,7 @@
 package com.ptit.hirex.controller;
 
 import com.ptit.data.entity.Resume;
+import com.ptit.hirex.dto.request.ResumeRequest;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ResumeService;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ public class ResumeController {
     private final ResumeService resumeService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto<Object>> createResume() {
-        return resumeService.createResume();
+    public ResponseEntity<ResponseDto<Object>> createResume(@RequestBody ResumeRequest resumeRequest) {
+        return resumeService.createResume(resumeRequest);
     }
 
     @GetMapping("/{id}")

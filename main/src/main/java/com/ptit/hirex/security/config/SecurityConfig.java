@@ -36,7 +36,7 @@ public class SecurityConfig {
     private final PreFilter preFilter;
     private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/otp/**"};
-    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/resumes/**"};
+    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/resumes/**", "/follow-company/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};
 
     @Bean

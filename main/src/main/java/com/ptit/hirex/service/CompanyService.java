@@ -2,6 +2,7 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.Company;
 import com.ptit.data.entity.Employer;
+import com.ptit.data.entity.Job;
 import com.ptit.data.entity.User;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.CompanyDTO;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,12 +91,20 @@ public class CompanyService {
 
             Company company = companyOpt.get();
 
-            Optional<Employer> employer = employerRepository.findById(company.getEmployerId());
+            List<Employer> employer = employerRepository.findAllByCompany(company.getId());
 
             CompanyResponse companyResponse = modelMapper.map(company, CompanyResponse.class);
             companyResponse.setCity(cityRepository.findById(company.getCity()).get().getName());
             companyResponse.setDistrict(districtRepository.findById(company.getDistrict()).get().getName());
-            companyResponse.setJobs(jobRepository.findAllByEmployer(employer.get().getId()));
+
+            List<Job> jobs = new ArrayList<>();
+
+            for(Employer e : employer){
+                List<Job> job = jobRepository.findAllByEmployer(e.getId());
+                jobs.addAll(job);
+            }
+
+            companyResponse.setJobs(jobs);
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),
@@ -144,7 +154,6 @@ public class CompanyService {
 
         try {
             modelMapper.map(companyRequest, company);
-            company.setEmployerId(employer.getId());
             if (companyRequest.getLogo() != null && !companyRequest.getLogo().isEmpty()) {
                 String logo = fileService.uploadImageFile(companyRequest.getLogo(), company.getLogo(), "LOGO");
                 if (logo == null) {
