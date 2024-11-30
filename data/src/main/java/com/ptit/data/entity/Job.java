@@ -72,6 +72,8 @@ public class Job extends Auditable {
 
     private Long industryId;
 
+    private String email;
+
     /**
      * Trinh do hoc van
      */
@@ -79,4 +81,6 @@ public class Job extends Auditable {
 
     @Column(columnDefinition = "VARCHAR(5000)")
     private String workingTime;
+
+    private Boolean active;
 }

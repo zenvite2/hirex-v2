@@ -6,6 +6,7 @@ import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
+import com.ptit.hirex.dto.request.JobStatusRequest;
 import com.ptit.hirex.dto.response.EmployerResponse;
 import com.ptit.hirex.dto.response.JobDTO;
 import com.ptit.hirex.dto.response.JobResponse;
@@ -155,7 +156,32 @@ public class JobService {
             );
         }
     }
+    public ResponseEntity<ResponseDto<Object>> updateActiveJob(Long id, JobStatusRequest jobStatusRequest) {
+        try {
+            Job job = jobRepository.findById(id)
+                    .orElseThrow(() -> new NoSuchElementException("Not found job"));
 
+            job.setActive(jobStatusRequest.getActive());
+
+            jobRepository.save(job);
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("update.job.success"),
+                    job,
+                    StatusCodeEnum.JOB1002
+            );
+        } catch (NoSuchElementException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("not.found.job"),
+                    StatusCodeEnum.JOB4000
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("update.job.failed"),
+                    StatusCodeEnum.JOB0002
+            );
+        }
+    }
 
     public ResponseEntity<ResponseDto<Object>> getJob(Long id) {
         try {
@@ -291,6 +317,49 @@ public class JobService {
                                 .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.all.jobs.success"),
+                    jobs,
+                    StatusCodeEnum.JOB1001
+            );
+        } catch (RuntimeException e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.all.jobs.failed"),
+                    StatusCodeEnum.JOB0001
+            );
+        }
+    }
+
+    public ResponseEntity<ResponseDto<Object>> getAll() {
+        try {
+
+            List<Job> jobEntities = jobRepository.findAll();
+
+            List<JobResponse> jobs = jobEntities.stream()
+                    .map(job -> {
+                        String districtName = districtRepository.findById(job.getDistrictId())
+                                .map(District::getName)
+                                .orElse("");
+
+                        String cityName = cityRepository.findById(job.getCityId())
+                                .map(City::getName)
+                                .orElse("");
+
+                        return JobResponse.builder()
+                                .id(job.getId())
+                                .title(job.getTitle())
+                                .location(job.getLocation())
+//                                .district(districtName)
+//                                .city(cityName)
+                                .minSalary(job.getMinSalary())
+                                .maxSalary(job.getMaxSalary())
+                                .deadline(job.getDeadline())
+                                .createdAt(job.getCreatedAt())
+                                .active(job.getActive())
                                 .build();
                     })
                     .collect(Collectors.toList());

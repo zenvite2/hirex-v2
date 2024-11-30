@@ -47,6 +47,7 @@ public class JobController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<ResponseDto<Object>> getListJob() {
         return jobService.getAllJob();
     }

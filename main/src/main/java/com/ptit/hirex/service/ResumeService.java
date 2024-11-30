@@ -90,14 +90,14 @@ public class ResumeService {
             resumeRepository.save(resume);
 
             return ResponseBuilder.okResponse(
-                    languageService.getMessage("mark.notifications.read.success"),
+                    languageService.getMessage("create.resume.success"),
                     resume,
-                    StatusCodeEnum.NOTIFICATION1000
+                    StatusCodeEnum.RESUME1000
             );
         } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("mark.notifications.read.failed"),
-                    StatusCodeEnum.NOTIFICATION0000
+                    languageService.getMessage("create.resume.failed"),
+                    StatusCodeEnum.RESUME0000
             );
         }
     }
@@ -123,18 +123,35 @@ public class ResumeService {
                 );
             }
 
-
             List<Resume> resumes = resumeRepository.findByEmployeeId(employee.getId());
 
             return ResponseBuilder.okResponse(
-                    languageService.getMessage("mark.notifications.read.success"),
+                    languageService.getMessage("get.resume.success"),
                     resumes,
-                    StatusCodeEnum.NOTIFICATION1000
+                    StatusCodeEnum.RESUME1001
             );
         } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("mark.notifications.read.failed"),
-                    StatusCodeEnum.NOTIFICATION0000
+                    languageService.getMessage("get.resume.failed"),
+                    StatusCodeEnum.RESUME0001
+            );
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDto<Object>> getAllResumeCMS() {
+        try {
+            List<Resume> resumes = resumeRepository.findAll();
+
+            return ResponseBuilder.okResponse(
+                    languageService.getMessage("get.resume.success"),
+                    resumes,
+                    StatusCodeEnum.RESUME1001
+            );
+        } catch (Exception e) {
+            return ResponseBuilder.badRequestResponse(
+                    languageService.getMessage("get.resume.failed"),
+                    StatusCodeEnum.RESUME0001
             );
         }
     }
@@ -156,13 +173,13 @@ public class ResumeService {
             resumeRepository.deleteById(id);
 
             return ResponseBuilder.okResponse(
-                    languageService.getMessage("mark.notifications.read.success"),
-                    StatusCodeEnum.NOTIFICATION1000
+                    languageService.getMessage("delete.resume.success"),
+                    StatusCodeEnum.RESUME1002
             );
         } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("mark.notifications.read.failed"),
-                    StatusCodeEnum.NOTIFICATION0000
+                    languageService.getMessage("delete.resume.failed"),
+                    StatusCodeEnum.RESUME0002
             );
         }
     }

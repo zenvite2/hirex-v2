@@ -34,8 +34,8 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
-    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**"};
-    private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/otp/**"};
+    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**", "/cms/**"};
+    private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/otp/**", "/cms/**"};
     private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/resumes/**", "/follow-company/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};
 
@@ -66,11 +66,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(SYSTEM_WHITELIST).permitAll()
-                        .requestMatchers(WHITELIST).permitAll()
-                        .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
-                        .requestMatchers(SECURED_URLs_EMPLOYER).hasAuthority("EMPLOYER")
-                        .anyRequest().authenticated()
+//                        .requestMatchers(SYSTEM_WHITELIST).permitAll()
+//                        .requestMatchers(WHITELIST).permitAll()
+//                        .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
+//                        .requestMatchers(SECURED_URLs_EMPLOYER).hasAuthority("EMPLOYER")
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())

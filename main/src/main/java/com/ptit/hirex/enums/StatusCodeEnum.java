@@ -181,7 +181,15 @@ public enum StatusCodeEnum {
     FOLLOW1002("FOLLOW1002"), //Get follow company success
     FOLLOW0002("FOLLOW0002"), //Get follow company failed
     FOLLOW1003("FOLLOW1003"), //Delete follow company success
-    FOLLOW0003("FOLLOW0003"); //Delete follow company failed
+    FOLLOW0003("FOLLOW0003"), //Delete follow company failed
+
+    // RESUME
+    RESUME1000("Create resume success"),
+    RESUME0000("Create resume failed"),
+    RESUME1001("Get resume success"),
+    RESUME0001("Get resume failed"),
+    RESUME1002("Delete resume success"),
+    RESUME0002("Delete resume failed");
 
     public final String value;
 
