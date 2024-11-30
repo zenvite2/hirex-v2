@@ -6,10 +6,12 @@ import com.ptit.hirex.service.FollowCompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('EMPLOYEE')")
 @RequestMapping("/follow-company")
 public class FollowCompanyController {
 

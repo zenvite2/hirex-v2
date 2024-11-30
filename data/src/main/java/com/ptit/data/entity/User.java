@@ -51,4 +51,6 @@ public class User extends Auditable implements UserDetails {
     private String fullName;
 
     private String phoneNumber;
+
+    private Boolean active = true;
 }

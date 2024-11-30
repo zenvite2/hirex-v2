@@ -34,4 +34,5 @@ public class JobResponse {
     private Company company;
     private EmployerResponse employer;
     private LocalDateTime createdAt;
+    private Boolean active;
 }

@@ -72,6 +72,8 @@ public class Job extends Auditable {
 
     private Long industryId;
 
+    private String email;
+
     /**
      * Trinh do hoc van
      */

@@ -8,12 +8,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @CrossOrigin
 @Slf4j
-@Controller
+@RestController
 public class NotificationController {
 
     @Autowired
@@ -21,11 +22,14 @@ public class NotificationController {
 
     @PostMapping("/send-notification")
     public void sendNotification(@RequestBody Notification notification) {
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(notification.getToUserId()), "/topic/notification", notification);
+        log.info(notification.toString());
+        if(notification.getToUserId() != null) {
+            simpMessagingTemplate.convertAndSendToUser(String.valueOf(notification.getToUserId()), "/private", notification);
+        }
     }
 
     @PostMapping("/send-multiple-notification")
     public void sendMultipleNotification(@RequestBody List<Notification> notification) {
-        notification.forEach(item -> simpMessagingTemplate.convertAndSendToUser(String.valueOf(item.getToUserId()), "/topic/notification", item));
+        notification.forEach(item -> simpMessagingTemplate.convertAndSendToUser(String.valueOf(item.getToUserId()), "/private", item));
     }
 }

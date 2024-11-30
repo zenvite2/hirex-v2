@@ -6,9 +6,11 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@PreAuthorize("hasRole('EMPLOYEE')")
 @RequestMapping("/resumes")
 @RequiredArgsConstructor
 public class ResumeController {

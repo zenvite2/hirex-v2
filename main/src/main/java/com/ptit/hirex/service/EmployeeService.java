@@ -121,6 +121,7 @@ public class EmployeeService {
             employeeResponse.setFullName(user.getFullName());
             employeeResponse.setAvatar(user.getAvatar());
             employeeResponse.setPhoneNumber(user.getPhoneNumber());
+            employeeResponse.setEmail(user.getEmail());
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.employee.success"),
