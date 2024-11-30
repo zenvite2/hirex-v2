@@ -47,9 +47,10 @@ public class MessageServiceImpl implements MessageService {
 
                     return userRepository.findById(otherUserId)
                             .map(otherUser -> {
-                                String name = otherUser.getUsername();
+                                String username = otherUser.getUsername();
                                 String avatar = otherUser.getAvatar();
-                                return new UserConversationsDto(otherUserId, name, avatar, last10Messages);
+                                String fullName = otherUser.getFullName();
+                                return new UserConversationsDto(otherUserId, username, fullName, avatar, last10Messages);
                             }).orElse(null);
                 })
                 .filter(Objects::nonNull)

@@ -14,7 +14,8 @@ public class UserConversationsDto {
      * User id chatting with
      */
     private Long userId;
-    private String name;
+    private String username;
+    private String fullName;
     private String avtUrl;
     private List<MessageDto> last10Messages;
 }

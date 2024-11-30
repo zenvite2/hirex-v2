@@ -2,6 +2,7 @@ package com.ptit.hirex.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ptit.data.dto.FullJobDto;
 import com.ptit.data.dto.SalaryDto;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
@@ -9,7 +10,6 @@ import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -63,16 +63,6 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    @Cacheable(value = "jobSearchCache", key = "#root.methodName + '_' + " +
-            "T(java.util.Objects).hash(" +
-            "    #searchQuery, " +
-            "    #city, " +
-            "    #industryIds, " +
-            "    #positionIds, " +
-            "    #experienceIds, " +
-            "    #educationIds, " +
-            "    #jobTypeIds, " +
-            "    #salaryOptions)")
     public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) Long city,
@@ -85,7 +75,6 @@ public class JobController {
             @RequestParam(required = false) List<Long> contractTypeIds
     ) {
         List<SalaryDto> parsedSalaryOptions = parseSalaryOptions(salaryOptions);
-
         JobSearchRequest searchRequest = JobSearchRequest.builder()
                 .searchQuery(searchQuery)
                 .city(city)
@@ -112,5 +101,14 @@ public class JobController {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @GetMapping("/full-job/{id}")
+    public ResponseEntity<?> getFullJob(@PathVariable Long id) {
+        FullJobDto job = jobService.getFullJobDtoById(id);
+        if(job == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(job);
     }
 }

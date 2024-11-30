@@ -25,9 +25,9 @@ public class Experience {
 
     private Long position;
 
-    private LocalDate startDate;
+    private String startDate;
 
-    private LocalDate endDate;
+    private String endDate;
 
     private String description;
 
