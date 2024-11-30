@@ -79,4 +79,6 @@ public class Job extends Auditable {
 
     @Column(columnDefinition = "VARCHAR(5000)")
     private String workingTime;
+
+    private Boolean active;
 }

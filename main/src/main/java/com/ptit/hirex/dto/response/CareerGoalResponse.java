@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CareerGoalResponse {
+    private Long industry;
     private Long position;
     private Long maxSalary;
     private Long minSalary;

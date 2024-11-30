@@ -20,3 +20,4 @@ spring:
           time_zone: Asia/Ho_Chi_Minh
         format_sql: true
         use_sql_comments: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect

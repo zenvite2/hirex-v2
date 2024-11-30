@@ -22,4 +22,6 @@ public class JobSearchRequest {
     private List<Long> educationIds;
     private List<Long> jobTypeIds;
     private List<Long> contractTypeIds;
+    private int page;
+    private int size;
 }

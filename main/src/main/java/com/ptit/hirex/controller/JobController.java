@@ -10,6 +10,7 @@ import com.ptit.hirex.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -62,16 +63,6 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    @Cacheable(value = "jobSearchCache", key = "#root.methodName + '_' + " +
-            "T(java.util.Objects).hash(" +
-            "    #searchQuery, " +
-            "    #city, " +
-            "    #industryIds, " +
-            "    #positionIds, " +
-            "    #experienceIds, " +
-            "    #educationIds, " +
-            "    #jobTypeIds, " +
-            "    #salaryOptions)")
     public ResponseEntity<?> searchJobs(
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) Long city,
@@ -81,7 +72,8 @@ public class JobController {
             @RequestParam(required = false) List<Long> educationIds,
             @RequestParam(required = false) List<Long> jobTypeIds,
             @RequestParam(required = false) String salaryOptions,
-            @RequestParam(required = false) List<Long> contractTypeIds
+            @RequestParam(required = false) List<Long> contractTypeIds,
+            Pageable pageable
     ) {
         List<SalaryDto> parsedSalaryOptions = parseSalaryOptions(salaryOptions);
 
@@ -95,9 +87,9 @@ public class JobController {
                 .jobTypeIds(jobTypeIds)
                 .salaryOptions(parsedSalaryOptions)
                 .contractTypeIds(contractTypeIds)
-                .build();
+                .build(); // Không cần truyền page và size nữa
 
-        return jobService.searchJobs(searchRequest);
+        return jobService.searchJobs(searchRequest, pageable);
     }
 
     private List<SalaryDto> parseSalaryOptions(String salaryOptionsJson) {
