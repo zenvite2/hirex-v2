@@ -22,12 +22,14 @@ public class NotificationController {
 
     @PostMapping("/send-notification")
     public void sendNotification(@RequestBody Notification notification) {
-        log.error("vite");
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(notification.getToUserId()), "/topic/notification", notification);
+        log.info(notification.toString());
+        if(notification.getToUserId() != null) {
+            simpMessagingTemplate.convertAndSendToUser(String.valueOf(notification.getToUserId()), "/private", notification);
+        }
     }
 
     @PostMapping("/send-multiple-notification")
     public void sendMultipleNotification(@RequestBody List<Notification> notification) {
-        notification.forEach(item -> simpMessagingTemplate.convertAndSendToUser(String.valueOf(item.getToUserId()), "/topic/notification", item));
+        notification.forEach(item -> simpMessagingTemplate.convertAndSendToUser(String.valueOf(item.getToUserId()), "/private", item));
     }
 }

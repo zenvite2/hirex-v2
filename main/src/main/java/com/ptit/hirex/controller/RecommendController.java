@@ -41,7 +41,7 @@ public class RecommendController {
 
     @GetMapping("/test")
     public Mono<Void> test() {
-        Notification notification = new Notification(); // Ensure this is properly initialized
+        Notification notification = new Notification();
 
         return wsWebClient.post()
                 .uri("/send-notification")

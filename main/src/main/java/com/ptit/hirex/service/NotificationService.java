@@ -6,6 +6,7 @@ import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
@@ -39,9 +41,17 @@ public class NotificationService {
             notification.setContent(content);
             Notification newNotification = notificationRepository.save(notification);
 
-            wsWebClient.post()
-                    .uri("/send-notification")
-                    .body(Mono.just(newNotification), Notification.class);
+            try {
+                wsWebClient.post()
+                        .uri("/send-notification")
+                        .body(Mono.just(newNotification), Notification.class)
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block(); // Block and wait for completion
+                log.info("Notification sent successfully");
+            } catch (Exception e) {
+                log.error("Error sending notification", e);
+            }
         }
     }
 
