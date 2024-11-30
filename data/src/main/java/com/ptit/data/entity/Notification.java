@@ -2,16 +2,14 @@ package com.ptit.data.entity;
 
 import com.ptit.data.base.Auditable;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(callSuper = true)
 public class Notification extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
