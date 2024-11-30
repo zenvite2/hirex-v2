@@ -43,6 +43,7 @@ public class CareerGoalService {
 
         try {
             CareerGoal careerGoal = CareerGoal.builder()
+                    .industryId(careerGoalRequest.getIndustry())
                     .jobTypeId(careerGoalRequest.getJobType())
                     .positionId(careerGoalRequest.getPosition())
                     .maxSalary(careerGoalRequest.getMaxSalary())
@@ -113,6 +114,7 @@ public class CareerGoalService {
             }
 
             CareerGoalResponse careerGoalResponse = CareerGoalResponse.builder()
+                    .industry(careerGoal.getIndustryId())
                     .position(careerGoal.getPositionId())
                     .maxSalary(careerGoal.getMaxSalary())
                     .minSalary(careerGoal.getMinSalary())

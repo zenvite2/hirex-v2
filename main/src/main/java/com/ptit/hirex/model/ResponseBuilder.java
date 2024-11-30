@@ -1,5 +1,6 @@
 package com.ptit.hirex.model;
 
+import com.ptit.hirex.dto.MetaData;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import jakarta.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
@@ -106,6 +107,19 @@ public class ResponseBuilder {
                 .success(false)
                 .message(message)
                 .statusCode(statusCode.toString())
+                .build();
+        return ResponseEntity.ok(dto);
+    }
+
+    @Nonnull
+    public static <T> ResponseEntity<ResponseDto<T>> okResponse(String message, @Nonnull T body, StatusCodeEnum statusCode, MetaData metaData) {
+        final ResponseDto<T> dto = ResponseDto.<T>
+                        builder()
+                .success(true)
+                .message(message)
+                .data(body)
+                .statusCode(statusCode.toString())
+                .metaData(metaData)
                 .build();
         return ResponseEntity.ok(dto);
     }

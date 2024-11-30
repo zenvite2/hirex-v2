@@ -32,5 +32,7 @@ public class Company {
 
     private Long district;
 
+    private Long banner;
+
     private Long scale;
 }

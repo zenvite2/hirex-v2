@@ -4,6 +4,7 @@ import com.ptit.data.dto.FullJobDto;
 import com.ptit.data.dto.JobWithCompanyResponse;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.MetaData;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.dto.request.JobStatusRequest;
@@ -15,6 +16,7 @@ import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -23,6 +25,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -420,7 +423,7 @@ public class JobService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseDto<Object>> searchJobs(JobSearchRequest searchRequest) {
+    public ResponseEntity<ResponseDto<Object>> searchJobs(JobSearchRequest searchRequest, Pageable pageable) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Job> query = criteriaBuilder.createQuery(Job.class);
         Root<Job> job = query.from(Job.class);
@@ -452,6 +455,8 @@ public class JobService {
         if (searchRequest.getEducationIds() != null && !searchRequest.getEducationIds().isEmpty()) {
             predicates.add(job.get("educationLevelId").in(searchRequest.getEducationIds()));
         }
+        
+        predicates.add(criteriaBuilder.isTrue(job.get("active")));
 
         if (searchRequest.getSalaryOptions() != null && !searchRequest.getSalaryOptions().isEmpty()) {
             List<Predicate> salaryPredicates = searchRequest.getSalaryOptions().stream()
@@ -464,11 +469,8 @@ public class JobService {
                                 ? salaryOption.getMaxSalary()
                                 : Long.MAX_VALUE;
 
-                        // Only check if job's min salary is within the option's salary range
                         return criteriaBuilder.and(
-                                // Job's min salary is greater than or equal to option's min salary
                                 criteriaBuilder.greaterThanOrEqualTo(job.get("minSalary"), optionMinSalary),
-                                // Job's min salary is less than or equal to option's max salary
                                 criteriaBuilder.lessThanOrEqualTo(job.get("minSalary"), optionMaxSalary)
                         );
                     })
@@ -477,35 +479,43 @@ public class JobService {
                 predicates.add(criteriaBuilder.or(salaryPredicates.toArray(new Predicate[0])));
             }
         }
+
         query.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-        List<Job> jobEntities = entityManager.createQuery(query).getResultList();
+
+        // Sử dụng Pageable để lấy phân trang
+        TypedQuery<Job> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
+        typedQuery.setMaxResults(pageable.getPageSize());
+
+        List<Job> jobEntities = typedQuery.getResultList();
+
+        // Create a separate query to get total items
+        TypedQuery<Job> totalQuery = entityManager.createQuery(query);
+        List<Job> totalJobEntities = totalQuery.getResultList();
+
+        int totalItems = totalJobEntities.size();
+        int totalPages = (int) Math.ceil((double) totalItems / pageable.getPageSize());
+
+        MetaData metaData = new MetaData();
+        metaData.setTotalPages(totalPages);
+        metaData.setCurrentPage(pageable.getPageNumber());
+        metaData.setPageSize(pageable.getPageSize());
+        metaData.setTotalItems(totalItems);
 
         List<JobWithCompanyResponse> jobs = jobEntities.stream()
                 .map(jobItem -> {
-                    // Lấy thông tin district
+                    // Mapping job to JobWithCompanyResponse
                     String districtName = districtRepository.findById(jobItem.getDistrictId())
                             .map(District::getName)
                             .orElse("");
-
-                    // Lấy thông tin city
                     String cityName = cityRepository.findById(jobItem.getCityId())
                             .map(City::getName)
                             .orElse("");
-
-                    // Lấy thông tin contractType
                     String contractTypeName = contractTypeRepository.findById(jobItem.getContractTypeId())
                             .map(ContractType::getName)
                             .orElse("");
-
-                    // Lấy thông tin employer và company
-                    Employer employer = employerRepository.findById(jobItem.getEmployer())
-                            .orElse(null);
-
-                    Company company = null;
-                    if (employer != null) {
-                        company = companyRepository.findById(employer.getCompany())
-                                .orElse(null);
-                    }
+                    Employer employer = employerRepository.findById(jobItem.getEmployer()).orElse(null);
+                    Company company = employer != null ? companyRepository.findById(employer.getCompany()).orElse(null) : null;
 
                     return JobWithCompanyResponse.builder()
                             .id(jobItem.getId())
@@ -529,7 +539,8 @@ public class JobService {
         return ResponseBuilder.okResponse(
                 languageService.getMessage("get.all.jobs.success"),
                 jobs,
-                StatusCodeEnum.JOB1001
+                StatusCodeEnum.JOB1001,
+                metaData
         );
     }
 
