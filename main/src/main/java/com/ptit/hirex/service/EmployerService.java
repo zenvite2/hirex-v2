@@ -82,7 +82,7 @@ public class EmployerService {
                     companyRepository.save(company);
                     companyId = company.getId();
                 } else {
-                    companyId = companyRepository.findByCompanyName(employerRequest.getCompany()).getId();
+                    companyId = companyRepository.findByCompanyName(employerRequest.getCompany()).get().getId();
                 }
             } else {
                 companyId = employerRequest.getCompanyId();

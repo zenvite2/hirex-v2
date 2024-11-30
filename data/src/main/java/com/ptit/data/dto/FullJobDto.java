@@ -1,15 +1,11 @@
 package com.ptit.data.dto;
 
 import com.ptit.data.entity.*;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
+@ToString
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -73,5 +69,11 @@ public class FullJobDto {
      * Trinh do hoc van
      */
     private EducationLevel educationLevel;
+
+    private String companyLogo;
+
+    private String companyName;
+
+    private String companyDescription;
 }
 

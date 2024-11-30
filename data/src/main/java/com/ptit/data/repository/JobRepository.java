@@ -117,7 +117,11 @@ public interface JobRepository extends JpaRepository<Job, Long> {
         
         (SELECT array_agg(skill_id) 
          FROM job_skill js 
-         WHERE js.job_id = j.id) AS skillIds
+         WHERE js.job_id = j.id) AS skillIds,
+        
+        company.logo as companyLogo,
+        company.company_name as companyName,
+        company.description as companyDescription
     FROM 
         jobs j
     LEFT JOIN city ON j.city_id = city.id
@@ -127,58 +131,62 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     LEFT JOIN contract_type ON j.contract_type_id = contract_type.id
     LEFT JOIN industry ON j.industry_id = industry.id
     LEFT JOIN education_level ON j.education_level_id = education_level.id
+    LEFT JOIN employer ON j.employer = employer.id
+    LEFT JOIN company ON employer.company_id = company.id
     """)
     List<Object[]> findAllFullJobDetails();
 
     default List<FullJobDto> getFullDataJobs() {
         List<Object[]> results = findAllFullJobDetails();
 
-        return results.stream().map(result -> {
-            return FullJobDto.builder()
-                    .id(getLongValue(result[0]))
-                    .title(getStringValue(result[1]))
-                    .description(getStringValue(result[2]))
-                    .benefit(getStringValue(result[3]))
-                    .requirement(getStringValue(result[4]))
-                    .location(getStringValue(result[5]))
-                    .minSalary(getLongValue(result[6]))
-                    .maxSalary(getLongValue(result[7]))
-                    .yearExperience(getLongValue(result[8]))
-                    .deadline(getStringValue(result[9]))
+        return results.stream().map(result -> FullJobDto.builder()
+                .id(getLongValue(result[0]))
+                .title(getStringValue(result[1]))
+                .description(getStringValue(result[2]))
+                .benefit(getStringValue(result[3]))
+                .requirement(getStringValue(result[4]))
+                .location(getStringValue(result[5]))
+                .minSalary(getLongValue(result[6]))
+                .maxSalary(getLongValue(result[7]))
+                .yearExperience(getLongValue(result[8]))
+                .deadline(getStringValue(result[9]))
 
-                    .city(createSimpleEntity(City.class,
-                            getLongValue(result[10]),
-                            getStringValue(result[11])))
+                .city(createSimpleEntity(City.class,
+                        getLongValue(result[10]),
+                        getStringValue(result[11])))
 
-                    .district(createSimpleEntity(District.class,
-                            getLongValue(result[12]),
-                            getStringValue(result[13])))
+                .district(createSimpleEntity(District.class,
+                        getLongValue(result[12]),
+                        getStringValue(result[13])))
 
-                    .position(createSimpleEntity(Position.class,
-                            getLongValue(result[14]),
-                            getStringValue(result[15])))
+                .position(createSimpleEntity(Position.class,
+                        getLongValue(result[14]),
+                        getStringValue(result[15])))
 
-                    .jobType(createSimpleEntity(JobType.class,
-                            getLongValue(result[16]),
-                            getStringValue(result[17])))
+                .jobType(createSimpleEntity(JobType.class,
+                        getLongValue(result[16]),
+                        getStringValue(result[17])))
 
-                    .contractType(createSimpleEntity(ContractType.class,
-                            getLongValue(result[18]),
-                            getStringValue(result[19])))
+                .contractType(createSimpleEntity(ContractType.class,
+                        getLongValue(result[18]),
+                        getStringValue(result[19])))
 
-                    .industry(createSimpleEntity(Industry.class,
-                            getLongValue(result[20]),
-                            getStringValue(result[21])))
+                .industry(createSimpleEntity(Industry.class,
+                        getLongValue(result[20]),
+                        getStringValue(result[21])))
 
-                    .educationLevel(createSimpleEntity(EducationLevel.class,
-                            getLongValue(result[22]),
-                            getStringValue(result[23])))
+                .educationLevel(createSimpleEntity(EducationLevel.class,
+                        getLongValue(result[22]),
+                        getStringValue(result[23])))
 
-                    .skill_ids(result[24] != null
-                            ? Arrays.stream((Long[]) result[24]).collect(Collectors.toList())
-                            : Collections.emptyList())
-                    .build();
-        }).collect(Collectors.toList());
+                .skill_ids(result[24] != null
+                        ? Arrays.stream((Long[]) result[24]).collect(Collectors.toList())
+                        : Collections.emptyList())
+
+                .companyLogo(getStringValue(result[25]))
+                .companyName(getStringValue(result[26]))
+                .companyDescription(getStringValue(result[27]))
+                .build()).collect(Collectors.toList());
     }
 
     // Utility method for creating simple entities

@@ -19,7 +19,6 @@ public class ModelMapperConfig {
         modelMapper.addMappings(new CareerGoalRequestToCareerGoal());
         modelMapper.addMappings(new EducationRequestToEducation());
         modelMapper.addMappings(new SkillRequestToSkill());
-
         return modelMapper;
     }
 }

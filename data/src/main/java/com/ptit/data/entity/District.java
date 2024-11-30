@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "district")
 public class District {
     @Id
@@ -21,4 +19,9 @@ public class District {
 
     @Column(name = "city_id")
     private Long cityId;
+
+    public District(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
