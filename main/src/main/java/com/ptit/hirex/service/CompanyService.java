@@ -71,6 +71,7 @@ public class CompanyService {
 
             CompanyDTO companyDTO = modelMapper.map(company, CompanyDTO.class);
             companyDTO.setLogoUrl(company.getLogo());
+            companyDTO.setBannerUrl(company.getBanner());
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.company.success"),
@@ -164,6 +165,19 @@ public class CompanyService {
                     );
                 } else {
                     company.setLogo(publicUrl + "/" + logo);
+                }
+            }
+
+            if (companyRequest.getBanner() != null && !companyRequest.getBanner().isEmpty()) {
+                String banner = fileService.uploadImageFile(companyRequest.getBanner(), company.getBanner(), "BANNER");
+                if (banner == null) {
+                    log.error("Upload file image banner failed");
+                    return ResponseBuilder.badRequestResponse(
+                            languageService.getMessage("upload.file.avatar.failed"),
+                            StatusCodeEnum.UPLOADFILE0001
+                    );
+                } else {
+                    company.setBanner(publicUrl + "/" + banner);
                 }
             }
 

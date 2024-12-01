@@ -21,6 +21,9 @@ public class CompanyRequest {
     @IsValidImage(maxSize = 10 * 1024 * 1024)
     private MultipartFile logo;
 
+    @IsValidImage(maxSize = 10 * 1024 * 1024)
+    private MultipartFile banner;
+
     private String address;
 
     private Long city;
