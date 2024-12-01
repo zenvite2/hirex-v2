@@ -26,6 +26,8 @@ public class CompanyDTO {
 
     private String logoUrl;
 
+    private String bannerUrl;
+
     private String address;
 
     private Long city;
