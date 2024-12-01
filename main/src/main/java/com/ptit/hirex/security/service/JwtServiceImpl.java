@@ -1,5 +1,6 @@
 package com.ptit.hirex.security.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ptit.data.base.RedisToken;
 import com.ptit.data.entity.User;
 import io.jsonwebtoken.Claims;
@@ -7,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class JwtServiceImpl implements JwtService {
 
@@ -32,6 +35,9 @@ public class JwtServiceImpl implements JwtService {
 
     @Value("${jwt.access-key}")
     private String accessKey;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
@@ -103,8 +109,17 @@ public class JwtServiceImpl implements JwtService {
     }
 
     private boolean isTokenInRedisValid(String token) {
-        RedisToken tokenStatus = (RedisToken) redisTemplate.opsForValue().get(token);
-        return tokenStatus != null;
+        try {
+            Object value = redisTemplate.opsForValue().get(token);
+            if (value == null) {
+                return false;
+            }
+            RedisToken tokenStatus = objectMapper.convertValue(value, RedisToken.class);
+            return tokenStatus != null && !isTokenExpired(token);
+        } catch (Exception e) {
+            log.error("Error validating token", e);
+            return false;
+        }
     }
 
     private void saveTokenInRedis(String token, RedisToken redisToken, long expirationTimeInSeconds) {

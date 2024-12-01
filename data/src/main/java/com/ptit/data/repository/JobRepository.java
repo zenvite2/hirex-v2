@@ -6,6 +6,7 @@ import com.ptit.data.dto.UserInfoDto;
 import com.ptit.data.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Constructor;
@@ -212,4 +213,54 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     default String getStringValue(Object value) {
         return value != null ? String.valueOf(value) : null;
     }
+
+    @Query(nativeQuery = true, value = """
+    SELECT 
+        j.title AS jobTitle,
+        company.company_name as companyName,
+        district.id AS districtId,
+        district.name AS districtName,
+        city.id AS cityId,
+        city.name AS cityName,
+        job_type.id AS jobTypeId,
+        job_type.name AS jobTypeName,
+        company.logo as companyLogo,
+        j.id as jobId
+    FROM 
+        jobs j
+    LEFT JOIN city ON j.city_id = city.id
+    LEFT JOIN district ON j.district_id = district.id
+    LEFT JOIN job_type ON j.job_type_id = job_type.id
+    LEFT JOIN employer ON j.employer = employer.id
+    LEFT JOIN company ON employer.company_id = company.id
+    WHERE j.id = :jobId
+    """)
+    Object[] findJobDetailsById(@Param("jobId") Long jobId);
+
+    default FullJobDto getFullJobDtoById(Long jobId) {
+        Object[] result = findJobDetailsById(jobId);
+
+        if (result == null || result.length == 0) {
+            return null;
+        }
+
+        Object[] innerResult = result[0] instanceof Object[] ? (Object[]) result[0] : result;
+
+        return FullJobDto.builder()
+                .title(getStringValue(innerResult[0]))
+                .companyName(getStringValue(innerResult[1]))
+                .district(createSimpleEntity(District.class,
+                        getLongValue(innerResult[2]),
+                        getStringValue(innerResult[3])))
+                .city(createSimpleEntity(City.class,
+                        getLongValue(innerResult[4]),
+                        getStringValue(innerResult[5])))
+                .jobType(createSimpleEntity(JobType.class,
+                        getLongValue(innerResult[6]),
+                        getStringValue(innerResult[7])))
+                .companyLogo(getStringValue(innerResult[8]))
+                .id(getLongValue(innerResult[9]))
+                .build();
+    }
+
 }

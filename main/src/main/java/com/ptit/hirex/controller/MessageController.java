@@ -21,7 +21,6 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @ResponseBody
     @GetMapping("/conversations")
     public ResponseEntity<ResponseDto<List<UserConversationsDto>>> getUserConversations(@AuthenticationPrincipal User user) {
         List<UserConversationsDto> conversations = messageService.getUserConversations(user.getId());

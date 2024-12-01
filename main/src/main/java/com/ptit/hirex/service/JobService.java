@@ -544,4 +544,7 @@ public class JobService {
         );
     }
 
+    public FullJobDto getFullJobDtoById(Long id) {
+        return jobRepository.getFullJobDtoById(id);
+    }
 }

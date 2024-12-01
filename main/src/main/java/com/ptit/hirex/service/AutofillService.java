@@ -82,7 +82,6 @@ public class AutofillService {
         }
     }
 
-
     public ResponseEntity<ResponseDto<List<DistrictResponse>>> autofillDistrict(String name, Long cityId) {
         try {
             List<District> districts;
