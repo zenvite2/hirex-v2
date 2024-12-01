@@ -3,14 +3,22 @@ const elements = {
     remoteVideo: document.getElementById("remoteVideo"),
     micToggleBtn: document.getElementById("micToggleBtn"),
     camToggleBtn: document.getElementById("camToggleBtn"),
-    endCallBtn: document.getElementById("endCallBtn")
+    endCallBtn: document.getElementById("endCallBtn"),
+    shareScreenBtn: document.getElementById("shareScreenBtn")
 };
 
-let localStream, localPeer, stompClient;
+let localStream, localPeer, stompClient, originalStream;
 let isMicActive = true;
 let isCamActive = true;
+let isScreenSharing = false;
 
-const url = 'https://ws.deploy-hirexptit.io.vn'
+const mediaState = {
+    originalCameraStream: null,
+    currentStream: null,
+    screenStream: null
+};
+
+const url = 'https://192.168.1.123:8888'
 
 const iceServers = {iceServers: [{urls: "stun:stun.l.google.com:19302"}]};
 
@@ -26,6 +34,96 @@ async function initLocalPeer() {
     elements.micToggleBtn.addEventListener('click', toggleMicrophone);
     elements.camToggleBtn.addEventListener('click', toggleCamera);
     elements.endCallBtn.addEventListener('click', endCall);
+    elements.shareScreenBtn.addEventListener('click', toggleScreenSharing);
+
+    // Additional error handling for screen sharing
+    window.addEventListener('unhandledrejection', (event) => {
+        if (event.reason.name === 'NotAllowedError') {
+            stopScreenSharing();
+        }
+    });
+}
+
+async function toggleScreenSharing() {
+    // Prevent screen sharing if camera is off
+    if (!isCamActive) {
+        alert("Please turn on camera before screen sharing.");
+        return;
+    }
+
+    if (!isScreenSharing) {
+        try {
+            // Capture screen stream
+            const screenStream = await navigator.mediaDevices.getDisplayMedia({
+                video: true,
+                audio: false
+            });
+
+            // Store the original camera stream if not already stored
+            if (!mediaState.originalCameraStream) {
+                mediaState.originalCameraStream = localStream;
+            }
+
+            // Store screen stream
+            mediaState.screenStream = screenStream;
+
+            // Replace video track in peer connection
+            replaceVideoTrack(screenStream.getVideoTracks()[0]);
+
+            // Update local video display
+            elements.localVideo.srcObject = screenStream;
+            localStream = screenStream;
+
+            // Update UI
+            elements.shareScreenBtn.classList.add('active');
+            elements.camToggleBtn.disabled = true;
+            isScreenSharing = true;
+
+            // Handle screen sharing ending
+            screenStream.getVideoTracks()[0].onended = stopScreenSharing;
+
+        } catch (err) {
+            console.error("Screen sharing error:", err);
+
+            // Reset if user cancels
+            if (err.name === 'NotAllowedError') {
+                return;
+            }
+        }
+    } else {
+        stopScreenSharing();
+    }
+}
+
+function stopScreenSharing() {
+    if (isScreenSharing && mediaState.originalCameraStream) {
+        // Restore original camera stream
+        replaceVideoTrack(mediaState.originalCameraStream.getVideoTracks()[0]);
+
+        // Update local video back to camera stream
+        elements.localVideo.srcObject = mediaState.originalCameraStream;
+        localStream = mediaState.originalCameraStream;
+
+        // Clean up
+        if (mediaState.screenStream) {
+            mediaState.screenStream.getTracks().forEach(track => track.stop());
+            mediaState.screenStream = null;
+        }
+
+        // Reset UI
+        elements.shareScreenBtn.classList.remove('active');
+        elements.camToggleBtn.disabled = false;
+        isScreenSharing = false;
+    }
+}
+
+function replaceVideoTrack(newVideoTrack) {
+    // Find video sender in peer connection
+    const sender = localPeer.getSenders().find(s => s.track.kind === 'video');
+
+    if (sender) {
+        sender.replaceTrack(newVideoTrack).then(r => {});
+    }
 }
 
 function toggleMicrophone() {
@@ -47,6 +145,12 @@ function toggleMicrophone() {
 }
 
 function toggleCamera() {
+    // Prevent camera toggle during screen sharing
+    if (isScreenSharing) {
+        alert("Please stop screen sharing first.");
+        return;
+    }
+
     isCamActive = !isCamActive;
     const videoTracks = localStream.getVideoTracks();
 
@@ -70,6 +174,10 @@ function endCall(isReceiver) {
     // Close the peer connection
     if (localPeer) {
         localPeer.close();
+    }
+
+    if (isScreenSharing) {
+        stopScreenSharing();
     }
 
     // Stop all tracks in the local stream
@@ -203,8 +311,8 @@ function connectToWebSocket() {
                 console.log("====ACCEPT READY SIGNAL====")
                 initiateCall();
             } else {
-                window.confirm("The call was refused by the callee. Do you want to close the window?");
-                window.close();
+                alert("Người nhận từ chối nhận cuộc gọi. Đóng cửa sổ?");
+                endCall(true);
             }
         });
 
