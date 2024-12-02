@@ -16,4 +16,9 @@ public interface MailService {
     void sendOTPEmail(String toEmail, String otp) throws MessagingException;
 
     void sendEmailFollow(String toEmail, String companyName, String jobPostUrl) throws MessagingException;
+
+    void sendEmailPost(String toEmail,String username, String messageJob, String websiteUrl) throws MessagingException;
+
+    void sendEmailCMS(String subject, String toEmail, String username, String messageCms, String websiteUrl) throws MessagingException;
+
 }

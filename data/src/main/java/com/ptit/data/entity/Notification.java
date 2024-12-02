@@ -23,4 +23,6 @@ public class Notification extends Auditable {
     private String content;
 
     private boolean read = false;
+
+    private Long sendTo; // (0: tất cả, 1: employee, 2 employer)
 }

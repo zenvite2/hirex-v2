@@ -17,5 +17,7 @@ public class NotificationPatternRequest {
     @NotBlank
     private String content;
 
-    private Boolean hasParams = false;
+    private Boolean patternCms;
+
+    private String type;
 }

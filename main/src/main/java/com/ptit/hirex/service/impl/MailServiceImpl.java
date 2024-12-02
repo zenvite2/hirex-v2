@@ -250,6 +250,189 @@ public class MailServiceImpl implements MailService {
         }
     }
 
+    @Override
+    public void sendEmailPost(String toEmail, String username, String messageJob, String websiteUrl) throws MessagingException {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(sender);
+            helper.setTo(toEmail);
+            helper.setSubject("New Job Alert");
+
+            // Load HTML template
+            String htmlContent = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                    "    <title>Notification Email</title>\n" +
+                    "    <style>\n" +
+                    "        body {\n" +
+                    "            font-family: Arial, sans-serif;\n" +
+                    "            line-height: 1.6;\n" +
+                    "            background-color: #f9f9f9;\n" +
+                    "            margin: 0;\n" +
+                    "            padding: 0;\n" +
+                    "        }\n" +
+                    "        .email-container {\n" +
+                    "            max-width: 600px;\n" +
+                    "            margin: 20px auto;\n" +
+                    "            background: #fff;\n" +
+                    "            padding: 20px;\n" +
+                    "            border-radius: 10px;\n" +
+                    "            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n" +
+                    "        }\n" +
+                    "        .header {\n" +
+                    "            background-color: gray;\n" +
+                    "            color: white;\n" +
+                    "            padding: 10px 20px;\n" +
+                    "            text-align: center;\n" +
+                    "            border-radius: 10px 10px 0 0;\n" +
+                    "        }\n" +
+                    "        .content {\n" +
+                    "            padding: 20px;\n" +
+                    "        }\n" +
+                    "        .footer {\n" +
+                    "            text-align: center;\n" +
+                    "            margin-top: 20px;\n" +
+                    "            font-size: 12px;\n" +
+                    "            color: #888;\n" +
+                    "        }\n" +
+                    "        .btn {\n" +
+                    "            display: inline-block;\n" +
+                    "            padding: 10px 15px;\n" +
+                    "            background-color: gray;\n" +
+                    "            color: white;\n" +
+                    "            text-decoration: none;\n" +
+                    "            border-radius: 5px;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class=\"email-container\">\n" +
+                    "        <div class=\"header\">\n" +
+                    "            <h1>Job Notification</h1>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"content\">\n" +
+                    "            <p>Xin chào <strong>{{username}}</strong>,</p>\n" +
+                    "            <p>{{message}}</p>\n" +
+                    "            <p>Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email hoặc đường dây nóng.</p>\n" +
+                    "            <a href=\"{{websiteUrl}}\" class=\"btn\">Truy cập Website</a>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"footer\">\n" +
+                    "            <p>&copy; 2024 Your Job Website. All Rights Reserved.</p>\n" +
+                    "        </div>\n" +
+                    "    </div>\n" +
+                    "</body>\n" +
+                    "</html>\n";
+
+            // Replace placeholders with actual values
+            htmlContent = htmlContent.replace("{{username}}", username);
+            htmlContent = htmlContent.replace("{{message}}", messageJob);
+            htmlContent = htmlContent.replace("{{websiteUrl}}", websiteUrl);
+
+            // Set the content of the email
+            helper.setText(htmlContent, true);
+
+            // Send email
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
+
+    @Override
+    public void sendEmailCMS(String subject, String toEmail, String username, String messageCms, String websiteUrl) throws MessagingException {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom(sender);
+            helper.setTo(toEmail);
+            helper.setSubject(subject);
+
+            // Load HTML template
+            String htmlContent = "<!DOCTYPE html>\n" +
+                    "<html lang=\"en\">\n" +
+                    "<head>\n" +
+                    "    <meta charset=\"UTF-8\">\n" +
+                    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                    "    <title>Notification Email</title>\n" +
+                    "    <style>\n" +
+                    "        body {\n" +
+                    "            font-family: Arial, sans-serif;\n" +
+                    "            line-height: 1.6;\n" +
+                    "            background-color: #f9f9f9;\n" +
+                    "            margin: 0;\n" +
+                    "            padding: 0;\n" +
+                    "        }\n" +
+                    "        .email-container {\n" +
+                    "            max-width: 600px;\n" +
+                    "            margin: 20px auto;\n" +
+                    "            background: #fff;\n" +
+                    "            padding: 20px;\n" +
+                    "            border-radius: 10px;\n" +
+                    "            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);\n" +
+                    "        }\n" +
+                    "        .header {\n" +
+                    "            background-color: gray;\n" +
+                    "            color: white;\n" +
+                    "            padding: 10px 20px;\n" +
+                    "            text-align: center;\n" +
+                    "            border-radius: 10px 10px 0 0;\n" +
+                    "        }\n" +
+                    "        .content {\n" +
+                    "            padding: 20px;\n" +
+                    "        }\n" +
+                    "        .footer {\n" +
+                    "            text-align: center;\n" +
+                    "            margin-top: 20px;\n" +
+                    "            font-size: 12px;\n" +
+                    "            color: #888;\n" +
+                    "        }\n" +
+                    "        .btn {\n" +
+                    "            display: inline-block;\n" +
+                    "            padding: 10px 15px;\n" +
+                    "            background-color: gray;\n" +
+                    "            color: white;\n" +
+                    "            text-decoration: none;\n" +
+                    "            border-radius: 5px;\n" +
+                    "        }\n" +
+                    "    </style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "    <div class=\"email-container\">\n" +
+                    "        <div class=\"header\">\n" +
+                    "            <h1>HireX Notification</h1>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"content\">\n" +
+                    "            <p>Xin chào <strong>{{username}}</strong>,</p>\n" +
+                    "            <p>{{message}}</p>\n" +
+                    "            <p>Nếu có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email hoặc đường dây nóng.</p>\n" +
+                    "            <a href=\"{{websiteUrl}}\" class=\"btn\">Truy cập Website</a>\n" +
+                    "        </div>\n" +
+                    "        <div class=\"footer\">\n" +
+                    "            <p>&copy; 2024 Your Job Website. All Rights Reserved.</p>\n" +
+                    "        </div>\n" +
+                    "    </div>\n" +
+                    "</body>\n" +
+                    "</html>\n";
+
+            // Replace placeholders with actual values
+            htmlContent = htmlContent.replace("{{username}}", username);
+            htmlContent = htmlContent.replace("{{message}}", messageCms);
+            htmlContent = htmlContent.replace("{{websiteUrl}}", websiteUrl);
+
+            // Set the content of the email
+            helper.setText(htmlContent, true);
+
+            // Send email
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to send email", e);
+        }
+    }
 
     private String buildPasswordResetEmailTemplate(String newPassword) {
         return """

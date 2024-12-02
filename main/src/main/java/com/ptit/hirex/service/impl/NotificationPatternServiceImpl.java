@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NotificationPatternServiceImpl implements NotificationPatternService {
@@ -18,4 +20,5 @@ public class NotificationPatternServiceImpl implements NotificationPatternServic
     public NotificationPattern save(NotificationPatternRequest notificationPattern) {
         return repository.save(modelMapper.map(notificationPattern, NotificationPattern.class));
     }
+
 }

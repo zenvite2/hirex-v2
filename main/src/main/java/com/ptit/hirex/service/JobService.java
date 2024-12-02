@@ -54,12 +54,9 @@ public class JobService {
     private final ContractTypeRepository contractTypeRepository;
     private final CompanyRepository companyRepository;
     private final EntityManager entityManager;
-    private final IndustryRepository industryRepository;
-    private final EducationLevelRepository educationLevelRepository;
     private final JobSkillRepository jobSkillRepository;
     private final FollowCompanyService followCompanyService;
     private final NotificationService notificationService;
-    private final EmployeeRepository employeeRepository;
     private final MailService mailService;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
@@ -92,7 +89,11 @@ public class JobService {
 
             Job savedJob = jobRepository.save(job);
 
-            notificationService.createNotification(employer.getUserId(), job.getId(), "JOB_POSTED");
+            notificationService.createNotification(employer.getUserId(), job.getId(), "JOB_PENDING");
+
+            String message = "Công việc " + job.getTitle() + " bạn đăng đang chờ kiểm duyệt.";
+
+            mailService.sendEmailPost(user.getEmail(), user.getUsername(), message, "https://deploy-hirexptit.io.vn/");
 
             if (jobRequest.getSkills() != null && !jobRequest.getSkills().isEmpty()) {
                 List<JobSkill> jobSkills = jobRequest.getSkills().stream()
@@ -108,8 +109,8 @@ public class JobService {
 
             List<FollowCompany> followCompany = followCompanyService.getListFollow();
 
-            for(FollowCompany follow: followCompany){
-                if(follow.getCompanyId() == employer.getCompany()){
+            for (FollowCompany follow : followCompany) {
+                if (follow.getCompanyId() == employer.getCompany()) {
 
                     Optional<User> user1 = userRepository.findById(follow.getEmployeeId());
 
@@ -159,6 +160,7 @@ public class JobService {
             );
         }
     }
+
     public ResponseEntity<ResponseDto<Object>> updateActiveJob(Long id, JobStatusRequest jobStatusRequest) {
         try {
             Job job = jobRepository.findById(id)
@@ -167,6 +169,24 @@ public class JobService {
             job.setActive(jobStatusRequest.getActive());
 
             jobRepository.save(job);
+
+            Optional<Employer> employer = employerRepository.findById(job.getEmployer());
+
+            Optional<User> user = userRepository.findById(employer.get().getUserId());
+
+            if (jobStatusRequest.getActive()) {
+                notificationService.createNotification(employer.get().getUserId(), job.getId(), "JOB_POSTED");
+
+                String message = "Công việc " + job.getTitle() + " bạn đăng đã được kiểm duyệt và đăng bài thành công.";
+
+                mailService.sendEmailPost(user.get().getEmail(), user.get().getUsername(), message, "https://deploy-hirexptit.io.vn/");
+            } else {
+                notificationService.createNotification(employer.get().getUserId(), job.getId(), "JOB_REMOVED");
+
+                String message = "Công việc " + job.getTitle() + " bạn đăng đã bị gỡ bởi kiểm duyệt viên do vi phạm chính sách.";
+
+                mailService.sendEmailPost(user.get().getEmail(), user.get().getUsername(), message, "https://deploy-hirexptit.io.vn/");
+            }
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.job.success"),
@@ -455,7 +475,7 @@ public class JobService {
         if (searchRequest.getEducationIds() != null && !searchRequest.getEducationIds().isEmpty()) {
             predicates.add(job.get("educationLevelId").in(searchRequest.getEducationIds()));
         }
-        
+
         predicates.add(criteriaBuilder.isTrue(job.get("active")));
 
         if (searchRequest.getSalaryOptions() != null && !searchRequest.getSalaryOptions().isEmpty()) {

@@ -2,9 +2,11 @@ package com.ptit.hirex.service;
 
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
+import com.ptit.hirex.dto.request.NotificationCmsRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,8 @@ public class NotificationService {
     private final JobRepository jobRepository;
     private final LanguageService languageService;
     private final WebClient wsWebClient;
+    private final UserRepository userRepository;
+    private final MailService mailService;
 
     public void createNotification(Long userId, Long jobId, String type) {
         Optional<NotificationPattern> patternOpt = patternRepository.findByType(type);
@@ -91,4 +96,40 @@ public class NotificationService {
             );
         }
     }
+
+    public void sendNotification(NotificationCmsRequest request) throws MessagingException {
+        List<User> recipients;
+        if (request.getSendTo() == 0) {
+            recipients = userRepository.findAll();
+        } else {
+            recipients = userRepository.getAllUserByRole(request.getSendTo());
+        }
+
+        for (User user : recipients) {
+            if (user.getRole().getId() == 3) {
+                continue;
+            }
+            Notification notification = new Notification();
+            notification.setToUserId(user.getId());
+            notification.setTitle(request.getTitle());
+            notification.setContent(request.getContent());
+
+            Notification newNotification = notificationRepository.save(notification);
+
+            try {
+                wsWebClient.post()
+                        .uri("/send-notification")
+                        .body(Mono.just(newNotification), Notification.class)
+                        .retrieve()
+                        .bodyToMono(Void.class)
+                        .block(); // Block and wait for completion
+                log.info("Notification sent successfully");
+            } catch (Exception e) {
+                log.error("Error sending notification", e);
+            }
+
+            mailService.sendEmailCMS(request.getTitle(), user.getEmail(), user.getFullName(), request.getContent(), "https://deploy-hirexptit.io.vn/");
+        }
+    }
+
 }

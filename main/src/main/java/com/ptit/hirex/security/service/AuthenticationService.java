@@ -50,7 +50,7 @@ public class AuthenticationService {
         try {
             User user = userService.getByUserName(signInRequest.getUsername());
 
-            if (user == null) {
+            if (user == null || !user.getActive()) {
                 return ResponseBuilder.badRequestResponse(
                         languageService.getMessage("auth.signin.invalid.credentials"),
                         StatusCodeEnum.AUTH0013

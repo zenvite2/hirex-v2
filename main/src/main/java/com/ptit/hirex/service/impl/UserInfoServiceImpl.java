@@ -8,6 +8,7 @@ import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.LanguageService;
+import com.ptit.hirex.service.MailService;
 import com.ptit.hirex.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,8 @@ import java.util.List;
 public class UserInfoServiceImpl implements UserInfoService {
 
     private final UserRepository userRepository;
-
     private final LanguageService languageService;
+    private final MailService mailService;
 
     public ResponseEntity<ResponseDto<UserInfoDto>> getUserInfoById(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
@@ -40,7 +41,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public ResponseEntity<ResponseDto<Object>> getAllUser() {
-        try{
+        try {
             List<User> list = userRepository.findAll();
 
             return ResponseBuilder.okResponse(
@@ -48,7 +49,7 @@ public class UserInfoServiceImpl implements UserInfoService {
                     list,
                     StatusCodeEnum.USERINFO1000
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("user-info.success"),
                     StatusCodeEnum.USERINFO1000
@@ -58,7 +59,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public ResponseEntity<ResponseDto<Object>> updateUser(Long userId, UserStatusRequest userStatusRequest) {
-        try{
+        try {
             User user = userRepository.findById(userId).orElse(null);
             if (user == null) {
                 return ResponseBuilder.noContentResponse(languageService.getMessage("user-info.not-found"), StatusCodeEnum.USERINFO0000);
@@ -68,11 +69,27 @@ public class UserInfoServiceImpl implements UserInfoService {
 
             userRepository.save(user);
 
+            String mailInActive = "Chúng tôi xin thông báo rằng tài khoản của bạn đã bị **khóa tạm thời** bởi quản trị viên do vi phạm các điều khoản sử dụng. Vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi nếu bạn cần thêm thông tin chi tiết.\n" +
+                    "\n" +
+                    "Quản trị viên có thể yêu cầu bạn thực hiện các hành động cần thiết để mở lại tài khoản của mình.\n" +
+                    "\n" +
+                    "Chúng tôi rất tiếc vì sự bất tiện này.";
+
+            String mailActive = "Chúng tôi xin thông báo rằng tài khoản của bạn đã được **mở khóa** bởi quản trị viên. Bây giờ bạn có thể truy cập lại tài khoản và sử dụng tất cả các dịch vụ của chúng tôi.\n" +
+                    "\n" +
+                    "Cảm ơn bạn đã hợp tác và tuân thủ các quy định của chúng tôi.";
+
+            if (userStatusRequest.getActive()) {
+                mailService.sendEmailCMS("Account Notification", user.getEmail(), user.getFullName(), mailActive, "https://deploy-hirexptit.io.vn/");
+            } else {
+                mailService.sendEmailCMS("Account Notification", user.getEmail(), user.getFullName(), mailInActive, "https://deploy-hirexptit.io.vn/");
+            }
+
             return ResponseBuilder.okResponse(
                     languageService.getMessage("update.user-info.success"),
                     StatusCodeEnum.USERINFO1000
             );
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("update.user-info.failed"),
                     StatusCodeEnum.USERINFO1000
