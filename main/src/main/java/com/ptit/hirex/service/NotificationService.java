@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -31,6 +32,7 @@ public class NotificationService {
     private final UserRepository userRepository;
     private final MailService mailService;
 
+    @Async
     public void createNotification(Long userId, Long jobId, String type) {
         Optional<NotificationPattern> patternOpt = patternRepository.findByType(type);
         if (patternOpt.isPresent()) {
