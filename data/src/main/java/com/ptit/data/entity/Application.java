@@ -29,4 +29,6 @@ public class Application extends Auditable {
     private String coverLetter;
 
     private String cvPdf;
+
+    private Long resumeId;
 }

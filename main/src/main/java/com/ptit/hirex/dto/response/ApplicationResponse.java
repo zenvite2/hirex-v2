@@ -23,4 +23,5 @@ public class ApplicationResponse {
     private String coverLetter;
     private ApplicationStatus status;
     private LocalDateTime createdAt;
+    private Long resumeId;
 }

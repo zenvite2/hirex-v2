@@ -79,6 +79,7 @@ public class ApplicationService {
                     .jobId(applicationRequest.getJobId())
                     .employeeId(employee.getId())
                     .coverLetter(applicationRequest.getCoverLetter())
+                    .resumeId(applicationRequest.getResumeId() != null ? applicationRequest.getResumeId() : null)
                     .status(ApplicationStatus.PENDING)
                     .build();
 
@@ -148,6 +149,7 @@ public class ApplicationService {
                                 .jobTitle(job.getTitle())
                                 .address(job.getLocation())
                                 .cvPdf(application.getCvPdf() != null ? application.getCvPdf() : "No CV provided")
+                                .resumeId(application.getResumeId())
                                 .employeeId(employee.getId())
                                 .fullName(user.getFullName() != null ? user.getFullName() : "No name provided")
                                 .coverLetter(application.getCoverLetter())

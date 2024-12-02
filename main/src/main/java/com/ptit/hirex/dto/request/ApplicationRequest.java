@@ -14,4 +14,5 @@ public class ApplicationRequest {
     private Long jobId;
     private String coverLetter;
     private MultipartFile cvPdf;
+    private Long resumeId;
 }
