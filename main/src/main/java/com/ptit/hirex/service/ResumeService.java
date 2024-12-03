@@ -3,11 +3,13 @@ package com.ptit.hirex.service;
 import com.ptit.data.entity.*;
 import com.ptit.data.repository.*;
 import com.ptit.hirex.dto.request.ResumeRequest;
+import com.ptit.hirex.dto.response.ResumeResponse;
 import com.ptit.hirex.enums.StatusCodeEnum;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,9 @@ public class ResumeService {
     private final ExperienceRepository experienceRepository;
     private final PositionRepository positionRepository;
     private final EducationRepository educationRepository;
+    private final ModelMapper modelMapper;
+    private final EmployeeRepository employeeRepository;
+    private final UserRepository userRepository;
 
     public ResponseEntity<ResponseDto<Object>> createResume(ResumeRequest resumeRequest) {
         try {
@@ -102,9 +107,19 @@ public class ResumeService {
         }
     }
 
-    public Resume findById(Long id) {
-        return resumeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + id));
+    public ResumeResponse findById(Long id) {
+        Resume resume = resumeRepository.findById(id).orElse(null);
+        Optional<Employee> employee = employeeRepository.findById(resume.getEmployeeId());
+        User user = userRepository.findById(employee.get().getUserId()).orElse(null);
+        ResumeResponse resumeResponse = modelMapper.map(resume, ResumeResponse.class);
+        resumeResponse.setFullName(Objects.requireNonNull(user).getFullName());
+        resumeResponse.setAvatar(user.getAvatar());
+        resumeResponse.setAddress(employee.get().getAddress());
+        resumeResponse.setEmail(user.getEmail());
+        resumeResponse.setGender(employee.get().getGender());
+        resumeResponse.setDateOfBirth(employee.get().getDateOfBirth());
+        resumeResponse.setPhoneNumber(user.getPhoneNumber());
+        return resumeResponse;
     }
 
     public List<Resume> findAll() {

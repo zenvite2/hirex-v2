@@ -2,6 +2,7 @@ package com.ptit.hirex.controller;
 
 import com.ptit.data.entity.Resume;
 import com.ptit.hirex.dto.request.ResumeRequest;
+import com.ptit.hirex.dto.response.ResumeResponse;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.service.ResumeService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class ResumeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Resume> getResume(@PathVariable Long id) {
+    public ResponseEntity<ResumeResponse> getResume(@PathVariable Long id) {
         return ResponseEntity.ok(resumeService.findById(id));
     }
 
