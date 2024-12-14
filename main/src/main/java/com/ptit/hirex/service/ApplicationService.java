@@ -128,24 +128,26 @@ public class ApplicationService {
                         Job job = jobRepository.findById(application.getJobId()).orElse(null);
                         if (job == null) {
                             log.error("Job not found for id: " + application.getJobId());
-                            return null; // Hoặc ném lỗi tùy trường hợp
+                            return null;
                         }
 
                         Employee employee = employeeRepository.findById(application.getEmployeeId()).orElse(null);
                         if (employee == null) {
                             log.error("Employee not found for id: " + application.getEmployeeId());
-                            return null; // Hoặc ném lỗi tùy trường hợp
+                            return null;
                         }
 
                         User user = userRepository.findById(employee.getUserId()).orElse(null);
                         if (user == null) {
                             log.error("User not found for id: " + employee.getUserId());
-                            return null; // Hoặc ném lỗi tùy trường hợp
+                            return null;
                         }
 
                         return ApplicationResponse.builder()
                                 .id(application.getId())
                                 .jobId(job.getId())
+                                .userId(user.getId())
+                                .avatar(user.getAvatar() != null ? user.getAvatar() : "No avatar provided")
                                 .jobTitle(job.getTitle())
                                 .address(job.getLocation())
                                 .cvPdf(application.getCvPdf() != null ? application.getCvPdf() : "No CV provided")

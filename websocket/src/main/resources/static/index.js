@@ -18,7 +18,7 @@ const mediaState = {
     screenStream: null
 };
 
-const url = 'https://192.168.1.123:8888'
+const url = 'https://ws.deploy-hirexptit.io.vn'
 
 const iceServers = {iceServers: [{urls: "stun:stun.l.google.com:19302"}]};
 

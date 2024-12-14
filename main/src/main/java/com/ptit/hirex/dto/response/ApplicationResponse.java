@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ApplicationResponse {
     private Long id;
+    private Long userId;
     private Long jobId;
     private String jobTitle;  // từ bảng Job
     private String address;   // từ bảng Job
@@ -24,4 +25,5 @@ public class ApplicationResponse {
     private ApplicationStatus status;
     private LocalDateTime createdAt;
     private Long resumeId;
+    private String avatar;
 }
