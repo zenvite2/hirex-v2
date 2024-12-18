@@ -56,9 +56,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    TokenInvalidAuthenEntryPoint tokenInvalidAuthenEntryPoint;
-
     //Thiết lập API
     @Bean
     public SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http) throws Exception {
@@ -66,10 +63,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(SYSTEM_WHITELIST).permitAll()
-//                        .requestMatchers(WHITELIST).permitAll()
-//                        .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
-//                        .requestMatchers(SECURED_URLs_EMPLOYER).hasAuthority("EMPLOYER")
+                        .requestMatchers(SYSTEM_WHITELIST).permitAll()
+                        .requestMatchers(WHITELIST).permitAll()
+                        .requestMatchers(SECURED_URLs_EMPLOYEE).hasAuthority("EMPLOYEE")
+                        .requestMatchers(SECURED_URLs_EMPLOYER).hasAuthority("EMPLOYER")
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

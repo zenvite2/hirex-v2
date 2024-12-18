@@ -6,8 +6,8 @@ spring:
     active: mysql-dev
   data:
     redis:
-      port: ${REDIS_PORT:6379}
-      host: ${REDIS_HOST:10.242.156.132}
+      port: 6379
+      host: 36.50.134.230
   mail:
     host: smtp.gmail.com
     port: 587
@@ -42,13 +42,13 @@ jwt:
 
 minio:
   access:
-    key: ${S3_ACCESS_KEY_ID:fIqgc4weD1UTFTWHL6QM}
+    key: fIqgc4weD1UTFTWHL6QM
   secret:
-    key: ${S3_SECRET_ACCESS_KEY:JSFFZondksn3x6g8E9eVktFKed1TgaTd8cVntuue}
+    key: JSFFZondksn3x6g8E9eVktFKed1TgaTd8cVntuue
   url:
-    public: ${S3_ENDPOINT:https://s3.deploy-hirexptit.io.vn}
-    private: ${S3_ENDPOINT_PRIVATE:https://s3.deploy-hirexptit.io.vn}
-  bucket: ${S3_BUCKET:hirex}
+    public: https://s3.deploy-hirexptit.io.vn
+    private: https://s3.deploy-hirexptit.io.vn
+  bucket: hirex
 
 websocket-service:
   baseUrl: https://ws.deploy-hirexptit.io.vn
