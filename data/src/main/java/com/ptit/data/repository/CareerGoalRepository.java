@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CareerGoalRepository extends JpaRepository<CareerGoal, Long> {
     Optional<CareerGoal> findById(Long id);
+    CareerGoal findByEmployeeId(Long id);
 }

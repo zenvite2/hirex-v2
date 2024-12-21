@@ -47,6 +47,7 @@ public class CareerGoalService {
                     .jobTypeId(careerGoalRequest.getJobType())
                     .positionId(careerGoalRequest.getPosition())
                     .maxSalary(careerGoalRequest.getMaxSalary())
+                    .employeeId(employee.getId())
                     .build();
 
             careerGoalRepository.save(careerGoal);
@@ -70,6 +71,9 @@ public class CareerGoalService {
 
             if (careerGoalRequest != null) {
                 modelMapper.map(careerGoalRequest, careerGoal);
+                careerGoal.setIndustryId(careerGoalRequest.getIndustry());
+                careerGoal.setIndustryId(careerGoalRequest.getIndustry());
+                careerGoal.setPositionId(careerGoalRequest.getPosition());
             }
 
             careerGoalRepository.save(careerGoal);
@@ -104,7 +108,7 @@ public class CareerGoalService {
         }
 
         try {
-            CareerGoal careerGoal = careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null);
+            CareerGoal careerGoal = careerGoalRepository.findByEmployeeId(employee.getId());
 
             if (careerGoal == null) {
                 return ResponseBuilder.badRequestResponse(
@@ -119,6 +123,7 @@ public class CareerGoalService {
                     .maxSalary(careerGoal.getMaxSalary())
                     .minSalary(careerGoal.getMinSalary())
                     .jobType(careerGoal.getJobTypeId())
+                    .id(careerGoal.getId())
                     .build();
 
 

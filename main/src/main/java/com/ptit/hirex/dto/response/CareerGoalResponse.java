@@ -15,4 +15,5 @@ public class CareerGoalResponse {
     private Long maxSalary;
     private Long minSalary;
     private Long jobType;
+    private Long id;
 }

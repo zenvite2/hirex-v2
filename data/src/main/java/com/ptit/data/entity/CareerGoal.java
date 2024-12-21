@@ -26,4 +26,6 @@ public class CareerGoal {
     private Long positionId;
 
     private Long jobTypeId;
+
+    private Long employeeId;
 }
