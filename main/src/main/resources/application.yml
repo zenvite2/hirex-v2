@@ -7,7 +7,7 @@ spring:
   data:
     redis:
       port: 6379
-      host: 36.50.134.230
+      host: 172.25.0.2
   mail:
     host: smtp.gmail.com
     port: 587
