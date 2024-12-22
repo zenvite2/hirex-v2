@@ -202,7 +202,7 @@ public class EmployeeService {
     public FullEmployeeDto getFullEmployeeData(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow();
         return FullEmployeeDto.builder()
-                .careerGoal(careerGoalRepository.findById(employee.getCareerGoalId()).orElse(null))
+                .careerGoal(careerGoalRepository.findByEmployeeId(employee.getId()))
                 .educationLevelIds(educationRepository.findAllByEmployeeId(id).stream().map(Education::getEducationLevelId).toList())
                 .skillIds(employeeSkillRepository.findAllByEmployeeId(id).stream().map(EmployeeSkill::getSkillId).toList())
                 .build();
