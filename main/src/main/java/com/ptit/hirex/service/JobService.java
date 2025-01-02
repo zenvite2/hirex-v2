@@ -340,6 +340,7 @@ public class JobService {
                                 .maxSalary(job.getMaxSalary())
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
+                                .active(job.getActive())
                                 .build();
                     })
                     .collect(Collectors.toList());
