@@ -34,9 +34,9 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final PreFilter preFilter;
-    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**", "/cms/**"};
+    private final String[] WHITELIST = {"/auth/**", "/employee/create", "/employer/create", "/job/**", "/application/**", "/company/**", "/saved-job/**", "/auto-fill/**", "/notifications/**", "/comments/**", "/replies/**", "/similar/**", "/recommend/**", "/cms/**", "/resumes/**"};
     private final String[] SYSTEM_WHITELIST = {"/actuator/**", "/v3/**", "/webjars/**", "/swagger-ui*/*swagger-initializer.js", "/swagger-ui*/**", "/otp/**", "/cms/**"};
-    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/resumes/**", "/follow-company/**"};
+    private static final String[] SECURED_URLs_EMPLOYEE = {"/skill/**", "/education/**", "/experience/**", "/career-goal/**", "/employee/**", "/follow-company/**"};
     private static final String[] SECURED_URLs_EMPLOYER = {"/employer/**"};
 
     @Bean
