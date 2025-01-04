@@ -35,4 +35,5 @@ public class JobResponse {
     private EmployerResponse employer;
     private LocalDateTime createdAt;
     private Boolean active;
+    private Integer countApplication;
 }

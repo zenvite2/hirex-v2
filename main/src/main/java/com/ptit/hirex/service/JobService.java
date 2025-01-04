@@ -59,6 +59,7 @@ public class JobService {
     private final FollowCompanyService followCompanyService;
     private final NotificationService notificationService;
     private final MailService mailService;
+    private final ApplicationRepository applicationRepository;
 
     public ResponseEntity<ResponseDto<Object>> createJob(JobRequest jobRequest) {
 
@@ -394,6 +395,7 @@ public class JobService {
                                 .deadline(job.getDeadline())
                                 .createdAt(job.getCreatedAt())
                                 .active(job.getActive())
+                                .countApplication(applicationRepository.countApplication(job.getId()))
                                 .build();
                     })
                     .collect(Collectors.toList());
