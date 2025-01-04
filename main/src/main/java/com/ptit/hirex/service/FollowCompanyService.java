@@ -77,7 +77,7 @@ public class FollowCompanyService {
         }
 
         try {
-            List<FollowCompany> followCompanyList = followCompanyRepository.findAllByEmployeeId(employee.getId());
+            List<FollowCompany> followCompanyList = followCompanyRepository.findAllByEmployeeId(employee.getUserId());
 
             return ResponseBuilder.okResponse(
                     languageService.getMessage("get.follow.company.success"),
