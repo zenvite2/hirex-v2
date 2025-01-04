@@ -55,6 +55,7 @@ public class JobService {
     private final CompanyRepository companyRepository;
     private final EntityManager entityManager;
     private final JobSkillRepository jobSkillRepository;
+    private final SkillRepository skillRepository;
     private final FollowCompanyService followCompanyService;
     private final NotificationService notificationService;
     private final MailService mailService;
@@ -132,6 +133,7 @@ public class JobService {
         }
     }
 
+    @Transactional
     public ResponseEntity<ResponseDto<Object>> updateJob(Long id, JobRequest jobRequest) {
         try {
             Job job = jobRepository.findById(id)
@@ -139,6 +141,21 @@ public class JobService {
 
             if (jobRequest != null) {
                 modelMapper.map(jobRequest, job);
+            }
+
+            // Xóa skills cũ
+            jobSkillRepository.deleteByJobId(job.getId());
+
+            if (jobRequest.getSkills() != null && !jobRequest.getSkills().isEmpty()) {
+                List<JobSkill> jobSkills = jobRequest.getSkills().stream()
+                        .map(skillId -> JobSkill.builder()
+                                .jobId(job.getId())
+                                .skillId(skillId)
+                                .build())
+                        .collect(Collectors.toList());
+
+                // Lưu các JobSkill vào database
+                jobSkillRepository.saveAll(jobSkills);
             }
 
             jobRepository.save(job);
@@ -154,11 +171,47 @@ public class JobService {
                     StatusCodeEnum.JOB4000
             );
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseBuilder.badRequestResponse(
                     languageService.getMessage("update.job.failed"),
                     StatusCodeEnum.JOB0002
             );
         }
+    }
+
+    @Transactional
+    public ResponseEntity<ResponseDto<List<Skill>>> getJobSkills(Long id) {
+
+        Job job = jobRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Not found job"));
+
+
+        // Get all job_skill records for the employee
+        List<JobSkill> jobSkills = jobSkillRepository.findByJobId(job.getId());
+
+        // Get all skill ids
+        List<Long> skillIds = jobSkills.stream()
+                .map(JobSkill::getSkillId)
+                .collect(Collectors.toList());
+
+        // Fetch all skills and convert to DTOs
+        List<Skill> skills = skillRepository.findAllById(skillIds)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseBuilder.okResponse(
+                languageService.getMessage("get.skills.success"),
+                skills,
+                StatusCodeEnum.SKILL0000
+        );
+    }
+
+    private Skill convertToDTO(Skill skill) {
+        return Skill.builder()
+                .id(skill.getId())
+                .name(skill.getName())
+                .build();
     }
 
     public ResponseEntity<ResponseDto<Object>> updateActiveJob(Long id, JobStatusRequest jobStatusRequest) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ptit.data.dto.FullJobDto;
 import com.ptit.data.dto.SalaryDto;
+import com.ptit.data.entity.Skill;
 import com.ptit.hirex.dto.request.JobRequest;
 import com.ptit.hirex.dto.request.JobSearchRequest;
 import com.ptit.hirex.model.ResponseDto;
@@ -112,5 +113,10 @@ public class JobController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(job);
+    }
+
+    @GetMapping("/skills/{id}")
+    public ResponseEntity<ResponseDto<List<Skill>>> getJobSkills(@PathVariable Long id) {
+        return  jobService.getJobSkills(id);
     }
 }
