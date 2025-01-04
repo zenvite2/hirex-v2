@@ -1,6 +1,10 @@
 package com.ptit.hirex.service.impl;
 
+import com.ptit.data.entity.Company;
+import com.ptit.data.entity.Employer;
 import com.ptit.data.entity.User;
+import com.ptit.data.repository.CompanyRepository;
+import com.ptit.data.repository.EmployerRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.UserInfoDto;
 import com.ptit.hirex.dto.request.UserStatusRequest;
@@ -23,11 +27,21 @@ public class UserInfoServiceImpl implements UserInfoService {
     private final UserRepository userRepository;
     private final LanguageService languageService;
     private final MailService mailService;
+    private final EmployerRepository employerRepository;
+    private final CompanyRepository companyRepository;
 
     public ResponseEntity<ResponseDto<UserInfoDto>> getUserInfoById(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseBuilder.noContentResponse(languageService.getMessage("user-info.not-found"), StatusCodeEnum.USERINFO0000);
+        }
+        String companyName = null;
+        Employer employer = employerRepository.findByUserId(userId);
+        if (employer != null) {
+            Company company = companyRepository.findById(employer.getCompany()).orElse(null);
+            if (company != null) {
+                companyName = company.getCompanyName();
+            }
         }
         UserInfoDto userInfoDto = UserInfoDto.builder()
                 .fullName(user.getFullName())
@@ -35,6 +49,7 @@ public class UserInfoServiceImpl implements UserInfoService {
                 .phoneNumber(user.getPhoneNumber())
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
+                .companyName(companyName)
                 .build();
         return ResponseBuilder.okResponse(languageService.getMessage("user-info.success"), userInfoDto, StatusCodeEnum.USERINFO1000);
     }
