@@ -114,17 +114,15 @@ public class FollowCompanyService {
 
         Optional<User> user = userRepository.findByUsername(userName);
 
-        Employee employee = employeeRepository.findByUserId(user.get().getId());
-
-        if (employee == null) {
+        if (user.isEmpty()) {
             return ResponseBuilder.badRequestResponse(
-                    languageService.getMessage("employee.not.found"),
+                    languageService.getMessage("auth.user.not.found"),
                     StatusCodeEnum.AUTH0016
             );
         }
 
         try {
-            followCompanyRepository.deleteByEmployeeIdAndCompanyId(employee.getId(), id);
+            followCompanyRepository.deleteByEmployeeIdAndCompanyId(user.get().getId(), id);
             return ResponseBuilder.okResponse(
                     languageService.getMessage("delete.follow.company.success"),
                     StatusCodeEnum.SAVE1003

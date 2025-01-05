@@ -66,6 +66,7 @@ public class EmployeeService {
                     .username(employeeRequest.getUsername())
                     .password(passwordEncoder.encode(employeeRequest.getPassword()))
                     .role(roleRepo.findById(1L).get())
+                    .active(true)
                     .build();
 
             User userSave = userRepository.save(newUser);

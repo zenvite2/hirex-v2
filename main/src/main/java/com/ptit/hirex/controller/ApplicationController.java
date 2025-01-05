@@ -42,7 +42,7 @@ public class ApplicationController {
         return applicationService.updateStatus(id, status);
     }
 
-    @PatchMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDto<Object>> delete(@PathVariable("id") Long id) {
         return applicationService.delete(id);
     }

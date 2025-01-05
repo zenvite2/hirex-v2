@@ -31,7 +31,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto<Object>> createUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ResponseDto<Object>> createUser(@Validated(SignUpRequest.Register.class) @RequestBody SignUpRequest signUpRequest) {
         return authenticationService.createUser(signUpRequest);
     }
 
@@ -49,6 +49,11 @@ public class AuthenticationController {
     public ResponseEntity<?> applyForgotPassword(@Validated(ForgotPasswordRequest.Apply.class) @RequestBody ForgotPasswordRequest request) {
         authenticationService.applyForgotPassword(request);
         return ResponseEntity.ok("Forgot Password Applied");
+    }
+
+    @PostMapping("/validate-register")
+    public ResponseEntity<?> validateRegister(@Validated(SignUpRequest.Validate.class) @RequestBody SignUpRequest signUpRequest) {
+        return authenticationService.validateRegisterRequest(signUpRequest);
     }
 
 //    @PostMapping("/logout")

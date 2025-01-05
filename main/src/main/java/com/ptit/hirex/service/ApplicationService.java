@@ -157,6 +157,7 @@ public class ApplicationService {
                                 .coverLetter(application.getCoverLetter())
                                 .status(application.getStatus())
                                 .createdAt(application.getCreatedAt())
+                                .username(user.getUsername())
                                 .build();
                     })
                     .filter(Objects::nonNull) // Loại bỏ null khỏi danh sách

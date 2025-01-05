@@ -26,4 +26,5 @@ public class ApplicationResponse {
     private LocalDateTime createdAt;
     private Long resumeId;
     private String avatar;
+    private String username;
 }

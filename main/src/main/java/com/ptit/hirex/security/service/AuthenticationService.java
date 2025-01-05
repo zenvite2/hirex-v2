@@ -281,6 +281,16 @@ public class AuthenticationService {
         }
     }
 
+    public ResponseEntity<?> validateRegisterRequest(SignUpRequest signUpRequest) {
+        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return ResponseEntity.badRequest().body(languageService.getMessage("auth.signup.user.exists"));
+        }
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity.badRequest().body(languageService.getMessage("auth.signup.email.exists"));
+        }
+        return ResponseEntity.ok(languageService.getMessage("auth.register.success"));
+    }
+
     /**
      * Logout
      *
