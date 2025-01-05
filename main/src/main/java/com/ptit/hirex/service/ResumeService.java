@@ -83,6 +83,7 @@ public class ResumeService {
                 Map<String, Object> educationMap = new HashMap<>();
                 educationMap.put("id", education.getId());
                 educationMap.put("name", education.getUniversityName());
+                educationMap.put("major", education.getExpertise());
                 educationMap.put("startDate", education.getStartDate().toString());
                 educationMap.put("endDate", education.getEndDate().toString());
                 educationList.add(educationMap);
@@ -178,6 +179,7 @@ public class ResumeService {
         Optional<Resume> resumeDB = resumeRepository.findById(id);
         resume.setEmployeeId(resumeDB.get().getEmployeeId());
         resume.setTitle(resumeDB.get().getTitle());
+        resume.setSkills(resumeDB.get().getSkills());
 
         return resumeRepository.save(resume);
     }
