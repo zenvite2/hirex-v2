@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,13 +36,19 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<ResponseDto<Object>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        return authenticationService.processForgotPassword(request);
+    public ResponseEntity<ResponseDto<Object>> forgotPassword(@Validated(ForgotPasswordRequest.Create.class) @RequestBody ForgotPasswordRequest request) {
+        return authenticationService.createForgotPasswordRequest(request);
     }
 
     @PostMapping("/change-password")
     public ResponseEntity<ResponseDto<Object>> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         return authenticationService.changePassword(request);
+    }
+
+    @PostMapping("/apply-forgot-password")
+    public ResponseEntity<?> applyForgotPassword(@Validated(ForgotPasswordRequest.Apply.class) @RequestBody ForgotPasswordRequest request) {
+        authenticationService.applyForgotPassword(request);
+        return ResponseEntity.ok("Forgot Password Applied");
     }
 
 //    @PostMapping("/logout")

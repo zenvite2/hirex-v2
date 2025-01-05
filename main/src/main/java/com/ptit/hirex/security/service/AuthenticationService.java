@@ -7,6 +7,7 @@ import com.ptit.data.repository.RoleRepository;
 import com.ptit.data.repository.UserRepository;
 import com.ptit.hirex.dto.request.ForgotPasswordRequest;
 import com.ptit.hirex.enums.StatusCodeEnum;
+import com.ptit.hirex.exception.ApiException;
 import com.ptit.hirex.model.ResponseBuilder;
 import com.ptit.hirex.model.ResponseDto;
 import com.ptit.hirex.security.dto.request.ChangePasswordRequest;
@@ -18,6 +19,7 @@ import com.ptit.hirex.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,11 +33,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+    private static final int FORGOT_PASSWORD_EXPIRATION = 30;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
@@ -45,6 +49,7 @@ public class AuthenticationService {
     private final EmployeeRepository employeeRepository;
     private final RoleRepository roleRepository;
     private final MailService emailService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public ResponseEntity<ResponseDto<Object>> authenticate(SignInRequest signInRequest) {
         try {
@@ -204,24 +209,33 @@ public class AuthenticationService {
         }
     }
 
-    public ResponseEntity<ResponseDto<Object>> processForgotPassword(ForgotPasswordRequest request) {
+    public void applyForgotPassword(ForgotPasswordRequest request) {
+        String usernameFromRedis = (String) redisTemplate.opsForValue().get(request.getToken());
+        Optional<User> userOptional = userRepository.findByUsername(usernameFromRedis);
+        if (userOptional.isEmpty()) {
+            throw new ApiException(400, languageService.getMessage("auth.user.not.found"));
+        }
+        User user = userOptional.get();
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        redisTemplate.delete(request.getToken());
+    }
+
+    public ResponseEntity<ResponseDto<Object>> createForgotPasswordRequest(ForgotPasswordRequest request) {
         try {
-            Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+            String username = request.getUsername();
+            Optional<User> userOptional = userRepository.findByUsername(username);
             if (userOptional.isEmpty()) {
                 return ResponseBuilder.badRequestResponse(
-                        "email.not.found",
-                        StatusCodeEnum.EMAIL0000
+                        "user.not.found",
+                        StatusCodeEnum.AUTH0016
                 );
             }
 
+            String forgotPwToken = UUID.randomUUID().toString();
             User user = userOptional.get();
-
-            String newPassword = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
-
-            emailService.sendPasswordResetEmail(user.getEmail(), newPassword);
+            redisTemplate.opsForValue().set(forgotPwToken, username, FORGOT_PASSWORD_EXPIRATION, TimeUnit.MINUTES);
+            emailService.sendPasswordResetEmail(user.getEmail(), forgotPwToken);
 
             return ResponseBuilder.okResponse(
                     "auth.reset.password.success",

@@ -18,6 +18,8 @@ import java.util.Map;
 @Service
 public class MailServiceImpl implements MailService {
 
+    @Value("${frontend-service.baseUrl}")
+    private String frontendUrl;
     private final JavaMailSender mailSender;
     private final String sender;
     private final TemplateEngine templateEngine;
@@ -65,21 +67,18 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendPasswordResetEmail(String to, String newPassword) throws Exception {
+    public void sendPasswordResetEmail(String to, String forgotPwToken) throws Exception {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
             helper.setFrom(sender);
             helper.setTo(to);
-            helper.setSubject("Reset Password Request");
+            helper.setSubject("Yêu cầu đặt lại mật khẩu");
 
-            String emailContent = buildPasswordResetEmailTemplate(newPassword);
+            String emailContent = buildPasswordResetEmailTemplate(forgotPwToken);
             helper.setText(emailContent, true);
-
             mailSender.send(message);
             log.info("Password reset email sent successfully to: {}", to);
-
         } catch (Exception e) {
             log.error("Failed to send password reset email to: {}", to, e);
             throw new Exception("Failed to send password reset email", e);
@@ -434,23 +433,24 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    private String buildPasswordResetEmailTemplate(String newPassword) {
+    private String buildPasswordResetEmailTemplate(String forgotPwToken) {
+        String resetPasswordUrl = frontendUrl + "/apply-forgot-password?token=" + forgotPwToken;
+
         return """
-                <html>
-                    <body style='margin: 0; padding: 20px; font-family: Arial, sans-serif;'>
-                        <div style='background-color: #f5f5f5; padding: 20px; border-radius: 5px;'>
-                            <h2 style='color: #333;'>Password Reset</h2>
-                            <p>Your password has been reset successfully. Here is your new password:</p>
-                            <div style='background-color: #fff; padding: 10px; border-radius: 3px; margin: 10px 0;'>
-                                <strong>%s</strong>
-                            </div>
-                            <p>Please change this password after logging in for security purposes.</p>
-                            <p>If you didn't request this password reset, please contact our support team immediately.</p>
-                            <br>
-                            <p>Best regards,<br>Your Application Team</p>
+            <html>
+                <body style='margin: 0; padding: 20px; font-family: Arial, sans-serif;'>
+                    <div style='background-color: #f5f5f5; padding: 20px; border-radius: 5px;'>
+                        <h2 style='color: #333;'>Password Reset</h2>
+                        <p>Your password has been requested to be reset. Please fill this form in following url to enter your new password:</p>
+                        <div style='background-color: #fff; padding: 10px; border-radius: 3px; margin: 10px 0;'>
+                            <a href='%s'>Reset Password</a>
                         </div>
-                    </body>
-                </html>
-                """.formatted(newPassword);
+                        <p>If you didn't request this password reset, please contact our support team immediately.</p>
+                        <br>
+                        <p>Best regards,<br>HireX Team</p>
+                    </div>
+                </body>
+            </html>
+            """.formatted(resetPasswordUrl);
     }
 }

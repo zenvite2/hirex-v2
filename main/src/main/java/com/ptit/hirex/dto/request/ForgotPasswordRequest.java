@@ -10,7 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ForgotPasswordRequest {
-    @NotEmpty(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+    @NotEmpty(message = "Username is required", groups = {ForgotPasswordRequest.Create.class})
+    private String username;
+
+    @NotEmpty(message = "New password is required", groups = {ForgotPasswordRequest.Apply.class})
+    private String newPassword;
+
+    @NotEmpty(message = "Token is required", groups = {ForgotPasswordRequest.Apply.class})
+    private String token;
+
+    public interface Create{};
+
+    public interface Apply{};
 }

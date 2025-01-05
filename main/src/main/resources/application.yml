@@ -55,3 +55,6 @@ websocket-service:
 
 recommend-service:
   baseUrl: https://re.deploy-hirexptit.io.vn/api
+
+frontend-service:
+  baseUrl: https://deploy-hirexptit.io.vn
