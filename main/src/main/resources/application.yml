@@ -11,8 +11,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: s2kius2t@gmail.com
-    password: mnylpqwpyuztxypm
+    username: 
+    password: 
     properties:
       mail:
         smtp:
@@ -38,13 +38,13 @@ logging:
 
 jwt:
   expiry-time-secs: 3600
-  access-key: c2VjcmV0QGtleS5hcGlfaGFzX2JlZW5fZGVzaWduZWRfYnlfVGF5TFE=
+  access-key: 
 
 minio:
   access:
-    key: xNjuniPqqM3OiPCXwBwK
+    key: 
   secret:
-    key: 9BGPI5ikfR0FfwXPoCOE7u0yQeYKA2oYehnQVZdn
+    key: 
   url:
     public: https://s3.deploy-hirexptit.io.vn
     private: https://s3.deploy-hirexptit.io.vn
